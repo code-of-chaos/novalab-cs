@@ -550,3 +550,8 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,csharp,rider,obsidian,pycharm+all
+
+
+src/NovaLab/Data/app.db
+src/NovaLab/Data/app.db-shm
+src/NovaLab/Data/app.db-wal
