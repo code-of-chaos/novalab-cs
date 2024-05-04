@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using NovaLab.Components;
 using NovaLab.Components.Account;
 using NovaLab.Data;
+using NovaLab.Logic;
+using TwitchLib.EventSub.Webhooks.Extensions;
+using TwitchLib.EventSub.Websockets.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
-string str = "Authentication:Google:ClientId";
-string str1 = "Authentication:Google:ClientSecret";
     
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -45,6 +45,16 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+// builder.Services.AddTwitchLibEventSubWebhooks(config => {
+//     config.CallbackPath = "/twitch-webhooks";
+//     config.Secret = "supersecuresecret";
+//     config.EnableLogging = true;
+// });
+builder.Services.AddTwitchLibEventSubWebsockets();
+
+// builder.Services.AddHostedService<TwitchEventSubHostedService>();
+builder.Services.AddHostedService<TwitchWebsocketHostedService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,6 +74,10 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+// Endpoints by TwitchLib
+app.UseAuthorization();
+app.UseTwitchLibEventSubWebhooks();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();

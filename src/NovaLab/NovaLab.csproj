@@ -13,6 +13,12 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4"/>
+        <PackageReference Include="TwitchLib" Version="3.5.3" />
+        <PackageReference Include="TwitchLib.EventSub.Webhooks" Version="2.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NovaLab.Logic\NovaLab.Logic.csproj" />
     </ItemGroup>
 
 </Project>
