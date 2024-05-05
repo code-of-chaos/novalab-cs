@@ -1,6 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,12 +37,23 @@ public class Program {
             .AddTwitch(twitchOptions => {
                 twitchOptions.ClientId = builder.Configuration["Authentication:Twitch:ClientId"]!;
                 twitchOptions.ClientSecret = builder.Configuration["Authentication:Twitch:ClientSecret"]!;
-
-                twitchOptions.SaveTokens = true;
                 
                 // Update scopes as needed
                 twitchOptions.Scope.Add("channel:read:redemptions");
                 twitchOptions.Scope.Add("channel:read:subscriptions"); 
+                
+                twitchOptions.ClaimActions.MapJsonSubKey("access_token", "data", "access_token");
+                                   
+                twitchOptions.SaveTokens = true;
+                twitchOptions.Events = new OAuthEvents {
+                    OnCreatingTicket = context => {
+                        
+                        Console.WriteLine($"{context.AccessToken}, {context.Identity.Name}, {context.User}");
+                        
+                        // context.HttpContext.Session.SetString("TemporaryTwitchToken", context.AccessToken!);
+                        return Task.CompletedTask;
+                    }
+                };
             })
             .AddBearerToken()
             .AddIdentityCookies();
@@ -56,8 +71,12 @@ public class Program {
 
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
         builder.Services.AddSingleton<TwitchAPI>();
+        builder.Services.AddScoped<TwitchTokenProvider>();
 
         builder.Services.AddAuthorization();
+        builder.Services.AddHttpClient();
+
+        builder.Services.AddControllers();
         
         // --- APP ---
         WebApplication app = builder.Build();
@@ -70,12 +89,21 @@ public class Program {
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-
+        
+        // app.UseAuthentication();
+        // app.UseAuthorization();
+        
         app.UseHttpsRedirection();
 
         app.UseStaticFiles();
         app.UseAntiforgery();
-
+        
+        // app.UseAuthentication();
+        // app.UseAuthorization(); 
+        
+        app.MapControllers();
+        // app.MapRazorPages();
+        
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
 
