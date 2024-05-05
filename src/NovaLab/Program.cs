@@ -1,85 +1,92 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Components;
 using NovaLab.Components.Account;
 using NovaLab.Data;
-using NovaLab.Logic;
-using TwitchLib.EventSub.Webhooks.Extensions;
-using TwitchLib.EventSub.Websockets.Extensions;
+using TwitchLib.Api;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace NovaLab;
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
+public class Program {
+    public static void Main(string[] args) {
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
-    
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<IdentityUserAccessor>();
-builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+        // --- Services ---
+        builder.Services.AddRazorComponents()
+            .AddInteractiveServerComponents();
 
-builder.Services.AddAuthentication(options => {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
-    .AddIdentityCookies();
+        builder.Services.AddCascadingAuthenticationState();
+        builder.Services.AddScoped<IdentityUserAccessor>();
+        builder.Services.AddScoped<IdentityRedirectManager>();
+        builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-{
-    // Todo crash on not found should be better defined
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-});
+        builder.Services.AddAuthentication(options => {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddTwitch(twitchOptions => {
+                twitchOptions.ClientId = builder.Configuration["Authentication:Twitch:ClientId"]!;
+                twitchOptions.ClientSecret = builder.Configuration["Authentication:Twitch:ClientSecret"]!;
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+                twitchOptions.SaveTokens = true;
+                
+                // Update scopes as needed
+                twitchOptions.Scope.Add("channel:read:redemptions");
+                twitchOptions.Scope.Add("channel:read:subscriptions"); 
+            })
+            .AddBearerToken()
+            .AddIdentityCookies();
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
+        string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                                  throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlite(connectionString));
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+        builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
 
-// builder.Services.AddTwitchLibEventSubWebhooks(config => {
-//     config.CallbackPath = "/twitch-webhooks";
-//     config.Secret = "supersecuresecret";
-//     config.EnableLogging = true;
-// });
-builder.Services.AddTwitchLibEventSubWebsockets();
+        builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+        builder.Services.AddSingleton<TwitchAPI>();
 
-// builder.Services.AddHostedService<TwitchEventSubHostedService>();
-builder.Services.AddHostedService<TwitchWebsocketHostedService>();
+        builder.Services.AddAuthorization();
+        
+        // --- APP ---
+        WebApplication app = builder.Build();
 
-var app = builder.Build();
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment()) {
+            app.UseMigrationsEndPoint();
+        } else {
+            app.UseExceptionHandler("/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
-    app.UseMigrationsEndPoint();
+        app.UseHttpsRedirection();
+
+        app.UseStaticFiles();
+        app.UseAntiforgery();
+
+        app.MapRazorComponents<App>()
+            .AddInteractiveServerRenderMode();
+
+        // Add additional endpoints required by the Identity /Account Razor components.
+        app.MapAdditionalIdentityEndpoints();
+        
+        // TwitchApi is a singleton because they don't use injection
+        var api = app.Services.GetService<TwitchAPI>()!;
+        api.Settings.ClientId = builder.Configuration["Authentication:Twitch:ClientId"];
+        api.Settings.Secret = builder.Configuration["Authentication:Twitch:ClientSecret"];
+
+        app.Run();
+    }
 }
-else {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-
-app.UseStaticFiles();
-app.UseAntiforgery();
-
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
-
-// Endpoints by TwitchLib
-app.UseAuthorization();
-app.UseTwitchLibEventSubWebhooks();
-
-// Add additional endpoints required by the Identity /Account Razor components.
-app.MapAdditionalIdentityEndpoints();
-
-app.Run();

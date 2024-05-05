@@ -4,7 +4,7 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TwitchLib.EventSub.Webhooks.Core.EventArgs.Channel;
+using TwitchLib.EventSub.Webhooks.Core.Models;
 using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
 using ChannelFollowArgs = TwitchLib.EventSub.Websockets.Core.EventArgs.Channel.ChannelFollowArgs;
@@ -29,6 +29,7 @@ public class TwitchWebsocketHostedService : IHostedService {
         _eventSubWebsocketClient.ErrorOccurred += OnErrorOccurred;
 
         _eventSubWebsocketClient.ChannelFollow += OnChannelFollow;
+        
     }
 
     private async void OnErrorOccurred(object? sender, ErrorOccuredArgs e)
@@ -67,8 +68,7 @@ public class TwitchWebsocketHostedService : IHostedService {
         _logger.LogError($"Websocket {_eventSubWebsocketClient.SessionId} disconnected!");
 
         // Don't do this in production. You should implement a better reconnect strategy
-        while (!await _eventSubWebsocketClient.ReconnectAsync())
-        {
+        while (!await _eventSubWebsocketClient.ReconnectAsync()) {
             _logger.LogError("Websocket reconnect failed!");
             await Task.Delay(1000);
         }

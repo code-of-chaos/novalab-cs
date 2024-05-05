@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab", "src\NovaLab\Nova
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Logic", "src\NovaLab.Logic\NovaLab.Logic.csproj", "{CBA7C39A-373C-4C9D-B805-E27EBD312A7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Data", "src\NovaLab.Data\NovaLab.Data.csproj", "{4E45AED2-CD95-462B-BC8D-B09681353E76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{CBA7C39A-373C-4C9D-B805-E27EBD312A7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBA7C39A-373C-4C9D-B805-E27EBD312A7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBA7C39A-373C-4C9D-B805-E27EBD312A7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E45AED2-CD95-462B-BC8D-B09681353E76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E45AED2-CD95-462B-BC8D-B09681353E76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E45AED2-CD95-462B-BC8D-B09681353E76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E45AED2-CD95-462B-BC8D-B09681353E76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
