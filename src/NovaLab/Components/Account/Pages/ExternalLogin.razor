@@ -4,6 +4,8 @@
 @using System.Security.Claims
 @using System.Text
 @using System.Text.Encodings.Web
+@using AspNet.Security.OAuth.Twitch
+@using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using NovaLab.Data
@@ -112,17 +114,74 @@
     }
 
     private async Task OnValidSubmitAsync() {
-        var emailStore = GetEmailStore();
-        var user = CreateUser();
+        IUserEmailStore<ApplicationUser> emailStore = GetEmailStore();
+        ApplicationUser user = CreateUser();
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-        var result = await UserManager.CreateAsync(user);
+        IdentityResult result = await UserManager.CreateAsync(user);
+        ExternalLoginInfo? info = await SignInManager.GetExternalLoginInfoAsync();
+        if (info is null) {
+            message = "Error loading external login information during confirmation.";
+            return;
+        }
+        
         if (result.Succeeded) {
             result = await UserManager.AddLoginAsync(user, externalLoginInfo);
             if (result.Succeeded) {
                 Logger.LogInformation("User created an account using {Name} provider.", externalLoginInfo.LoginProvider);
+                
+                // Add extra information about the user from claims
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.NameIdentifier)) {
+                    user.TwitchBroadcasterId = info.Principal.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                }
+                
+                if (info.Principal.HasClaim(c => c.Type == "access_token")) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst("access_token")!);
+                }
+                
+                if (info.Principal.HasClaim(c => c.Type == "refresh_token")) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst("refresh_token")!);
+                }
+                
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.NameIdentifier)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.NameIdentifier)!);
+                }
+                
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Name)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name)!);
+                }
+                if (info.Principal.HasClaim(c => c.Type == TwitchAuthenticationConstants.Claims.DisplayName)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(TwitchAuthenticationConstants.Claims.DisplayName)!);
+                }
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email)!);
+                }
+                if (info.Principal.HasClaim(c => c.Type == TwitchAuthenticationConstants.Claims.Type)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(TwitchAuthenticationConstants.Claims.Type)!);
+                }
+                if (info.Principal.HasClaim(c => c.Type == TwitchAuthenticationConstants.Claims.BroadcasterType)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(TwitchAuthenticationConstants.Claims.BroadcasterType)!);
+                }
+                if (info.Principal.HasClaim(c => c.Type == TwitchAuthenticationConstants.Claims.Description)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(TwitchAuthenticationConstants.Claims.Description)!);
+                }
+                if (info.Principal.HasClaim(c => c.Type == TwitchAuthenticationConstants.Claims.ProfileImageUrl)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(TwitchAuthenticationConstants.Claims.ProfileImageUrl)!);
+                }
+                if (info.Principal.HasClaim(c => c.Type == TwitchAuthenticationConstants.Claims.OfflineImageUrl)) {
+                    await UserManager.AddClaimAsync(user, info.Principal.FindFirst(TwitchAuthenticationConstants.Claims.OfflineImageUrl)!);
+                }
+                
+                // Update the user in one go
+                await UserStore.UpdateAsync(user, CancellationToken.None);
+                
+                // THis should store the tokens to AspNetUserTokens table?
+                if (info.AuthenticationTokens != null)
+                    foreach (AuthenticationToken token in info.AuthenticationTokens) {
+                        await UserManager.SetAuthenticationTokenAsync(user, "Twitch", token.Name, token.Value);
+                    }
 
                 var userId = await UserManager.GetUserIdAsync(user);
                 var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
@@ -135,7 +194,7 @@
 
                 // If account confirmation is required, we need to show the link if we don't have a real email sender
                 if (UserManager.Options.SignIn.RequireConfirmedAccount) {
-                    RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = Input.Email });
+                    RedirectManager.RedirectTo("Account/RegisterConfirmation", new Dictionary<string, object?> { ["email"] = Input.Email });
                 }
 
                 await SignInManager.SignInAsync(user, isPersistent: false, externalLoginInfo.LoginProvider);

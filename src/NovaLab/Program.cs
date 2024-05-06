@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
@@ -42,18 +43,9 @@ public class Program {
                 twitchOptions.Scope.Add("channel:read:redemptions");
                 twitchOptions.Scope.Add("channel:read:subscriptions"); 
                 
-                twitchOptions.ClaimActions.MapJsonSubKey("access_token", "data", "access_token");
+                // twitchOptions.ClaimActions.MapJsonSubKey("access_token", "data", "access_token");
                                    
                 twitchOptions.SaveTokens = true;
-                twitchOptions.Events = new OAuthEvents {
-                    OnCreatingTicket = context => {
-                        
-                        Console.WriteLine($"{context.AccessToken}, {context.Identity.Name}, {context.User}");
-                        
-                        // context.HttpContext.Session.SetString("TemporaryTwitchToken", context.AccessToken!);
-                        return Task.CompletedTask;
-                    }
-                };
             })
             .AddBearerToken()
             .AddIdentityCookies();
