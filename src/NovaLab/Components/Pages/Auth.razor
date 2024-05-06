@@ -1,6 +1,15 @@
 ﻿@page "/auth"
 
+@using System.Security.Claims
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using NovaLab.Data
+@using TwitchLib.Api
+@using TwitchLib.Api.Helix.Models.Users.GetUsers
+@inject TwitchAPI TwitchApi
+@* @inject ApplicationDbContext DbContext *@
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
 
 @attribute [Authorize]
 
@@ -10,4 +19,39 @@
 
 <AuthorizeView>
     Hello @context.User.Identity?.Name!
+    
+    @if (User is not null) {
+        <img alt="Image" src="@User.ProfileImageUrl"/>
+        <p>@User.DisplayName</p>
+        <p>@User.Description</p>
+    }
+    
 </AuthorizeView>
+
+@code {
+    private User? User { get; set; }
+    
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+        
+        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = authState.User;
+        
+        if (user.Identity is not { IsAuthenticated: true, Name: not null }) return;
+        
+        ApplicationUser? applicationUser = await UserManager.FindByNameAsync(user.Identity.Name);
+        if (applicationUser is null) return;
+        
+        string? token = await UserManager.GetAuthenticationTokenAsync(applicationUser, "Twitch", "access_token"); 
+
+        if(string.IsNullOrWhiteSpace(token)) return;
+        
+        // Do something with the token
+        GetUsersResponse? output = await TwitchApi.Helix.Users.GetUsersAsync(accessToken: token);
+        if (output != null) {
+            User = output.Users.First();
+        }
+
+    }
+
+}
