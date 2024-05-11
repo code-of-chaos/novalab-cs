@@ -29,11 +29,13 @@ public class TwitchEventSubHostedService(ILogger<TwitchEventSubHostedService> lo
         return Task.CompletedTask;
     }
 
-    private void OnChannelFollow(object sender, ChannelFollowArgs e) {
+    private void OnChannelFollow(object? sender, ChannelFollowArgs e) {
+        if (sender is null) return;
         logger.LogInformation($"{e.Notification.Event.UserName} followed {e.Notification.Event.BroadcasterUserName} at {e.Notification.Event.FollowedAt.ToUniversalTime()}");
     }
 
-    private void OnError(object sender, OnErrorArgs e) {
+    private void OnError(object? sender, OnErrorArgs e) {
+        if (sender is null) return;
         logger.LogError($"Reason: {e.Reason} - Message: {e.Message}");
     }
 }

@@ -2,17 +2,20 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NovaLab.Data;
 
 #nullable disable
 
-namespace NovaLab.Migrations
+namespace NovaLab.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240509142909_CustomTwitchRedemption")]
+    partial class CustomTwitchRedemption
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -215,42 +218,34 @@ namespace NovaLab.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", b =>
+            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.CustomTwitchRedemption", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("key")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("HasPrompt")
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Points")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OutputTemplate")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OutputTemplatePerReward")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("PointsCost")
+                    b.Property<int>("RedemptionType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("RewardId")
+                    b.Property<string>("TwitchRedemptionId")
                         .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(45)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("key");
 
                     b.ToTable("CustomTwitchRedemptions");
                 });
@@ -304,15 +299,6 @@ namespace NovaLab.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", b =>
-                {
-                    b.HasOne("NovaLab.Data.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

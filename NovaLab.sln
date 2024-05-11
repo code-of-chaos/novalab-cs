@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Logic", "src\NovaLa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Data", "src\NovaLab.Data\NovaLab.Data.csproj", "{4E45AED2-CD95-462B-BC8D-B09681353E76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Api", "src\NovaLab.Api\NovaLab.Api.csproj", "{CA5ACCCA-3846-489B-AF53-6156DDC08C1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.RazorComponents", "src\NovaLab.RazorComponents\NovaLab.RazorComponents.csproj", "{FB3FAD86-2C8C-483E-A5B7-5C9753DD76AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{4E45AED2-CD95-462B-BC8D-B09681353E76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E45AED2-CD95-462B-BC8D-B09681353E76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E45AED2-CD95-462B-BC8D-B09681353E76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA5ACCCA-3846-489B-AF53-6156DDC08C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA5ACCCA-3846-489B-AF53-6156DDC08C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA5ACCCA-3846-489B-AF53-6156DDC08C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA5ACCCA-3846-489B-AF53-6156DDC08C1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB3FAD86-2C8C-483E-A5B7-5C9753DD76AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB3FAD86-2C8C-483E-A5B7-5C9753DD76AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB3FAD86-2C8C-483E-A5B7-5C9753DD76AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB3FAD86-2C8C-483E-A5B7-5C9753DD76AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
