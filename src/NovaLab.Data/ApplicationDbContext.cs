@@ -7,5 +7,6 @@ namespace NovaLab.Data;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : IdentityDbContext<ApplicationUser>(options) {
     
-    public DbSet<TwitchManagedReward> CustomTwitchRedemptions { get; set; }
+    public DbSet<TwitchManagedReward> TwitchManagedRewards { get; set; }
+    public DbSet<TwitchManagedRewardRedemption> TwitchManagedRewardRedemptions { get; set; }
 }

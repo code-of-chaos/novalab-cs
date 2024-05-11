@@ -28,7 +28,7 @@ public class ApiRootController(TwitchAPI twitchApi, ILogger<ApiRootController> l
     
     [HttpGet]
     public async Task<ActionResult<TwitchManagedReward>> Get([FromRoute] string userId) {
-        TwitchManagedReward? redemption =await dbContext.CustomTwitchRedemptions.FirstOrDefaultAsync( o => o.User.Id == userId);
+        TwitchManagedReward? redemption =await dbContext.TwitchManagedRewards.FirstOrDefaultAsync( o => o.User.Id == userId);
         return redemption is null
             ? new JsonResult(ApiResultDto<TwitchManagedReward>.Empty())
             : new JsonResult(ApiResultDto<TwitchManagedReward>.Successful());
@@ -74,7 +74,7 @@ public class ApiRootController(TwitchAPI twitchApi, ILogger<ApiRootController> l
             HasPrompt = customReward.Prompt.IsNullOrEmpty()
         };
         
-        EntityEntry<TwitchManagedReward> output =await dbContext.CustomTwitchRedemptions.AddAsync(reward);
+        EntityEntry<TwitchManagedReward> output =await dbContext.TwitchManagedRewards.AddAsync(reward);
         await dbContext.SaveChangesAsync();
         return new JsonResult(ApiResultDto<TwitchManagedReward>.Successful(output.Entity));
     }

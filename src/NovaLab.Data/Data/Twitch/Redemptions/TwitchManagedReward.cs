@@ -24,6 +24,8 @@ public class TwitchManagedReward {
     public string OutputTemplatePerReward { get; set; } = "{msg}";
     public string OutputTemplate { get; set; } = "Custom NovaLab Reward : \n {rewardTemplate}";
 
+    public DateTime LastCleared { get; set; } = DateTime.MinValue;
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

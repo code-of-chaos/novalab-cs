@@ -8,10 +8,13 @@ using NovaLab.Api;
 using NovaLab.Components;
 using NovaLab.Components.Account;
 using NovaLab.Data;
+using NovaLab.Logic;
 using Serilog;
 using Serilog.Core;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
+using TwitchLib.EventSub.Webhooks.Extensions;
+using TwitchLib.EventSub.Websockets.Extensions;
 using static TwitchLib.Api.Core.Common.Helpers;
 
 namespace NovaLab;
@@ -131,6 +134,9 @@ public class Program {
         
         builder.Services.AddControllers();
         
+        builder.Services.AddTwitchLibEventSubWebsockets();
+        builder.Services.AddHostedService<TwitchWebsocketHostedService>();
+        
         // --- APP ---
         WebApplication app = builder.Build();
 
@@ -155,11 +161,10 @@ public class Program {
         app.UseAntiforgery();
         
         app.MapControllers();
-        // app.MapRazorPages();
         
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
-
+        
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
         
