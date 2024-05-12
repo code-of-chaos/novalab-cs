@@ -17,7 +17,7 @@ namespace NovaLab.Services.Twitch.EventRegistering;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [DiScoped]
-public class ChannelPointsCustomRewardRedemptionAdd(ILogger logger, ApplicationDbContext dbContext, TwitchAPI twitchApi, TwitchAccessToken twitchAccessToken) {
+public class ChannelPointsCustomRewardRedemptionAdd(ILogger logger, ApplicationDbContext dbContext, TwitchAPI twitchApi, TwitchTokensService twitchAccessToken) {
     public async Task RegisterAtWebSocket(EventSubWebsocketClient client) {
         try {
             // Thanks to Noyainrain for helping me!

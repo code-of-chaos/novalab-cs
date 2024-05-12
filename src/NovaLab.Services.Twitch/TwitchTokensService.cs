@@ -2,9 +2,11 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using DependencyInjectionMadeEasy;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Data;
@@ -19,7 +21,7 @@ namespace NovaLab.Services.Twitch;
 // ---------------------------------------------------------------------------------------------------------------------
 // Support Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record TwitchTokens(
+public record TwitchTokenRecord(
     IdentityUserToken<string> AccessToken,
     IdentityUserToken<string> RefreshToken,
     IdentityUserToken<string> ExpiresAt,
@@ -37,23 +39,23 @@ public record TwitchTokens(
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [DiScoped]
-public class TwitchAccessToken(ILogger logger, ApplicationDbContext dbContext, TwitchAPI twitchApi) {
+public class TwitchTokensService(ILogger logger, ApplicationDbContext dbContext, TwitchAPI twitchApi, UserManager<ApplicationUser> userManager) {
     private const string AccessToken = "access_token";
     private const string RefreshToken = "refresh_token";
     private const string ExpiresAt = "expires_at";
     private const string TokenType = "token_type";
-    private const string Provider = "Twitch";
+    private const string Provider = "twitch";
     
     // -----------------------------------------------------------------------------------------------------------------
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private async Task<TwitchTokens> GetTokensAsync(IdentityUser user) {
+    private async Task<TwitchTokenRecord> GetTokensAsync(IdentityUser user) {
         IQueryable<IdentityUserToken<string>> tokens = dbContext.UserTokens.Where(token => token.UserId == user.Id && token.LoginProvider == Provider);
         if (await tokens.CountAsync() != 4) {
             throw new AccessTokenCouldNotBeRetrievedException($"Database held no tokens, or the incorrect amount of tokens attached to user {user.Id} ");
         }
 
-        return new TwitchTokens(
+        return new TwitchTokenRecord(
             AccessToken : await tokens.FirstAsync(token => token.Name ==AccessToken),
             RefreshToken : await tokens.FirstAsync(token => token.Name == RefreshToken),
             ExpiresAt : await tokens.FirstAsync(token => token.Name == ExpiresAt),
@@ -61,7 +63,7 @@ public class TwitchAccessToken(ILogger logger, ApplicationDbContext dbContext, T
         );
     }
 
-    private async Task StoreTokensAsync(IdentityUser user, TwitchTokens tokens) {
+    private async Task StoreTokensAsync(IdentityUser user, TwitchTokenRecord tokens) {
         List<IdentityUserToken<string>> existingTokens = await dbContext.UserTokens
             .Where(token => token.UserId == user.Id && token.LoginProvider == Provider)
             .ToListAsync();
@@ -79,8 +81,8 @@ public class TwitchAccessToken(ILogger logger, ApplicationDbContext dbContext, T
         await dbContext.SaveChangesAsync();
     }
 
-    private static TwitchTokens CreateTwitchTokens(string userId, string accessToken, string refreshToken, int expiresIn) {
-        return new TwitchTokens(
+    private static TwitchTokenRecord CreateTwitchTokens(string userId, string accessToken, string refreshToken, int expiresIn) {
+        return new TwitchTokenRecord(
             AccessToken: new IdentityUserToken<string> { UserId = userId, LoginProvider = Provider, Name = AccessToken, Value = accessToken },
             RefreshToken: new IdentityUserToken<string> { UserId = userId, LoginProvider = Provider, Name = RefreshToken, Value = refreshToken },
             ExpiresAt: new IdentityUserToken<string> { UserId = userId, LoginProvider = Provider, Name = ExpiresAt, Value = DateTime.Now.AddSeconds(expiresIn).ToString(CultureInfo.InvariantCulture) },
@@ -101,7 +103,7 @@ public class TwitchAccessToken(ILogger logger, ApplicationDbContext dbContext, T
     public async Task<string?> GetAccessTokenOrRefreshAsync(IdentityUser user) {
         try {
             // Can throw AccessTokenCouldNotBeRetrievedException due to some weirdness if we stored the tokens wrong.
-            TwitchTokens tokens = await GetTokensAsync(user);
+            TwitchTokenRecord tokens = await GetTokensAsync(user);
             
             // Everything is normal and the token should not be refreshed yet
             if (DateTime.Parse(tokens.ExpiresAt.Value!) >= DateTime.Now) return tokens.AccessToken.Value;
@@ -121,7 +123,7 @@ public class TwitchAccessToken(ILogger logger, ApplicationDbContext dbContext, T
         return user is not null && await RefreshAccessTokenAsync(user);
     }
     
-    private async Task<bool> RefreshAccessTokenAsync(IdentityUser user) {
+    public async Task<bool> RefreshAccessTokenAsync(IdentityUser user) {
         try {
             // Refresh the stored tokens
             RefreshResponse? response = await twitchApi.Auth.RefreshAuthTokenAsync( 
@@ -131,7 +133,7 @@ public class TwitchAccessToken(ILogger logger, ApplicationDbContext dbContext, T
                 twitchApi.Settings.ClientId
             );
 
-            TwitchTokens newTokens = CreateTwitchTokens(user.Id, response.AccessToken, response.RefreshToken, response.ExpiresIn);
+            TwitchTokenRecord newTokens = CreateTwitchTokens(user.Id, response.AccessToken, response.RefreshToken, response.ExpiresIn);
             await StoreTokensAsync(user, newTokens);
             logger.Information("Refreshed Twitch AccessToken for user {id}", user.Id);
             return true;
@@ -139,6 +141,13 @@ public class TwitchAccessToken(ILogger logger, ApplicationDbContext dbContext, T
         catch (Exception ex) when (ex is BadParameterException or AccessTokenCouldNotBeRetrievedException) {
             logger.Warning(ex, "Access Token could not be retrieved");
             return false;
+        }
+    }
+
+    public async Task IngestTokensWithUserManager(ApplicationUser user, IEnumerable<AuthenticationToken> authenticationTokens) {
+        foreach (AuthenticationToken token in authenticationTokens) {
+            // Eh, this is the direct import from the old code, so we might as well keep it this way.
+            await userManager.SetAuthenticationTokenAsync(user, Provider, token.Name, token.Value);
         }
     }
 
