@@ -2,11 +2,19 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace NovaLab;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace DependencyInjectionMadeEasy;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class TwitchTokenProvider {
-    public string? AccessToken { get; set; } = null!;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class DiTransientAttribute(Type? instanceType = null) : AbstractServiceAttribute{
+    public override Type? InstanceType => instanceType;
+    public override ServiceLifetime ServiceLifetime => ServiceLifetime.Transient;
 }
+
+[AttributeUsage(AttributeTargets.Class, Inherited = true)]
+public class DiTransientAttribute<T>() : DiSingletonAttribute(typeof(T));

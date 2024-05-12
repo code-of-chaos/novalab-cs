@@ -3,17 +3,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 using System.Net.Http.Json;
+using DependencyInjectionMadeEasy;
 using Microsoft.AspNetCore.Components;
+using NovaLab.Api;
 using NovaLab.Data.Data.Twitch.Redemptions;
 using Serilog;
 
-namespace NovaLab.Api;
+namespace NovaLab.Services.Api;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public class ApiService(HttpClient httpClient, NavigationManager navigationManager, ILogger logger) {
+[DiScoped]
+public class NovaLabApiService(HttpClient httpClient, NavigationManager navigationManager, ILogger logger) {
     private readonly Uri _baseAddress = new(navigationManager.BaseUri);
 
     // -----------------------------------------------------------------------------------------------------------------

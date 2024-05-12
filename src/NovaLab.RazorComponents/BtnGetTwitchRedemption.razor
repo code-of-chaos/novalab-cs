@@ -1,14 +1,15 @@
 ﻿@using Microsoft.IdentityModel.Tokens
-@using NovaLab.Api
+@using NovaLab.Data.Data.Twitch.Redemptions
+@using NovaLab.Data.Migrations
+@using NovaLab.Services.Api
 @using Serilog
-@using CustomTwitchRedemption = NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward
 
 @inherits ComponentBase
 
 @inject HttpClient Http
 @inject ILogger logger
 @inject NavigationManager NavigationManager
-@inject ApiService apiService
+@inject NovaLabApiService apiService
 
 <div>
     <button @onclick="OnClickCallback">Create New Twitch Redemption</button>
@@ -30,7 +31,7 @@
         try {
             logger.Warning("HELLO THERE");
 
-            CustomTwitchRedemption[] response = await apiService.PostCustomTwitchRedemptions(UserId);
+            TwitchManagedReward[] response = await apiService.PostCustomTwitchRedemptions(UserId);
             Color = response.IsNullOrEmpty() ? "red" : "green";
         }
         catch (Exception e) {

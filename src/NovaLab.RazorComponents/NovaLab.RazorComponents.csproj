@@ -18,6 +18,7 @@
     <ItemGroup>
       <ProjectReference Include="..\NovaLab.Api\NovaLab.Api.csproj" />
       <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
+      <ProjectReference Include="..\NovaLab.Services.Api\NovaLab.Services.Api.csproj" />
     </ItemGroup>
 
 </Project>

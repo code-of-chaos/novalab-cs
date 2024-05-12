@@ -10,7 +10,7 @@ using NovaLab.Components.Account.Pages;
 using NovaLab.Components.Account.Pages.Manage;
 using NovaLab.Data;
 
-namespace Microsoft.AspNetCore.Routing;
+namespace NovaLab.Components.Account;
 
 internal static class IdentityComponentsEndpointRouteBuilderExtensions {
     // These endpoints are required by the Identity Razor components defined in the /Components/Account/Pages directory of this project.
@@ -25,8 +25,8 @@ internal static class IdentityComponentsEndpointRouteBuilderExtensions {
             [FromForm] string provider,
             [FromForm] string returnUrl) => {
             IEnumerable<KeyValuePair<string, StringValues>> query = [
-                new("ReturnUrl", returnUrl),
-                new("Action", ExternalLogin.LoginCallbackAction)
+                new KeyValuePair<string, StringValues>("ReturnUrl", returnUrl),
+                new KeyValuePair<string, StringValues>("Action", ExternalLogin.LoginCallbackAction)
             ];
 
             var redirectUrl = UriHelper.BuildRelative(

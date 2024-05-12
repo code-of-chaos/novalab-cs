@@ -31,10 +31,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DependencyInjectionMadeEasy\DependencyInjectionMadeEasy.csproj" />
+      <ProjectReference Include="..\NovaLab.Api.Twitch\NovaLab.Api.Twitch.csproj" />
       <ProjectReference Include="..\NovaLab.Api\NovaLab.Api.csproj" />
       <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
-      <ProjectReference Include="..\NovaLab.Logic\NovaLab.Logic.csproj" />
       <ProjectReference Include="..\NovaLab.RazorComponents\NovaLab.RazorComponents.csproj" />
+      <ProjectReference Include="..\NovaLab.Services.Api\NovaLab.Services.Api.csproj" />
+      <ProjectReference Include="..\NovaLab.Services.Twitch\NovaLab.Services.Twitch.csproj" />
     </ItemGroup>
 
 </Project>

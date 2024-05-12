@@ -215,7 +215,7 @@ namespace NovaLab.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", b =>
+            modelBuilder.Entity("NovaLab.Data.Data.Twitch.ManagedRewards.TwitchManagedReward", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,7 +258,7 @@ namespace NovaLab.Migrations
                     b.ToTable("TwitchManagedRewards");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedRewardRedemption", b =>
+            modelBuilder.Entity("NovaLab.Data.Data.Twitch.ManagedRewards.TwitchManagedRewardRedemption", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -337,7 +337,7 @@ namespace NovaLab.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", b =>
+            modelBuilder.Entity("NovaLab.Data.Data.Twitch.ManagedRewards.TwitchManagedReward", b =>
                 {
                     b.HasOne("NovaLab.Data.ApplicationUser", "User")
                         .WithMany()
@@ -346,9 +346,9 @@ namespace NovaLab.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedRewardRedemption", b =>
+            modelBuilder.Entity("NovaLab.Data.Data.Twitch.ManagedRewards.TwitchManagedRewardRedemption", b =>
                 {
-                    b.HasOne("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", "TwitchManagedReward")
+                    b.HasOne("NovaLab.Data.Data.Twitch.ManagedRewards.TwitchManagedReward", "TwitchManagedReward")
                         .WithMany()
                         .HasForeignKey("TwitchManagedRewardId")
                         .OnDelete(DeleteBehavior.Cascade)

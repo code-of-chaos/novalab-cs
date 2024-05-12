@@ -1,19 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+
+using DependencyInjectionMadeEasy;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NovaLab.Api;
 using NovaLab.Components;
 using NovaLab.Components.Account;
 using NovaLab.Data;
-using NovaLab.Logic;
+using NovaLab.Services.Api;
+using NovaLab.Services.Twitch;
 using Serilog;
 using Serilog.Core;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
-using TwitchLib.EventSub.Webhooks.Extensions;
 using TwitchLib.EventSub.Websockets.Extensions;
 using static TwitchLib.Api.Core.Common.Helpers;
 
@@ -126,11 +127,12 @@ public class Program {
 
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
         builder.Services.AddSingleton<TwitchAPI>();
-        builder.Services.AddScoped<TwitchTokenProvider>();
+        builder.Services.AddScoped<NovaLabApiService>();
 
         builder.Services.AddAuthorization();
         builder.Services.AddHttpClient();
-        builder.Services.AddTransient<ApiService>();
+        
+        new DiEasifier(builder.Services).AssignAll();
         
         builder.Services.AddControllers();
         
@@ -138,7 +140,13 @@ public class Program {
         builder.Services.AddHostedService<TwitchWebsocketHostedService>();
         
         // --- APP ---
+        
         WebApplication app = builder.Build();
+        
+        // TwitchApi is a singleton because they don't use injection
+        var api = app.Services.GetService<TwitchAPI>()!;
+        api.Settings.ClientId = builder.Configuration["Authentication:Twitch:ClientId"];
+        api.Settings.Secret = builder.Configuration["Authentication:Twitch:ClientSecret"];
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment()) {
@@ -167,11 +175,6 @@ public class Program {
         
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
-        
-        // TwitchApi is a singleton because they don't use injection
-        var api = app.Services.GetService<TwitchAPI>()!;
-        api.Settings.ClientId = builder.Configuration["Authentication:Twitch:ClientId"];
-        api.Settings.Secret = builder.Configuration["Authentication:Twitch:ClientSecret"];
 
         
         app.Run();
