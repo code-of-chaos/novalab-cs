@@ -85,9 +85,9 @@ else {
 
     private async Task OnValidSubmitAsync() {
         // Strip spaces and hyphens
-        var verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+        string verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-        var is2faTokenValid = await UserManager.VerifyTwoFactorTokenAsync(
+        bool is2faTokenValid = await UserManager.VerifyTwoFactorTokenAsync(
             user, UserManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
 
         if (!is2faTokenValid) {
@@ -96,7 +96,7 @@ else {
         }
 
         await UserManager.SetTwoFactorEnabledAsync(user, true);
-        var userId = await UserManager.GetUserIdAsync(user);
+        string userId = await UserManager.GetUserIdAsync(user);
         Logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
         message = "Your authenticator app has been verified.";
@@ -111,7 +111,7 @@ else {
 
     private async ValueTask LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user) {
         // Load the authenticator key & QR code URI to display on the form
-        var unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
+        string? unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
         if (string.IsNullOrEmpty(unformattedKey)) {
             await UserManager.ResetAuthenticatorKeyAsync(user);
             unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
@@ -119,7 +119,7 @@ else {
 
         sharedKey = FormatKey(unformattedKey!);
 
-        var email = await UserManager.GetEmailAsync(user);
+        string? email = await UserManager.GetEmailAsync(user);
         authenticatorUri = GenerateQrCodeUri(email!, unformattedKey!);
     }
 

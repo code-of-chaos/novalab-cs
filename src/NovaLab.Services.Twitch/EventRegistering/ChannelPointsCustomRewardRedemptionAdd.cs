@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 using DependencyInjectionMadeEasy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Data;
 using Serilog;

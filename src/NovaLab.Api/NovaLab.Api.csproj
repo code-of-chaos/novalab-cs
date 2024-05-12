@@ -29,6 +29,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
+      <ProjectReference Include="..\NovaLab.Services.Twitch\NovaLab.Services.Twitch.csproj" />
     </ItemGroup>
     
 </Project>

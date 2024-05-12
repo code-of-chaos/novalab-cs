@@ -4,7 +4,6 @@
 
 using DependencyInjectionMadeEasy;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
 using Serilog;

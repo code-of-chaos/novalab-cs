@@ -2,8 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using DependencyInjectionMadeEasy;
 using Microsoft.AspNetCore.Authentication;

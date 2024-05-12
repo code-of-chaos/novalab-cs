@@ -4,8 +4,6 @@
 @using System.Security.Claims
 @using System.Text
 @using System.Text.Encodings.Web
-@using AspNet.Security.OAuth.Twitch
-@using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using NovaLab.Services.Twitch
@@ -71,7 +69,7 @@
             RedirectManager.RedirectToWithStatus("Account/Login", $"Error from external provider: {RemoteError}", HttpContext);
         }
 
-        var info = await SignInManager.GetExternalLoginInfoAsync();
+        ExternalLoginInfo? info = await SignInManager.GetExternalLoginInfoAsync();
         if (info is null) {
             RedirectManager.RedirectToWithStatus("Account/Login", "Error loading external login information.", HttpContext);
         }
@@ -92,7 +90,7 @@
 
     private async Task OnLoginCallbackAsync() {
         // Sign in the user with this external login provider if the user already has a login.
-        var result = await SignInManager.ExternalLoginSignInAsync(
+        SignInResult result = await SignInManager.ExternalLoginSignInAsync(
             externalLoginInfo.LoginProvider,
             externalLoginInfo.ProviderKey,
             isPersistent: false,
@@ -144,11 +142,11 @@
                 // Update the user in one go
                 await UserStore.UpdateAsync(user, CancellationToken.None);
                 
-                var userId = await UserManager.GetUserIdAsync(user);
+                string userId = await UserManager.GetUserIdAsync(user);
                 string code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-                var callbackUrl = NavigationManager.GetUriWithQueryParameters(
+                string callbackUrl = NavigationManager.GetUriWithQueryParameters(
                     NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
                     new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
                 await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
