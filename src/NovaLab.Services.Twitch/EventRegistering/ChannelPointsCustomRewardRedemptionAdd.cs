@@ -24,7 +24,7 @@ public class ChannelPointsCustomRewardRedemptionAdd(ILogger logger, ApplicationD
             await dbContext.Users
                 .Where(user => dbContext.TwitchManagedRewards.Any(reward => reward.User == user))
                 .ForEachAsync(async user => {
-                    string? accessToken = await twitchAccessToken.GetAccessTokenAsync(user);
+                    string? accessToken = await twitchAccessToken.GetAccessTokenOrRefreshAsync(user);
                     if (accessToken is null) return;
                  
                     // subscribe to topics
