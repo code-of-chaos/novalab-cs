@@ -2,15 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using DependencyInjectionMadeEasy;
-using NovaLab.Services.Twitch.EventCallbacks;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace NovaLab.Services.Twitch;
+namespace NovaLab.Services;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[DiScoped]
-public record EventCallback(
-    CatchTwitchManagedReward CatchTwitchManagedReward
-);
+
+public abstract class AbstractServiceCollection(IServiceCollection serviceCollection) {
+    protected IServiceCollection _serviceCollection = serviceCollection;
+    
+    public abstract void DefineServices();
+}

@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using DependencyInjectionMadeEasy;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
@@ -15,7 +14,7 @@ namespace NovaLab.Services.Twitch.EventCallbacks;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[DiScoped]
+
 public class CatchTwitchManagedReward(ILogger logger, ApplicationDbContext dbContext)  {
     public async Task Callback(object sender, ChannelPointsCustomRewardRedemptionArgs pointsCustomRewardRedemptionArgs) {
         logger.Information("{@rewards}", pointsCustomRewardRedemptionArgs);

@@ -3,18 +3,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 using Microsoft.Extensions.DependencyInjection;
+using NovaLab.Services.Twitch.EventCallbacks;
 
-namespace DependencyInjectionMadeEasy;
+namespace NovaLab.Services.Twitch;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-[AttributeUsage(AttributeTargets.Class)]
-public class DiTransientAttribute(Type? instanceType = null) : AbstractServiceAttribute{
-    public override Type? InstanceType => instanceType;
-    public override ServiceLifetime ServiceLifetime => ServiceLifetime.Transient;
+public class TwitchEventsCallback(IServiceScope scope) : AbstractScopedProcessor(scope){
+    public CatchTwitchManagedReward CatchTwitchManagedReward => GetRequiredService<CatchTwitchManagedReward>();
 }
-
-[AttributeUsage(AttributeTargets.Class, Inherited = true)]
-public class DiTransientAttribute<T>() : DiSingletonAttribute(typeof(T));

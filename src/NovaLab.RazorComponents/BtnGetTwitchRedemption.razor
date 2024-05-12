@@ -2,6 +2,7 @@
 @using NovaLab.Data.Data.Twitch.Redemptions
 @using NovaLab.Services.Api
 @using Serilog
+@using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward
 
 @inherits ComponentBase
 
@@ -30,7 +31,22 @@
         try {
             logger.Warning("HELLO THERE");
 
-            TwitchManagedReward[] response = await apiService.PostCustomTwitchRedemptions(UserId);
+            TwitchManagedReward[] response = await apiService.PostCustomTwitchRedemptions(UserId, new CreateCustomRewardsRequest {
+                Title = "NOVALAB TEST",
+                Prompt = null,
+                Cost = 1000,
+                IsEnabled = true,
+                BackgroundColor = null,
+                IsUserInputRequired = false,
+                IsMaxPerStreamEnabled = false,
+                MaxPerStream = null,
+                IsMaxPerUserPerStreamEnabled = false,
+                MaxPerUserPerStream = null,
+                IsGlobalCooldownEnabled = false,
+                GlobalCooldownSeconds = null,
+                ShouldRedemptionsSkipRequestQueue = false
+            });
+            
             Color = response.IsNullOrEmpty() ? "red" : "green";
         }
         catch (Exception e) {

@@ -7,13 +7,14 @@
     </PropertyGroup>
     
     <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
         <PackageReference Include="Serilog" Version="3.1.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DependencyInjectionMadeEasy\DependencyInjectionMadeEasy.csproj" />
         <ProjectReference Include="..\NovaLab.Api\NovaLab.Api.csproj" />
         <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
+        <ProjectReference Include="..\NovaLab.Services\NovaLab.Services.csproj" />
     </ItemGroup>
 
 </Project>

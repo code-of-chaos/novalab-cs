@@ -6,7 +6,7 @@
 @using System.Text.Encodings.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using NovaLab.Services.Twitch
+@using NovaLab.Services.Twitch.TwitchTokens
 @using NovaLab.Data
 
 @inject SignInManager<ApplicationUser> SignInManager
@@ -16,7 +16,7 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<ExternalLogin> Logger
-@inject TwitchTokensService TwitchTokensService
+@inject TwitchTokensManager TwitchTokensManager
 
 <PageTitle>Register</PageTitle>
 
@@ -137,7 +137,7 @@
                 
                 // THis should store the tokens to AspNetUserTokens table?
                 if (info.AuthenticationTokens != null) 
-                    await TwitchTokensService.IngestTokensWithUserManager(user, info.AuthenticationTokens);
+                    await TwitchTokensManager.IngestTokensWithUserManager(user, info.AuthenticationTokens);
                 
                 // Update the user in one go
                 await UserStore.UpdateAsync(user, CancellationToken.None);

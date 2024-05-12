@@ -2,19 +2,17 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
+using NovaLab.Services.Twitch.EventRegistering;
 
-namespace DependencyInjectionMadeEasy;
+namespace NovaLab.Services.Twitch;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-[AttributeUsage(AttributeTargets.Class)]
-public class DiSingletonAttribute(Type? instanceType = null) : AbstractServiceAttribute{
-    public override Type? InstanceType => instanceType;
-    public override ServiceLifetime ServiceLifetime => ServiceLifetime.Singleton;
+[UsedImplicitly]
+public class TwitchRegisterAtWebsocket(IServiceScope scope) : AbstractScopedProcessor(scope){
+    public RegisterCustomRewardRedemption RegisterCustomRewardRedemption => GetRequiredService<RegisterCustomRewardRedemption>();
 }
-
-[AttributeUsage(AttributeTargets.Class, Inherited = true)]
-public class DiSingletonAttribute<T>() : DiSingletonAttribute(typeof(T));

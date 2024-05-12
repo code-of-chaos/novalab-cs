@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using DependencyInjectionMadeEasy;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +10,9 @@ using NovaLab.Components.Account;
 using NovaLab.Data;
 using NovaLab.Services.Api;
 using NovaLab.Services.Twitch;
+using NovaLab.Services.Twitch.EventCallbacks;
+using NovaLab.Services.Twitch.EventRegistering;
+using NovaLab.Services.Twitch.TwitchTokens;
 using Serilog;
 using Serilog.Core;
 using TwitchLib.Api;
@@ -127,17 +129,16 @@ public class Program {
 
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
         builder.Services.AddSingleton<TwitchAPI>();
-        builder.Services.AddScoped<NovaLabApiService>();
-
+        
+        new NovaLapApiServiceCollection(builder.Services).DefineServices();
+        new TwitchServiceCollection(builder.Services).DefineServices();
+        
         builder.Services.AddAuthorization();
         builder.Services.AddHttpClient();
-        
-        new DiEasifier(builder.Services).AssignAll();
         
         builder.Services.AddControllers();
         
         builder.Services.AddTwitchLibEventSubWebsockets();
-        builder.Services.AddHostedService<TwitchWebsocketHostedService>();
         
         // --- APP ---
         

@@ -1,16 +1,15 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DependencyInjectionMadeEasy;
+namespace NovaLab.Services.Twitch;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public abstract class AbstractServiceAttribute : Attribute {
-    public abstract Type? InstanceType { get; }
-    public abstract ServiceLifetime ServiceLifetime { get; }
+public abstract class AbstractScopedProcessor(IServiceScope scope) {
+    protected T GetRequiredService<T>() where T : notnull => scope.ServiceProvider.GetRequiredService<T>();
 }

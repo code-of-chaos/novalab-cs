@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.IdentityModel.Tokens;
 using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
-using NovaLab.Services.Twitch;
+using NovaLab.Services.Twitch.TwitchTokens;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
@@ -21,7 +21,7 @@ namespace NovaLab.Api;
 [ApiController]
 // [Authorize]
 [Route("api/{userId}/twitch/redemptions/git-commit-message")]
-public class ApiRootController(TwitchAPI twitchApi, ApplicationDbContext dbContext, TwitchTokensService twitchTokensService) : Controller {
+public class ApiRootController(TwitchAPI twitchApi, ApplicationDbContext dbContext, TwitchTokensManager twitchTokensService) : Controller {
     
     [HttpGet]
     public async Task<ActionResult<TwitchManagedReward>> Get([FromRoute] string userId) {
@@ -32,7 +32,7 @@ public class ApiRootController(TwitchAPI twitchApi, ApplicationDbContext dbConte
     }
 
     [HttpPost]
-    public async Task<ActionResult<TwitchManagedReward>> Post([FromRoute] string userId) {
+    public async Task<ActionResult<TwitchManagedReward>> Post([FromRoute] string userId, CreateCustomRewardsRequest customRewardsRequest) {
         ApplicationUser? user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user is null) return new JsonResult(ApiResultDto<TwitchManagedReward>.Empty());
         
@@ -41,21 +41,7 @@ public class ApiRootController(TwitchAPI twitchApi, ApplicationDbContext dbConte
         
         CreateCustomRewardsResponse? result = await twitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(
             user.TwitchBroadcasterId,
-            new CreateCustomRewardsRequest {
-                Title = "NovaLab Custom Reward",
-                Prompt = null,
-                Cost = 100,
-                IsEnabled = true,
-                BackgroundColor = null,
-                IsUserInputRequired = false,
-                IsMaxPerStreamEnabled = false,
-                MaxPerStream = null,
-                IsMaxPerUserPerStreamEnabled = false,
-                MaxPerUserPerStream = null,
-                IsGlobalCooldownEnabled = false,
-                GlobalCooldownSeconds = null,
-                ShouldRedemptionsSkipRequestQueue = false
-            },
+            customRewardsRequest,
             accessToken
         );
         

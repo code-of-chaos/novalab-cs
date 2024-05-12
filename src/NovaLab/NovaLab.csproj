@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="8.0.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.4" />
@@ -31,7 +32,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DependencyInjectionMadeEasy\DependencyInjectionMadeEasy.csproj" />
       <ProjectReference Include="..\NovaLab.Api.Twitch\NovaLab.Api.Twitch.csproj" />
       <ProjectReference Include="..\NovaLab.Api\NovaLab.Api.csproj" />
       <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
