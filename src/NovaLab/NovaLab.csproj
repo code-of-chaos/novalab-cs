@@ -9,6 +9,8 @@
 
     <ItemGroup>
         <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="8.0.0" />
+        <PackageReference Include="Blazorise.Bootstrap5" Version="1.5.2" />
+        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.5.2" />
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.4" />
@@ -38,6 +40,11 @@
       <ProjectReference Include="..\NovaLab.RazorComponents\NovaLab.RazorComponents.csproj" />
       <ProjectReference Include="..\NovaLab.Services.Api\NovaLab.Services.Api.csproj" />
       <ProjectReference Include="..\NovaLab.Services.Twitch\NovaLab.Services.Twitch.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />
     </ItemGroup>
 
 </Project>

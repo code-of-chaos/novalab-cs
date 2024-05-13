@@ -1,0 +1,40 @@
+﻿@using NovaLab.Services.Api
+@using Serilog
+
+@inherits ComponentBase
+
+@inject HttpClient Http
+@inject ILogger logger
+@inject NavigationManager NavigationManager
+@inject NovaLabApiService apiService
+
+@attribute [StreamRendering]
+
+<div class="row">
+    <button @onclick="OnClickCallback" class="btn btn-primary">Refresh Twitch Access Token</button>
+    <div style="width: 10px; height: 10px; background-color: @Color"></div>
+</div>
+
+@code {
+    [Parameter]
+    public required string UserId { get; set; }
+
+    private string Color { get; set; } = "orange";
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public async Task OnClickCallback() {
+        try {
+            Color = await apiService.RefreshTwitchAccessToken(UserId) ?"green":"red";
+        }
+        catch (Exception e) {
+            logger.Error(e, "An Exception occured");
+        }
+    }
+
+    public void Action() {
+        logger.Warning("AAAAAAAAAAAAAAAAAAAAAA");
+    }
+
+}

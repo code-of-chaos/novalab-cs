@@ -74,8 +74,14 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManage
                 twitchApi.Settings.Secret,
                 twitchApi.Settings.ClientId
             );
+
+            ValidateAccessTokenResponse validation = await twitchApi.Auth.ValidateAccessTokenAsync(response.AccessToken);
+            if (validation == null) return false; // I HATE TWITCHLIB
             
-            await StoreTokensAsync(user, TwitchTokenRecord.CreateFromRefreshResponse(response));
+            logger.Warning("{@r}", validation);
+            logger.Warning("{@r}", response);
+            
+            await StoreTokensAsync(user, TwitchTokenRecord.CreateFromRefreshResponse(response, validation));
             
             logger.Information("Refreshed Twitch AccessToken for user {id}", user.Id);
             return true;

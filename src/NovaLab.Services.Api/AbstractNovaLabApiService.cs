@@ -18,7 +18,7 @@ public abstract class AbstractNovaLabApiService(HttpClient httpClient, Navigatio
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected async Task<T[]> GetFromApi<T>(string endpoint, double cancelDelaySeconds = 5) where T : class {
+    protected async Task<T[]> GetFromApi<T>(string endpoint, double cancelDelaySeconds = 5) {
         
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(cancelDelaySeconds));
 

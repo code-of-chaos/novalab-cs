@@ -24,11 +24,11 @@ namespace NovaLab.Api;
 public class ApiRootController(TwitchAPI twitchApi, ApplicationDbContext dbContext, TwitchTokensManager twitchTokensService) : Controller {
     
     [HttpGet]
-    public async Task<ActionResult<TwitchManagedReward>> Get([FromRoute] string userId) {
+    public async Task<ActionResult<ApiResultDto<TwitchManagedReward>>> Get([FromRoute] string userId) {
         TwitchManagedReward? redemption =await dbContext.TwitchManagedRewards.FirstOrDefaultAsync( o => o.User.Id == userId);
         return redemption is null
             ? new JsonResult(ApiResultDto<TwitchManagedReward>.Empty())
-            : new JsonResult(ApiResultDto<TwitchManagedReward>.Successful());
+            : new JsonResult(ApiResultDto<TwitchManagedReward>.Successful(redemption));
     }
 
     [HttpPost]

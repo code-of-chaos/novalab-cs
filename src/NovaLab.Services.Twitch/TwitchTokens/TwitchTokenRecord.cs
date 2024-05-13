@@ -22,11 +22,11 @@ public record TwitchTokenRecord(
         yield return new Tuple<string, string>(TwitchTokensManager.TokenType, TokenType);
     }
     
-    public static TwitchTokenRecord CreateFromRefreshResponse(RefreshResponse response) {
+    public static TwitchTokenRecord CreateFromRefreshResponse(RefreshResponse response, ValidateAccessTokenResponse validation) {
         return new TwitchTokenRecord(
             AccessToken: response.AccessToken, 
             RefreshToken: response.RefreshToken,
-            ExpiresAt: DateTime.Now.AddSeconds(response.ExpiresIn).ToString(CultureInfo.InvariantCulture) ,
+            ExpiresAt: DateTime.Now.AddSeconds(validation.ExpiresIn).ToString(CultureInfo.CurrentCulture) ,
             TokenType: "bearer"
         );
     }
