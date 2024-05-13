@@ -10,9 +10,9 @@ using NovaLab.Components.Account;
 using NovaLab.Data;
 using NovaLab.Services.Api;
 using NovaLab.Services.Twitch;
-using NovaLab.Services.Twitch.EventCallbacks;
-using NovaLab.Services.Twitch.EventRegistering;
-using NovaLab.Services.Twitch.TwitchTokens;
+using Blazorise;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 using Serilog;
 using Serilog.Core;
 using TwitchLib.Api;
@@ -139,6 +139,13 @@ public class Program {
         builder.Services.AddControllers();
         
         builder.Services.AddTwitchLibEventSubWebsockets();
+        
+        builder.Services
+            .AddBlazorise( options => {
+                options.Immediate = true;
+            } )
+            .AddBootstrap5Providers()
+            .AddFontAwesomeIcons();
         
         // --- APP ---
         

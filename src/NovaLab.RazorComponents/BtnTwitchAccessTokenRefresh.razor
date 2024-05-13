@@ -10,31 +10,35 @@
 
 @attribute [StreamRendering]
 
-<div class="row">
-    <button @onclick="OnClickCallback" class="btn btn-primary">Refresh Twitch Access Token</button>
-    <div style="width: 10px; height: 10px; background-color: @Color"></div>
-</div>
+<Row>
+    <Column ColumnSize="ColumnSize.Is2">
+        <Button Color="Color.Primary" @onclick="OnClickCallback">Refresh Twitch Access Token</Button>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is1" Style="display: flex">
+        <IconLoadingState State="@_iconState"></IconLoadingState>
+    </Column>
+</Row>
 
 @code {
     [Parameter]
     public required string UserId { get; set; }
 
-    private string Color { get; set; } = "orange";
+    private IconLoadingState.StateEnum _iconState = IconLoadingState.StateEnum.Undefined;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task OnClickCallback() {
+    private async Task OnClickCallback() {
         try {
-            Color = await apiService.RefreshTwitchAccessToken(UserId) ?"green":"red";
+            _iconState = IconLoadingState.StateEnum.Loading;
+            bool result = await apiService.RefreshTwitchAccessToken(UserId);
+            _iconState = result
+                ? IconLoadingState.StateEnum.Success
+                : IconLoadingState.StateEnum.Failure;
         }
         catch (Exception e) {
             logger.Error(e, "An Exception occured");
+            _iconState = IconLoadingState.StateEnum.Failure;
         }
     }
-
-    public void Action() {
-        logger.Warning("AAAAAAAAAAAAAAAAAAAAAA");
-    }
-
 }

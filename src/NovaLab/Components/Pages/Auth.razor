@@ -17,11 +17,7 @@
 <h1>You are authenticated</h1>
 
 <AuthorizeView>
-    Hello @context.User.Identity?.Name!
-    id:@(context.User.FindFirst(u => u.Type.Contains("nameidentifier"))!.Value)
-    
     <BtnTwitchAccessTokenRefresh UserId="@(context.User.FindFirst(u => u.Type.Contains("nameidentifier"))!.Value)"/>
-    
 </AuthorizeView>
 
 @code {
