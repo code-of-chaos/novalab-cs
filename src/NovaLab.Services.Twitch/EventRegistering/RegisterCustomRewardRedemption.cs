@@ -18,7 +18,6 @@ namespace NovaLab.Services.Twitch.EventRegistering;
 
 public class RegisterCustomRewardRedemption(ILogger logger, ApplicationDbContext dbContext, TwitchAPI twitchApi, TwitchTokensManager twitchAccessToken) {
     public async Task RegisterAtWebSocket(EventSubWebsocketClient client) {
-        logger.Information("GERE");
         try {
             // Thanks to Noyainrain for helping me!
             async void Action(ApplicationUser user) {

@@ -4,6 +4,8 @@
 @using NovaLab.Data
 @using TwitchLib.Api
 @using NovaLab.RazorComponents
+@using NovaLab.RazorComponents.Forms
+
 @inject TwitchAPI TwitchApi
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> UserManager
@@ -18,11 +20,11 @@
 
 <AuthorizeView>
     <BtnTwitchAccessTokenRefresh UserId="@(context.User.FindFirst(u => u.Type.Contains("nameidentifier"))!.Value)"/>
+    <FormTwitchManagedReward/>
 </AuthorizeView>
 
 @code {
     protected override async Task OnInitializedAsync() {
         await Task.Delay(500);
     }
-
 }

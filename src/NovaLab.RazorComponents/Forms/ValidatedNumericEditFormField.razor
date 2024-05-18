@@ -1,0 +1,42 @@
+﻿
+@inherits ComponentBase
+
+<Validation Validator="@Validator">
+    <Field ColumnSize="@SizeColumn">
+        <FieldLabel>@FieldLabel</FieldLabel>
+        <FieldBody>
+            <NumericEdit @bind-Value="@BindValue">
+                <Feedback>
+                    <ValidationError/>
+                </Feedback>
+            </NumericEdit>
+        </FieldBody>
+    </Field>
+</Validation>
+
+@code {
+    [Parameter] 
+    public required string FieldLabel { get; set; }
+    
+    [Parameter]
+    public required Action<ValidatorEventArgs> Validator { get; set; }
+
+    private int _bindValue ;
+    
+    [Parameter]
+    public int BindValue {
+        get => _bindValue;
+        set {
+            if (_bindValue == value) return;
+            _bindValue = value;
+            BindValueChanged.InvokeAsync(value);
+        }
+    }
+
+    
+    [Parameter]
+    public EventCallback<int> BindValueChanged { get; set; }
+
+    [Parameter] 
+    public IFluentColumnOnBreakpointWithOffsetAndSize SizeColumn { get; set; } = ColumnSize.IsAuto;
+}

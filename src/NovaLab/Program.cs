@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
+using System.Text.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -136,7 +137,10 @@ public class Program {
         builder.Services.AddAuthorization();
         builder.Services.AddHttpClient();
         
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddJsonOptions(options => {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            // other options...
+        });
         
         builder.Services.AddTwitchLibEventSubWebsockets();
         

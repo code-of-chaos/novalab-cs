@@ -1,0 +1,22 @@
+﻿@using Blazorise
+
+@inherits ComponentBase
+
+<Field ColumnSize="@SizeColumn">
+    <FieldLabel>@FieldLabel</FieldLabel>
+    <FieldBody>
+        <TextEdit @bind-text="@BindText">
+        </TextEdit>
+    </FieldBody>
+</Field>
+
+@code {
+    [Parameter] 
+    public required string FieldLabel { get; set; }
+    
+    [Parameter]
+    public required string BindText { get; set; }
+
+    [Parameter] 
+    public IFluentColumnOnBreakpointWithOffsetAndSize SizeColumn { get; set; } = ColumnSize.IsAuto;
+}

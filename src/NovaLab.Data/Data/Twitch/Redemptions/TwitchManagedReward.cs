@@ -13,15 +13,17 @@ namespace NovaLab.Data.Data.Twitch.Redemptions;
 public class TwitchManagedReward {
     [Key]
     public Guid Id { get; set; }
+    public virtual ApplicationUser User { get; set; } = null!; // virtual is being used here by EFC
     
-    public virtual required ApplicationUser User { get; set; } // virtual is being used here by EFC
-    [MaxLength(128)] public required string RewardId { get; set; }
+    // Delivered by Twitch
+    [MaxLength(128)] public string RewardId { get; set; } = null!;
     
-    [MaxLength(45)]  public required string Title { get; set;}
-    public required int PointsCost { get; set;}
-    public required bool HasPrompt { get; set; }
-
+    [Required(ErrorMessage = "Output Template Per Reward is required")]
+    [MaxLength(255)]
     public string OutputTemplatePerReward { get; set; } = "{msg}";
+    
+    [Required(ErrorMessage = "Output Template is required")]
+    [MaxLength(255)]
     public string OutputTemplate { get; set; } = "Custom NovaLab Reward : \n {rewardTemplate}";
 
     public DateTime LastCleared { get; set; } = DateTime.MinValue;
