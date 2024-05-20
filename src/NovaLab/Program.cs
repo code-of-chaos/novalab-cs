@@ -14,6 +14,8 @@ using NovaLab.Services.Twitch;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using Microsoft.AspNetCore.Components;
+using NovaLab.Services.Twitch.Hub;
 using Serilog;
 using Serilog.Core;
 using TwitchLib.Api;
@@ -114,6 +116,7 @@ public class Program {
                 twitchOptions.SaveTokens = true;
                 // Tokens are stored through ExternalLogin.razor
             })
+            .AddJwtBearer()
             .AddBearerToken()
             .AddIdentityCookies();
 
@@ -127,7 +130,7 @@ public class Program {
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
-
+        
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
         builder.Services.AddSingleton<TwitchAPI>();
         
@@ -136,6 +139,11 @@ public class Program {
         
         builder.Services.AddAuthorization();
         builder.Services.AddHttpClient();
+        builder.Services.AddHttpClient("TwitchServicesClient", c => {
+            string[]? urls = builder.Configuration["ASPNETCORE_URLS"]?.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            string? applicationUrl = urls!.FirstOrDefault();
+            c.BaseAddress = new Uri(applicationUrl!);
+        });
         
         builder.Services.AddControllers().AddJsonOptions(options => {
             options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -187,7 +195,7 @@ public class Program {
         
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
-
+        app.MapHub<TwitchHub>("/hubs/twitch");
         
         app.Run();
     }

@@ -21,11 +21,11 @@ public class NovaLabApiService(HttpClient httpClient, NavigationManager navigati
     // Endpoint Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task<TwitchManagedReward[]> GetCustomTwitchRedemptions(string userId) {
-        return await GetFromApi<TwitchManagedReward>($"api/{userId}/twitch/redemptions/git-commit-message");
+        return await GetFromApi<TwitchManagedReward>($"api/{userId}/twitch/managed-rewards/");
     }
     
     public async Task<TwitchManagedReward[]> PostCustomTwitchRedemptions(string userId, CreateCustomRewardsRequest createCustomRewardsRequest) {
-        return await PostToApi<TwitchManagedReward, CreateCustomRewardsRequest>($"api/{userId}/twitch/redemptions/git-commit-message",createCustomRewardsRequest);
+        return await PostToApi<TwitchManagedReward, CreateCustomRewardsRequest>($"api/{userId}/twitch/managed-rewards",createCustomRewardsRequest);
     }
 
     public async Task<bool> RefreshTwitchAccessToken(string userId) {

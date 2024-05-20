@@ -15,8 +15,9 @@ namespace NovaLab.Services.Twitch;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public class HostedTwitchWebsocket(
-    ILogger logger, 
+    ILogger logger,
     EventSubWebsocketClient eventSubWebsocketClient,
+    IHttpClientFactory httpClientFactory,
     IServiceScopeFactory scopeFactory
     ) : IHostedService {
 

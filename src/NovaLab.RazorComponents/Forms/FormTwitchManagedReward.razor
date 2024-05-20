@@ -19,7 +19,7 @@
 
 <Row>
     <Column>
-        <Validations @ref="@(ValidationsRef)" Mode="ValidationMode.Manual" Model="@CreateCustomRewardsRequestModel" ValidateOnLoad="false">
+        <Validations @ref="@(ValidationsRef)" Mode="ValidationMode.Auto" Model="@CreateCustomRewardsRequestModel" ValidateOnLoad="false" StatusChanged="@ValidationChanged">
             <Fields>
                 <ValidatedTextEditFormField 
                     FieldLabel="@("Reward's Title")"
@@ -38,7 +38,7 @@
             </Fields>
         </Validations>
 
-        <Button Color="Color.Primary" Clicked="@OnSaveClicked">
+        <Button Color="Color.Primary" Clicked="@OnSaveClicked" Disabled="@ValidationFailed">
             Validate and Submit
         </Button>
 
@@ -51,10 +51,16 @@
     Validations ValidationsRef { get; set; } = null!;
 
     CreateCustomRewardsRequest CreateCustomRewardsRequestModel { get; } = new();
+    
+    private bool ValidationFailed { get; set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    private Task ValidationChanged(ValidationsStatusChangedEventArgs args) {  
+        ValidationFailed = args.Status != ValidationStatus.Success;
+        return Task.CompletedTask;
+    }
     private async Task OnSaveClicked() {
         // if (ValidationsRef is null) {
         //     logger.Error("ValidationsRef was null");

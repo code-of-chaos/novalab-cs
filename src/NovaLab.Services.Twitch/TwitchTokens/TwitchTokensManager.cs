@@ -47,7 +47,7 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManage
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task<string?> GetAccessTokenOrRefreshAsync(ApplicationUser user) {
+    public async Task<string> GetAccessTokenOrRefreshAsync(ApplicationUser user) {
         try {
             // Can throw AccessTokenCouldNotBeRetrievedException due to some weirdness if we stored the tokens wrong.
             TwitchTokenRecord tokens = await GetTokensAsync(user);
@@ -56,12 +56,12 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManage
             if (DateTime.Parse(tokens.ExpiresAt) >= DateTime.Now) return tokens.AccessToken;
             
             // Token has to be refreshed
-            if (!await RefreshAccessTokenAsync(user)) return null;
+            if (!await RefreshAccessTokenAsync(user)) throw new AccessTokenCouldNotBeRetrievedException("Token could not be refreshed") ;
             return (await GetTokensAsync(user)).AccessToken;
         }
         catch (Exception ex) when (ex is BadParameterException or AccessTokenCouldNotBeRetrievedException) {
             logger.Warning(ex, "Access Token could not be retrieved");
-            return null;
+            throw;
         }
     }
    

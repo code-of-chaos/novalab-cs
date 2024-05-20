@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.SignalR
+@using Microsoft.AspNetCore.SignalR.Client
+@using NovaLab.Data
+@using NovaLab.Data.Data.Twitch.Redemptions
+@using NovaLab.Services.Api
+@using NovaLab.Services.Twitch.Hub
+@using Serilog
+
+@attribute [StreamRendering]
+
+@inject HttpClient HttpClient
+@inject ILogger logger
+@inject NavigationManager NavigationManager
+@inject NovaLabApiService apiService
+@inject IMessageService MessageService
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<h2>REDEMPTIONS TABLE</h2>
+<Table>
+    <TableHeader>
+        
+    </TableHeader>
+    <TableFooter></TableFooter>
+    
+    <TableBody>
+        @foreach (TwitchManagedRewardRedemption item in Items) {
+            <TableRow>
+                <TableCell>@item.Username</TableCell>
+                <TableCell>@item.Message</TableCell>
+            </TableRow>
+        }
+    </TableBody>
+    
+</Table>
+
+@code {
+    private List<TwitchManagedRewardRedemption> Items { get; set; } = [];
+    private HubConnection? _connection;
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        string userName = authState.User.Identity!.Name!;
+        ApplicationUser? user = await UserManager.FindByNameAsync(userName);
+        string userId = user!.Id;
+        
+        // Setup hub connection
+        _connection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/twitch"))
+            .Build();
+
+        // Listen on the NewManagedRewardRedemption method
+        _connection.On<TwitchManagedRewardRedemption>(TwitchHubMethods.NewManagedRewardRedemption, newRecord => {
+           
+            logger.Warning("CLIENT : {@r}", newRecord);
+            
+            // Your logic here, for example, adding newRecord to Items list
+            Items.Add(newRecord);
+    
+            // Notify the UI to update
+            _ = InvokeAsync(StateHasChanged);
+        });
+
+        // Start the connection
+        await _connection.StartAsync();
+
+        // Items = ApiService.GetCustomTwitchRedemptions(userId);
+    }
+    
+    // Ensure to stop the connection when the component is being disposed
+    public async ValueTask DisposeAsync() {
+        if (_connection != null) {
+            await _connection.DisposeAsync();
+            _connection = null;
+        }
+    }
+
+    public async void populateItems() {
+        
+    }
+}

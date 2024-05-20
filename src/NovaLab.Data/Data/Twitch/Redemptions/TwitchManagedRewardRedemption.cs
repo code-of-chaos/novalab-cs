@@ -19,3 +19,9 @@ public class TwitchManagedRewardRedemption {
     [MaxLength(128)] public required string Username { get; set; }
     [MaxLength(255)] public string? Message { get; set; }
 }
+
+public record TwitchManagedRewardRedemptionDto(
+    string RewardId,
+    string Username,
+    string? Message
+);

@@ -11,13 +11,19 @@ namespace NovaLab.Api;
 public record ApiResultDto<T>(
     bool Success, 
     string? Message, 
-    T[] Data) {
+    T[] Data
+    
+    ) {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public static ApiResultDto<T> Empty() {
         return new ApiResultDto<T>(false, "No Data Could be retrieved", []);
+    }
+    
+    public static ApiResultDto<T> Failure(string msg) {
+        return new ApiResultDto<T>(false, msg, []);
     }
 
     public static ApiResultDto<T> Successful(params T[] objects) => Successful(null, objects);
