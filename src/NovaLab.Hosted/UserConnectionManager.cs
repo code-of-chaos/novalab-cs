@@ -16,19 +16,7 @@ public class UserConnectionManager : IUserConnectionManager {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void StoreUserConnection(string userId, string connectionId) {
-        _userMap.TryAdd(userId, connectionId);
-    }
-
-    public void RemoveUserConnection(string userId) {
-        _userMap.TryRemove(userId, out _);
-    }
-
-    public string? GetConnectionId(string userId) {
-        return _userMap.GetValueOrDefault(userId);
-    }
-
-    public bool TryGetConnectionId(string userId, [NotNullWhen(true)] out string? connectionId) {
-        return _userMap.TryGetValue(userId, out connectionId);
-    }
+    public bool TryStoreUserConnection(string userId, string connectionId) => _userMap.TryAdd(userId, connectionId);
+    public bool TryRemoveUserConnection(string userId) => _userMap.TryRemove(userId, out _);
+    public bool TryGetConnectionId(string userId, [NotNullWhen(true)] out string? connectionId) => _userMap.TryGetValue(userId, out connectionId);
 }

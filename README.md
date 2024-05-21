@@ -1,2 +1,2 @@
-# novalab-cs
-A set of tools for streaming
+# NovaLab
+An ever expanding toolset for streaming

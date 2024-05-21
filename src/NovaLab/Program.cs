@@ -15,7 +15,10 @@ using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.OpenApi.Models;
 using NovaLab.Hosted;
+using NovaLab.Services.Twitch.EventCallbacks;
+using NovaLab.Services.Twitch.EventRegistering;
 using NovaLab.Services.Twitch.Hubs;
+using NovaLab.Services.Twitch.TwitchTokens;
 using Serilog;
 using Serilog.Core;
 using TwitchLib.Api;
@@ -31,9 +34,11 @@ public class Program {
     public static void Main(string[] args) {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        // --- Services ---
+        // -------------------------------------------------------------------------------------------------------------
+        // Services
+        // -------------------------------------------------------------------------------------------------------------
+        // - Logger : SeriLog -
         builder.Logging.ClearProviders();
-        
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.ControlledBy( new LoggingLevelSwitch())
             .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))
@@ -42,9 +47,11 @@ public class Program {
         builder.Logging.AddSerilog(Log.Logger);
         builder.Services.AddSingleton(Log.Logger); // ELse Injecting from Serilog.ILogger won't work
         
+        // - Razor components -
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
+        // - Auth  -
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityUserAccessor>();
         builder.Services.AddScoped<IdentityRedirectManager>();
@@ -59,73 +66,25 @@ public class Program {
                 twitchOptions.ClientSecret = builder.Configuration["Authentication:Twitch:ClientSecret"]!;
                 
                 // Update scopes as needed
-                AuthScopes[] scopes = [
-                    AuthScopes.Helix_Analytics_Read_Extensions,
-                    AuthScopes.Helix_Analytics_Read_Games,
-                    AuthScopes.Helix_Bits_Read,
-                    AuthScopes.Helix_Channel_Edit_Commercial,
-                    AuthScopes.Helix_Channel_Manage_Broadcast,
-                    AuthScopes.Helix_Channel_Manage_Extensions,
-                    AuthScopes.Helix_Channel_Manage_Moderators,
-                    AuthScopes.Helix_Channel_Manage_Polls,
-                    AuthScopes.Helix_Channel_Manage_Predictions,
-                    AuthScopes.Helix_Channel_Manage_Redemptions,
-                    AuthScopes.Helix_Channel_Manage_Schedule,
-                    AuthScopes.Helix_Channel_Manage_VIPs,
-                    AuthScopes.Helix_Channel_Manage_Videos,
-                    AuthScopes.Helix_Channel_Read_Charity,
-                    AuthScopes.Helix_Channel_Read_Editors,
-                    AuthScopes.Helix_Channel_Read_Goals,
-                    AuthScopes.Helix_Channel_Read_Hype_Train,
-                    AuthScopes.Helix_Channel_Read_Polls,
-                    AuthScopes.Helix_Channel_Read_Predictions,
-                    AuthScopes.Helix_Channel_Read_Redemptions,
-                    AuthScopes.Helix_Channel_Read_Stream_Key,
-                    AuthScopes.Helix_Channel_Read_Subscriptions,
-                    AuthScopes.Helix_Channel_Read_VIPs,
-                    AuthScopes.Helix_Clips_Edit,
-                    AuthScopes.Helix_Moderation_Read,
-                    AuthScopes.Helix_Moderator_Manage_Announcements,
-                    AuthScopes.Helix_Moderator_Manage_Automod,
-                    AuthScopes.Helix_Moderator_Manage_Automod_Settings,
-                    AuthScopes.Helix_Moderator_Manage_Banned_Users,
-                    AuthScopes.Helix_Moderator_Manage_Blocked_Terms,
-                    AuthScopes.Helix_Moderator_Manage_Chat_Settings,
-                    AuthScopes.Helix_Moderator_Read_Automod_Settings,
-                    AuthScopes.Helix_Moderator_Read_Blocked_Terms,
-                    AuthScopes.Helix_Moderator_Read_Chat_Settings,
-                    AuthScopes.Helix_Moderator_Read_Chatters,
-                    AuthScopes.Helix_User_Edit,
-                    AuthScopes.Helix_User_Edit_Broadcast,
-                    AuthScopes.Helix_User_Edit_Follows,
-                    AuthScopes.Helix_User_Manage_BlockedUsers,
-                    AuthScopes.Helix_User_Manage_Chat_Color,
-                    AuthScopes.Helix_User_Manage_Whispers,
-                    AuthScopes.Helix_User_Read_BlockedUsers,
-                    AuthScopes.Helix_User_Read_Broadcast,
-                    AuthScopes.Helix_User_Read_Email,
-                    AuthScopes.Helix_User_Read_Follows,
-                    AuthScopes.Helix_User_Read_Subscriptions,
-                    AuthScopes.Helix_moderator_Manage_Chat_Messages,
-                ];
-                scopes
+                //      This might look weird, but the idea is te that we don't reuse this at all anywhere, just create the list and move on
+                ((AuthScopes[])[AuthScopes.Helix_Analytics_Read_Extensions, AuthScopes.Helix_Analytics_Read_Games,AuthScopes.Helix_Bits_Read, AuthScopes.Helix_Channel_Edit_Commercial,AuthScopes.Helix_Channel_Manage_Broadcast, AuthScopes.Helix_Channel_Manage_Extensions,AuthScopes.Helix_Channel_Manage_Moderators, AuthScopes.Helix_Channel_Manage_Polls,AuthScopes.Helix_Channel_Manage_Predictions, AuthScopes.Helix_Channel_Manage_Redemptions,AuthScopes.Helix_Channel_Manage_Schedule, AuthScopes.Helix_Channel_Manage_VIPs,AuthScopes.Helix_Channel_Manage_Videos, AuthScopes.Helix_Channel_Read_Charity,AuthScopes.Helix_Channel_Read_Editors, AuthScopes.Helix_Channel_Read_Goals,AuthScopes.Helix_Channel_Read_Hype_Train, AuthScopes.Helix_Channel_Read_Polls,AuthScopes.Helix_Channel_Read_Predictions, AuthScopes.Helix_Channel_Read_Redemptions,AuthScopes.Helix_Channel_Read_Stream_Key, AuthScopes.Helix_Channel_Read_Subscriptions,AuthScopes.Helix_Channel_Read_VIPs, AuthScopes.Helix_Clips_Edit, AuthScopes.Helix_Moderation_Read,AuthScopes.Helix_Moderator_Manage_Announcements, AuthScopes.Helix_Moderator_Manage_Automod,AuthScopes.Helix_Moderator_Manage_Automod_Settings, AuthScopes.Helix_Moderator_Manage_Banned_Users,AuthScopes.Helix_Moderator_Manage_Blocked_Terms, AuthScopes.Helix_Moderator_Manage_Chat_Settings,AuthScopes.Helix_Moderator_Read_Automod_Settings, AuthScopes.Helix_Moderator_Read_Blocked_Terms,AuthScopes.Helix_Moderator_Read_Chat_Settings, AuthScopes.Helix_Moderator_Read_Chatters,AuthScopes.Helix_User_Edit, AuthScopes.Helix_User_Edit_Broadcast,AuthScopes.Helix_User_Edit_Follows, AuthScopes.Helix_User_Manage_BlockedUsers,AuthScopes.Helix_User_Manage_Chat_Color, AuthScopes.Helix_User_Manage_Whispers,AuthScopes.Helix_User_Read_BlockedUsers, AuthScopes.Helix_User_Read_Broadcast,AuthScopes.Helix_User_Read_Email, AuthScopes.Helix_User_Read_Follows,AuthScopes.Helix_User_Read_Subscriptions, AuthScopes.Helix_moderator_Manage_Chat_Messages])
                     .Select(AuthScopesToString)
                     .ToList()
                     .ForEach(twitchOptions.Scope.Add);
                 
-                twitchOptions.SaveTokens = true;
                 // Tokens are stored through ExternalLogin.razor
+                //      This is needed to make that work
+                twitchOptions.SaveTokens = true;
             })
             .AddJwtBearer()
             .AddBearerToken()
             .AddIdentityCookies();
         
+        // - DB -
         string connectionString = builder.Configuration["Database:MariaDb:ConnectionString"]!;
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseMySql(
-                connectionString: connectionString,
-                ServerVersion.AutoDetect(connectionString)
-            ));
+            options.UseMySql(connectionString: connectionString, ServerVersion.AutoDetect(connectionString))
+        );
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -134,17 +93,31 @@ public class Program {
             .AddDefaultTokenProviders();
         
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-        builder.Services.AddSingleton<TwitchAPI>();
+        
+        // - Extra Services - 
+        
+        // TwitchApi is a singleton because they don't use injection
+        //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
+        builder.Services.AddSingleton<TwitchAPI>(_ => new TwitchAPI {
+            Settings = {
+                ClientId = builder.Configuration["Authentication:Twitch:ClientId"],
+                Secret = builder.Configuration["Authentication:Twitch:ClientSecret"]
+            }
+        });
+        builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
+        
         builder.Services.AddSingleton<IUserConnectionManager, UserConnectionManager>();
-        
-        new TwitchServiceCollection(builder.Services).DefineServices();
-        
+        builder.Services.AddHostedService<HostedTwitchWebsocket>();
+        builder.Services.AddScoped<CatchTwitchManagedReward>();
+        builder.Services.AddScoped<RegisterCustomRewardRedemption>();
+        builder.Services.AddScoped<TwitchTokensManager>();
+
         builder.Services.AddAuthorization();
         builder.Services.AddHttpClient();
-        builder.Services.AddHttpClient("TwitchServicesClient", c => {
+        builder.Services.AddHttpClient("TwitchServicesClient", c => { 
             string[]? urls = builder.Configuration["ASPNETCORE_URLS"]?.Split(';', StringSplitOptions.RemoveEmptyEntries);
             string? applicationUrl = urls!.FirstOrDefault();
-            c.BaseAddress = new Uri(applicationUrl!);
+            c.BaseAddress = new Uri(applicationUrl!); // This fixes some issues, it is janky, but it works
         });
         
         builder.Services.AddControllers().AddJsonOptions(options => {
@@ -152,31 +125,18 @@ public class Program {
             // other options...
         });
         
+        // - Swagger -
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(options =>
-        {
-            options.SwaggerDoc("v1", new OpenApiInfo
-            {
+        builder.Services.AddSwaggerGen(options => {
+            options.SwaggerDoc("v1", new OpenApiInfo {
                 Version = "v1",
                 Title = "NovaLab API",
-                // Description = "An ASP.NET Core Web API for managing your streams",
-                // TermsOfService = new Uri("https://example.com/terms"),/**/
-                // Contact = new OpenApiContact
-                // {
-                //     Name = "Example Contact",
-                //     Url = new Uri("https://example.com/contact")
-                // },
-                // License = new OpenApiLicense
-                // {
-                //     Name = "Example License",
-                //     Url = new Uri("https://example.com/license")
-                // }
+                Description = "An ASP.NET Core Web API for managing your streams",
             });
             options.EnableAnnotations();
         });
         
-        builder.Services.AddTwitchLibEventSubWebsockets();
-        
+        // - Blazorise -
         builder.Services
             .AddBlazorise( options => {
                 options.Immediate = true;
@@ -184,50 +144,36 @@ public class Program {
             .AddBootstrap5Providers()
             .AddFontAwesomeIcons();
         
-        // --- APP ---
-        
+        // -------------------------------------------------------------------------------------------------------------
+        // App
+        // -------------------------------------------------------------------------------------------------------------
         WebApplication app = builder.Build();
-        
-        // TwitchApi is a singleton because they don't use injection
-        var api = app.Services.GetService<TwitchAPI>()!;
-        api.Settings.ClientId = builder.Configuration["Authentication:Twitch:ClientId"];
-        api.Settings.Secret = builder.Configuration["Authentication:Twitch:ClientSecret"];
-
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment()) {
             app.UseMigrationsEndPoint();
             app.UseSwagger();
-            app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
-            {
+            app.UseSwaggerUI(options => { // UseSwaggerUI is called only in Development.
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = "swagger";
             });
         } else {
             app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
         
-        // app.UseAuthentication();
-        // app.UseAuthorization();
-        
         app.UseHttpsRedirection();
-
         app.UseStaticFiles();
-        
         app.UseAuthentication();
         app.UseAuthorization(); 
         app.UseAntiforgery();
-        
         app.MapControllers();
-        
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
-        
-        // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
-        app.MapHub<TwitchHub>("/hubs/twitch");
         
+        // - Hubs -
+        app.MapHub<TwitchHub>("/hubs/twitch"); // Add additional endpoints required by the Identity /Account Razor components.
+        
+        // - Final Run -
         app.Run();
     }
 }
