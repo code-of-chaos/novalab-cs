@@ -18,7 +18,7 @@
         </CliArgumentViewModel>
         <CliArgumentViewModel>
           <option name="name" value="targetFramework" />
-          <option name="value" value="net6.0" />
+          <option name="value" value="net8.0" />
         </CliArgumentViewModel>
       </list>
     </option>

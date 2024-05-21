@@ -2,16 +2,12 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using Microsoft.Extensions.DependencyInjection;
-
-namespace NovaLab.Services.Api;
+namespace NovaLab.Services.Twitch.Hubs;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public class NovaLapApiServiceCollection(IServiceCollection serviceCollection) : AbstractServiceCollection(serviceCollection){
-    public override void DefineServices() {
-        _serviceCollection.AddScoped<NovaLabApiService>();
-    }
+public static class TwitchHubMethods {
+    public const string NewManagedRewardRedemption = "NewManagedRewardRedemption";
 }

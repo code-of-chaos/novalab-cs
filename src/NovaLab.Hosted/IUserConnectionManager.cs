@@ -2,12 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace NovaLab.Services.Twitch.Hub;
+using System.Diagnostics.CodeAnalysis;
+
+namespace NovaLab.Hosted;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-
-public static class TwitchHubMethods {
-    public const string NewManagedRewardRedemption = "NewManagedRewardRedemption";
+public interface IUserConnectionManager {
+    void StoreUserConnection(string userId, string? connectionId);
+    void RemoveUserConnection(string userId);
+    string? GetConnectionId(string userId);
+    bool TryGetConnectionId(string userId, [NotNullWhen(true)] out string? connectionId);
 }

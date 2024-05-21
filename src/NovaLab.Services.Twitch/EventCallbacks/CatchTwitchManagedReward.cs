@@ -3,13 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 using System.Text;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
-using NovaLab.Services.Twitch.Hub;
+using NovaLab.Services.Twitch.Hubs;
 using Serilog;
 using TwitchLib.Api.Core.Exceptions;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
@@ -28,6 +27,10 @@ public class CatchTwitchManagedReward(ILogger logger, ApplicationDbContext dbCon
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    
+    // WARN THIS THING HAS TO BE REMADE
+    //      JUST SEND ALL DATA TO THE API, fire and forget, maybe pool data together if the callbacks happen in quick succession?
+    
     public async Task Callback(object sender, ChannelPointsCustomRewardRedemptionArgs pointsCustomRewardRedemptionArgs) {
         logger.Information("{@rewards}", pointsCustomRewardRedemptionArgs);
         ChannelPointsCustomRewardRedemption redemption = pointsCustomRewardRedemptionArgs.Notification.Payload.Event;

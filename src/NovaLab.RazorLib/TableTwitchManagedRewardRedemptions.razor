@@ -1,12 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.SignalR.Client
-@using NovaLab.Services.Api
-@using NovaLab.Services.Twitch.Hub
 @using Serilog
 @using NovaLab.ApiClient.Api
 
 @using NovaLab.ApiClient.Model
+@using NovaLab.Services.Twitch.Hubs
 @using ApplicationUser = NovaLab.Data.ApplicationUser
 
 @attribute [StreamRendering]
@@ -14,11 +13,9 @@
 @inject HttpClient HttpClient
 @inject ILogger logger
 @inject NavigationManager NavigationManager
-@inject NovaLabApiService apiService
 @inject IMessageService MessageService
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject NovaLabApiService ApiService
 
 <h2>REDEMPTIONS TABLE</h2>
 <Table>
@@ -45,7 +42,7 @@
     private ApplicationUser? _user;
 
     private TwitchManagedRewardRedemptionApi? _redemptionApiCache;
-    private TwitchManagedRewardRedemptionApi _redemptionApi => _redemptionApiCache ??= new TwitchManagedRewardRedemptionApi(NavigationManager.BaseUri);
+    private TwitchManagedRewardRedemptionApi RedemptionApi => _redemptionApiCache ??= new TwitchManagedRewardRedemptionApi(NavigationManager.BaseUri);
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -88,7 +85,7 @@
     private async Task PopulateItems() {
         if (_user is null) return;
 
-        TwitchManagedRewardRedemptionApiResult result = await _redemptionApi.GetRedemptionsAsync(_user.Id);
+        TwitchManagedRewardRedemptionApiResult result = await RedemptionApi.GetRedemptionsAsync(_user.Id);
         List<TwitchManagedRewardRedemption> items = result.Data;
         Items = items ;
     }

@@ -1,13 +1,11 @@
-﻿@using NovaLab.Services.Api
+﻿@using NovaLab.ApiClient.Api
 @using Serilog
-@using Blazorise
 
 @inherits ComponentBase
 
 @inject HttpClient Http
 @inject ILogger logger
 @inject NavigationManager NavigationManager
-@inject NovaLabApiService apiService
 
 @attribute [StreamRendering]
 
@@ -25,17 +23,21 @@
     public required string UserId { get; set; }
 
     private IconLoadingState.StateEnum _iconState = IconLoadingState.StateEnum.Undefined;
+    
+    private AccessTokenApi? _accessTokenApiCache;
+    private AccessTokenApi AccessTokenApi => _accessTokenApiCache ??= new AccessTokenApi(NavigationManager.BaseUri);
+
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task OnClickCallback() {
         try {
-            _iconState = IconLoadingState.StateEnum.Loading;
-            bool result = await apiService.RefreshTwitchAccessToken(UserId);
-            _iconState = result
-                ? IconLoadingState.StateEnum.Success
-                : IconLoadingState.StateEnum.Failure;
+            // _iconState = IconLoadingState.StateEnum.Loading;
+            // bool result = await AccessTokenApi.RefreshTokensAsync(UserId);
+            // _iconState = result
+            //     ? IconLoadingState.StateEnum.Success
+            //     : IconLoadingState.StateEnum.Failure;
         }
         catch (Exception e) {
             logger.Error(e, "An Exception occured");

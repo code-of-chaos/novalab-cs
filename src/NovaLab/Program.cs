@@ -9,14 +9,13 @@ using Microsoft.EntityFrameworkCore;
 using NovaLab.Components;
 using NovaLab.Components.Account;
 using NovaLab.Data;
-using NovaLab.Services.Api;
 using NovaLab.Services.Twitch;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
-using Microsoft.AspNetCore.Components;
 using Microsoft.OpenApi.Models;
-using NovaLab.Services.Twitch.Hub;
+using NovaLab.Hosted;
+using NovaLab.Services.Twitch.Hubs;
 using Serilog;
 using Serilog.Core;
 using TwitchLib.Api;
@@ -136,8 +135,8 @@ public class Program {
         
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
         builder.Services.AddSingleton<TwitchAPI>();
+        builder.Services.AddSingleton<IUserConnectionManager, UserConnectionManager>();
         
-        new NovaLapApiServiceCollection(builder.Services).DefineServices();
         new TwitchServiceCollection(builder.Services).DefineServices();
         
         builder.Services.AddAuthorization();

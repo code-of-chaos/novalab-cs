@@ -1,18 +1,17 @@
-﻿@using Blazorise.Extensions
-@using Microsoft.AspNetCore.Components.Authorization
+﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
-@using NovaLab.Data
-@using NovaLab.RazorComponents.BlazoriseExtensions
-@using NovaLab.Services.Api
+@using NovaLab.ApiClient.Api
+@using NovaLab.RazorLib.BlazoriseExtensions
 @using Serilog
-@using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward
+@using  NovaLab.ApiClient.Model
+@using ApplicationUser = NovaLab.Data.ApplicationUser
+@using CreateCustomRewardsRequest = TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward.CreateCustomRewardsRequest
 
 @attribute [StreamRendering]
 
 @inject HttpClient HttpClient
 @inject ILogger logger
 @inject NavigationManager NavigationManager
-@inject NovaLabApiService apiService
 @inject IMessageService MessageService
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -54,6 +53,10 @@
     
     private bool ValidationFailed { get; set; }
 
+    private TwitchManagedRewardApi? _rewardApiCache;
+    private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi(NavigationManager.BaseUri);
+
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -80,8 +83,22 @@
         
         logger.Warning("client {@e}", CreateCustomRewardsRequestModel);
 
-        var response = await apiService.PostCustomTwitchRedemptions(userId, CreateCustomRewardsRequestModel);
-        if (!response.IsNullOrEmpty()) {
+        var response = await RewardApi.PostManagedRewardAsync(userId, new ApiClient.Model.CreateCustomRewardsRequest(){
+            Title = CreateCustomRewardsRequestModel.Title,
+            Prompt = CreateCustomRewardsRequestModel.Prompt,
+            Cost = CreateCustomRewardsRequestModel.Cost,
+            IsEnabled = CreateCustomRewardsRequestModel.IsEnabled,
+            BackgroundColor = CreateCustomRewardsRequestModel.BackgroundColor,
+            IsUserInputRequired = CreateCustomRewardsRequestModel.IsUserInputRequired,
+            IsMaxPerStreamEnabled = CreateCustomRewardsRequestModel.IsMaxPerStreamEnabled,
+            MaxPerStream = CreateCustomRewardsRequestModel.MaxPerStream,
+            IsMaxPerUserPerStreamEnabled = CreateCustomRewardsRequestModel.IsMaxPerUserPerStreamEnabled,
+            MaxPerUserPerStream = CreateCustomRewardsRequestModel.MaxPerUserPerStream,
+            IsGlobalCooldownEnabled = CreateCustomRewardsRequestModel.IsGlobalCooldownEnabled,
+            GlobalCooldownSeconds = CreateCustomRewardsRequestModel.GlobalCooldownSeconds,
+            ShouldRedemptionsSkipRequestQueue = CreateCustomRewardsRequestModel.ShouldRedemptionsSkipRequestQueue,
+        });
+        if (response.Status == HttpStatusCode.NUMBER_200) {
             await ValidationsRef.ClearAll();
         }
 

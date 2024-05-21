@@ -22,6 +22,9 @@ public class AccessTokenController(TwitchTokensManager twitchTokensManager, User
     
     [HttpGet("refresh")]
     [SwaggerOperation(OperationId = "RefreshTokens")]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> RefreshTokens([FromRoute] string userId) {
         ApplicationUser? user = await userManager.FindByIdAsync(userId);
         if (user is null) 

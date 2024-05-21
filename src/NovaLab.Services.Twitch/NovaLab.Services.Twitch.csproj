@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
+      <ProjectReference Include="..\NovaLab.Hosted\NovaLab.Hosted.csproj" />
       <ProjectReference Include="..\NovaLab.Services\NovaLab.Services.csproj" />
     </ItemGroup>
 

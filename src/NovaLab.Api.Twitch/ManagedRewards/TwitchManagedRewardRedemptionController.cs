@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
-using NovaLab.Services.Twitch.Hub;
+using NovaLab.Hosted;
+using NovaLab.Services.Twitch.Hubs;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -23,7 +24,8 @@ namespace NovaLab.Api.Twitch.ManagedRewards;
 public class TwitchManagedRewardRedemptionController(
     ApplicationDbContext dbContext,
     ILogger logger,
-    IHubContext<TwitchHub> hubContext
+    IHubContext<TwitchHub> hubContext,
+    IUserConnectionManager userConnectionManager
     
     ) : AbstractBaseController{
     
@@ -77,10 +79,18 @@ public class TwitchManagedRewardRedemptionController(
             await dbContext.TwitchManagedRewardRedemptions.AddAsync(redemption);
         
             await dbContext.SaveChangesAsync();
-            await hubContext.Clients.All
-                .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, redemption)
-                .ConfigureAwait(false);
+            
+            // send the client that this is to be updated
+            //  TODO eventually don't send to all clients, but only to the client which needs it.
+            if ( userConnectionManager.TryGetConnectionId(userId, out string? connectionId)) {
+                await hubContext.Clients.Client(connectionId)
+                    .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, redemption)
+                    .ConfigureAwait(false);
+                logger.Information("Sent to client");
+                return Success();
+            }
 
+            logger.Warning("Could not send to client ");
             return Success();
         }
         catch (Exception e) {
