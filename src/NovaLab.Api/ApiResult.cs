@@ -2,14 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
+using System.Net;
+
 namespace NovaLab.Api;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public record ApiResultDto<T>(
-    bool Success, 
+public record ApiResult<T>(
+    HttpStatusCode Status, 
     string? Message, 
     T[] Data
     
@@ -18,16 +20,18 @@ public record ApiResultDto<T>(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static ApiResultDto<T> Empty() {
-        return new ApiResultDto<T>(false, "No Data Could be retrieved", []);
+    public static ApiResult<T> FailureServer(HttpStatusCode? status = null, string? msg = null) {
+        return new ApiResult<T>(status ?? HttpStatusCode.InternalServerError, msg, []);
     }
     
-    public static ApiResultDto<T> Failure(string msg) {
-        return new ApiResultDto<T>(false, msg, []);
+    public static ApiResult<T> FailureClient(HttpStatusCode? status = null, string? msg = null) {
+        return new ApiResult<T>(status ?? HttpStatusCode.BadRequest, msg, []);
     }
 
-    public static ApiResultDto<T> Successful(params T[] objects) => Successful(null, objects);
-    public static ApiResultDto<T> Successful(string? msg = null, params T[] objects) {
-        return new ApiResultDto<T>(true, msg ?? "", objects);
+    public static ApiResult<T> Success(params T[] objects) => Success(null,null, objects);
+    public static ApiResult<T> Success(HttpStatusCode? status = null, string? msg = null, params T[] objects) {
+        return new ApiResult<T>(status ?? HttpStatusCode.OK, msg ?? "", objects);
     }
 }
+
+public record ApiResult(HttpStatusCode Status, string? Message, object[] Data) : ApiResult<object>(Status, Message, Data);

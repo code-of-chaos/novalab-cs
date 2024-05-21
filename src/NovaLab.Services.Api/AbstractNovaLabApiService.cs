@@ -24,7 +24,7 @@ public abstract class AbstractNovaLabApiService(HttpClient httpClient, Navigatio
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(cancelDelaySeconds));
 
         try {
-            var result = await httpClient.GetFromJsonAsync<ApiResultDto<T>>(_baseAddress + endpoint, cts.Token);
+            var result = await httpClient.GetFromJsonAsync<ApiResult<T>>(_baseAddress + endpoint, cts.Token);
             return result?.Data ?? [];
         }
         catch(OperationCanceledException) when (cts.IsCancellationRequested) {
@@ -47,7 +47,7 @@ public abstract class AbstractNovaLabApiService(HttpClient httpClient, Navigatio
                 return [];
             }
             
-            var result = await response.Content.ReadFromJsonAsync<ApiResultDto<T>>(cancellationToken: cts.Token);
+            var result = await response.Content.ReadFromJsonAsync<ApiResult<T>>(cancellationToken: cts.Token);
             return result?.Data ?? [];
         }
 

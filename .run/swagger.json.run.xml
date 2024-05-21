@@ -1,0 +1,38 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="swagger.json" type="SwaggerCodegen" editBeforeRun="true" show_console_on_std_err="false" show_console_on_std_out="false">
+    <option name="allowRunningInParallel" value="false" />
+    <option name="customTemplatesPath" value="" />
+    <option name="envs">
+      <map />
+    </option>
+    <option name="generateToPath" value="E:\Portfolio\internal\002-code_of_chaos\0005-cs-novalab\0005-01-cs-novalab-api_client" />
+    <option name="generationParameters">
+      <list>
+        <CliArgumentViewModel>
+          <option name="name" value="packageName" />
+          <option name="value" value="NovaLab.ApiClient" />
+        </CliArgumentViewModel>
+        <CliArgumentViewModel>
+          <option name="name" value="netCoreProjectFile" />
+          <option name="value" value="true" />
+        </CliArgumentViewModel>
+        <CliArgumentViewModel>
+          <option name="name" value="targetFramework" />
+          <option name="value" value="net6.0" />
+        </CliArgumentViewModel>
+      </list>
+    </option>
+    <option name="generatorType" value="OPENAPI_GENERATOR_V6" />
+    <option name="jdkPath" value="C:\JetBrains\Toolbox\Rider\jbr\bin\java.exe" />
+    <option name="language" value="csharp-netcore" />
+    <option name="passParentEnvs" value="true" />
+    <option name="programParameters" />
+    <option name="projectPathOnTarget" />
+    <option name="selectedOptions">
+      <list />
+    </option>
+    <option name="specificationPath" value="E:\Portfolio\internal\002-code_of_chaos\0005-cs-novalab\0005-00-cs-novalab-web\src\NovaLab\swagger.json" />
+    <option name="workingDirectory" value="E:\Portfolio\internal\002-code_of_chaos\0005-cs-novalab\0005-00-cs-novalab-web\src\NovaLab" />
+    <method v="2" />
+  </configuration>
+</component>

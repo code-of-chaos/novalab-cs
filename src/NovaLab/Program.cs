@@ -15,6 +15,7 @@ using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components;
+using Microsoft.OpenApi.Models;
 using NovaLab.Services.Twitch.Hub;
 using Serilog;
 using Serilog.Core;
@@ -119,11 +120,13 @@ public class Program {
             .AddJwtBearer()
             .AddBearerToken()
             .AddIdentityCookies();
-
-        string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                                  throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        
+        string connectionString = builder.Configuration["Database:MariaDb:ConnectionString"]!;
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseMySql(
+                connectionString: connectionString,
+                ServerVersion.AutoDetect(connectionString)
+            ));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -150,6 +153,29 @@ public class Program {
             // other options...
         });
         
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "NovaLab API",
+                // Description = "An ASP.NET Core Web API for managing your streams",
+                // TermsOfService = new Uri("https://example.com/terms"),/**/
+                // Contact = new OpenApiContact
+                // {
+                //     Name = "Example Contact",
+                //     Url = new Uri("https://example.com/contact")
+                // },
+                // License = new OpenApiLicense
+                // {
+                //     Name = "Example License",
+                //     Url = new Uri("https://example.com/license")
+                // }
+            });
+            options.EnableAnnotations();
+        });
+        
         builder.Services.AddTwitchLibEventSubWebsockets();
         
         builder.Services
@@ -171,6 +197,12 @@ public class Program {
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment()) {
             app.UseMigrationsEndPoint();
+            app.UseSwagger();
+            app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                options.RoutePrefix = "swagger";
+            });
         } else {
             app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

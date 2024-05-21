@@ -2,16 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.IdentityModel.Tokens;
 using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
 using NovaLab.Services.Twitch.TwitchTokens;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 using TwitchLib.Api;
-using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
 namespace NovaLab.Api.Twitch.ManagedRewards;
@@ -21,17 +21,19 @@ namespace NovaLab.Api.Twitch.ManagedRewards;
 // ---------------------------------------------------------------------------------------------------------------------
 [ApiController]
 [Route("api/{userId}/twitch/managed-rewards/")]
-public class TwitchManagedRewardApiController(
+public class TwitchManagedRewardController(
     TwitchAPI twitchApi,
     ApplicationDbContext dbContext,
     TwitchTokensManager twitchTokensService,
-    ILogger logger) : Controller{
+    ILogger logger) : AbstractBaseController{
 
     // -----------------------------------------------------------------------------------------------------------------
     // GET Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpGet]
-    public async Task<ActionResult<ApiResultDto<TwitchManagedReward>>> Get(
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.OK)]
+    [SwaggerOperation(OperationId = "GetManagedRewards")]
+    public async Task<IActionResult> GetManagedRewards(
         [FromRoute] string userId, 
         [FromQuery(Name = "limit")] uint? limit = null ) {
 
@@ -40,17 +42,18 @@ public class TwitchManagedRewardApiController(
         TwitchManagedReward[] rewards = limit == null 
             ? await query.ToArrayAsync()
             : await query.Take((int)limit).ToArrayAsync();
-        
-        return rewards.IsNullOrEmpty()
-            ? new JsonResult(ApiResultDto<TwitchManagedReward>.Empty())
-            : new JsonResult(ApiResultDto<TwitchManagedReward>.Successful(rewards));
+
+        return Success(rewards);
     }
     
     // -----------------------------------------------------------------------------------------------------------------
     // POST Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpPost]
-    public async Task<ActionResult<TwitchManagedReward>> Post(
+    [ProducesResponseType<ApiResult<TwitchManagedReward>>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult<TwitchManagedReward>>((int)HttpStatusCode.InternalServerError)]
+    [SwaggerOperation(OperationId = "PostManagedReward")]
+    public async Task<IActionResult> PostManagedReward(
         [FromRoute] string userId, 
         [FromBody] CreateCustomRewardsRequest customRewardsRequest) {
         
@@ -73,11 +76,11 @@ public class TwitchManagedRewardApiController(
             );
             
             await dbContext.SaveChangesAsync();
-            return new JsonResult(ApiResultDto<TwitchManagedReward>.Successful(output.Entity));
+            return Success(output.Entity);
         }
         catch (Exception e) {
             logger.Warning(e, "Reward could not be created");
-            return new JsonResult(ApiResultDto<TwitchManagedReward>.Failure("Reward could not be created"));
+            return FailureServer(msg:"Reward could not be created");
         }
     }
 }

@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
 using NovaLab.Services.Twitch.Hub;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace NovaLab.Api.Twitch.ManagedRewards;
 
@@ -18,18 +20,21 @@ namespace NovaLab.Api.Twitch.ManagedRewards;
 // ---------------------------------------------------------------------------------------------------------------------
 [ApiController]
 [Route("api/{userId}/twitch/managed-rewards-redemptions/")]
-public class TwitchManagedRewardRedemptionApiController(
+public class TwitchManagedRewardRedemptionController(
     ApplicationDbContext dbContext,
     ILogger logger,
     IHubContext<TwitchHub> hubContext
     
-    ) : Controller{
+    ) : AbstractBaseController{
     
     // -----------------------------------------------------------------------------------------------------------------
     // GET Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpGet]
-    public async Task<ActionResult<ApiResultDto<TwitchManagedRewardRedemption>>> Get(
+    [ProducesResponseType<ApiResult<TwitchManagedRewardRedemption>>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
+    [SwaggerOperation(OperationId = "GetRedemptions")]
+    public async Task<IActionResult> GetRedemptions(
         [FromRoute] string userId, 
         [FromQuery(Name = "reward-id")] Guid? rewardId = null,
         [FromQuery(Name = "after")] DateTime? after = null,
@@ -46,32 +51,42 @@ public class TwitchManagedRewardRedemptionApiController(
         if (limit is not null) query = query.Take((int)limit);
 
         TwitchManagedRewardRedemption[] result = await query.ToArrayAsync();
-        return result.IsNullOrEmpty()
-            ? new JsonResult(ApiResultDto<TwitchManagedRewardRedemption>.Empty())
-            : new JsonResult(ApiResultDto<TwitchManagedRewardRedemption>.Successful(result));
+        return !result.IsNullOrEmpty()
+            ? Success(result)
+            : FailureClient(msg:"No rewards could be redeemed");
     }
     
     // -----------------------------------------------------------------------------------------------------------------
     // POST Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpPost]
-    public async Task<ActionResult<ApiResultDto<bool>>> Post(
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
+    [SwaggerOperation(OperationId = "PostRedemption")]
+    public async Task<IActionResult> PostRedemption(
         [FromRoute] string userId,
         [FromBody] TwitchManagedRewardRedemptionDto rewardRedemption) {
-        
-        var redemption = new TwitchManagedRewardRedemption {
-            TwitchManagedReward = await dbContext.TwitchManagedRewards.FirstAsync(reward => reward.RewardId == rewardRedemption.RewardId),
-            Username = rewardRedemption.Username,
-            Message = rewardRedemption.Message
-        };
 
-        await dbContext.TwitchManagedRewardRedemptions.AddAsync(redemption);
+        try {
+            var redemption = new TwitchManagedRewardRedemption {
+                TwitchManagedReward = await dbContext.TwitchManagedRewards.FirstAsync(reward => reward.RewardId == rewardRedemption.RewardId),
+                Username = rewardRedemption.Username,
+                Message = rewardRedemption.Message
+            };
+
+            await dbContext.TwitchManagedRewardRedemptions.AddAsync(redemption);
         
-        await dbContext.SaveChangesAsync();
-        await hubContext.Clients.All
-            .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, redemption)
-            .ConfigureAwait(false);
-            
-        return new JsonResult(ApiResultDto<bool>.Empty());
+            await dbContext.SaveChangesAsync();
+            await hubContext.Clients.All
+                .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, redemption)
+                .ConfigureAwait(false);
+
+            return Success();
+        }
+        catch (Exception e) {
+            logger.Warning(e, "Reward could not be created");
+            return FailureServer(msg:"Reward could not be created");
+        }
+        
     }
 }

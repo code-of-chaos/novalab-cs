@@ -32,4 +32,8 @@ public class NovaLabApiService(HttpClient httpClient, NavigationManager navigati
         bool[] result = await GetFromApi<bool>($"api/{userId}/twitch/tokens/refresh");
         return result.All(r => r);
     }
+    
+    public async Task<TwitchManagedRewardRedemption[]> GetCustomTwitchRewardRedemptions(string userId) {
+        return await GetFromApi<TwitchManagedRewardRedemption>($"api/{userId}/twitch/managed-reward-redemptions/");
+    }
 }
