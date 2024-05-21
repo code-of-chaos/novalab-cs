@@ -20,13 +20,13 @@ internal sealed class IdentityRevalidatingAuthenticationStateProvider(
         AuthenticationState authenticationState, CancellationToken cancellationToken) {
         // Get the user manager from a new scope to ensure it fetches fresh data
         await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<NovaLabUser>>();
         return await ValidateSecurityStampAsync(userManager, authenticationState.User);
     }
 
-    private async Task<bool> ValidateSecurityStampAsync(UserManager<ApplicationUser> userManager,
+    private async Task<bool> ValidateSecurityStampAsync(UserManager<NovaLabUser> userManager,
         ClaimsPrincipal principal) {
-        ApplicationUser? user = await userManager.GetUserAsync(principal);
+        NovaLabUser? user = await userManager.GetUserAsync(principal);
         if (user is null) {
             return false;
         }

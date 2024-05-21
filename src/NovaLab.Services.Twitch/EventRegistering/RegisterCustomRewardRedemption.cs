@@ -16,11 +16,11 @@ namespace NovaLab.Services.Twitch.EventRegistering;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public class RegisterCustomRewardRedemption(ILogger logger, ApplicationDbContext dbContext, TwitchAPI twitchApi, TwitchTokensManager twitchAccessToken) {
+public class RegisterCustomRewardRedemption(ILogger logger, NovaLabDbContext dbContext, TwitchAPI twitchApi, TwitchTokensManager twitchAccessToken) {
     public async Task RegisterAtWebSocket(EventSubWebsocketClient client) {
         try {
             // Thanks to Noyainrain for helping me!
-            async void Action(ApplicationUser user) {
+            async void Action(NovaLabUser user) {
                 string accessToken = await twitchAccessToken.GetAccessTokenOrRefreshAsync(user);
 
                 // subscribe to topics

@@ -4,8 +4,8 @@
 @using Microsoft.AspNetCore.Identity
 @using NovaLab.Data
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<NovaLabUser> SignInManager
+@inject UserManager<NovaLabUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<LoginWithRecoveryCode> Logger
 
@@ -35,7 +35,7 @@
 
 @code {
     private string? message;
-    private ApplicationUser user = default!;
+    private NovaLabUser user = default!;
 
     [SupplyParameterFromForm] private InputModel Input { get; set; } = new();
 

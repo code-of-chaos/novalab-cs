@@ -5,7 +5,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using NovaLab.Data
 
-@inject UserManager<ApplicationUser> UserManager
+@inject UserManager<NovaLabUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Confirm email</PageTitle>
@@ -27,7 +27,7 @@
             RedirectManager.RedirectTo("");
         }
 
-        ApplicationUser? user = await UserManager.FindByIdAsync(UserId);
+        NovaLabUser? user = await UserManager.FindByIdAsync(UserId);
         if (user is null) {
             HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
             statusMessage = $"Error loading user with ID {UserId}";

@@ -27,6 +27,9 @@ using TwitchLib.EventSub.Websockets.Extensions;
 using static TwitchLib.Api.Core.Common.Helpers;
 
 namespace NovaLab;
+
+using TwitchLib.Api.Interfaces;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -82,23 +85,23 @@ public class Program {
         
         // - DB -
         string connectionString = builder.Configuration["Database:MariaDb:ConnectionString"]!;
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        builder.Services.AddDbContext<NovaLabDbContext>(options =>
             options.UseMySql(connectionString: connectionString, ServerVersion.AutoDetect(connectionString))
         );
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<ApplicationDbContext>()
+        builder.Services.AddIdentityCore<NovaLabUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<NovaLabDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
         
-        builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+        builder.Services.AddSingleton<IEmailSender<NovaLabUser>, IdentityNoOpEmailSender>();
         
         // - Extra Services - 
         
         // TwitchApi is a singleton because they don't use injection
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
-        builder.Services.AddSingleton<TwitchAPI>(_ => new TwitchAPI {
+        builder.Services.AddSingleton<ITwitchAPI>(_ => new TwitchAPI {
             Settings = {
                 ClientId = builder.Configuration["Authentication:Twitch:ClientId"],
                 Secret = builder.Configuration["Authentication:Twitch:ClientSecret"]

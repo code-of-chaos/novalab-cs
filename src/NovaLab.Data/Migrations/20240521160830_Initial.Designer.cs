@@ -11,7 +11,7 @@ using NovaLab.Data;
 
 namespace NovaLab.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(NovaLabDbContext))]
     [Migration("20240521160830_Initial")]
     partial class Initial
     {

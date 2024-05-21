@@ -10,8 +10,8 @@ using NovaLab.Data;
 
 namespace NovaLab.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(NovaLabDbContext))]
+    partial class NovaLabDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

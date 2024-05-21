@@ -14,11 +14,10 @@ namespace NovaLab.Api.Twitch.Tokens;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-
 [ApiController]
 // [Authorize]
 [Route("api/{userId}/twitch/tokens")]
-public class AccessTokenController(TwitchTokensManager twitchTokensManager, UserManager<ApplicationUser> userManager) : AbstractBaseController {
+public class AccessTokenController(TwitchTokensManager twitchTokensManager, UserManager<NovaLabUser> userManager) : AbstractBaseController {
     
     [HttpGet("refresh")]
     [SwaggerOperation(OperationId = "RefreshTokens")]
@@ -26,7 +25,7 @@ public class AccessTokenController(TwitchTokensManager twitchTokensManager, User
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> RefreshTokens([FromRoute] string userId) {
-        ApplicationUser? user = await userManager.FindByIdAsync(userId);
+        NovaLabUser? user = await userManager.FindByIdAsync(userId);
         if (user is null) 
             return FailureClient(msg: "User could not be retrieved");
         if (!await twitchTokensManager.RefreshAccessTokenAsync(user))

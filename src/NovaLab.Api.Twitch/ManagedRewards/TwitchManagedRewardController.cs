@@ -11,10 +11,11 @@ using NovaLab.Data.Data.Twitch.Redemptions;
 using NovaLab.Services.Twitch.TwitchTokens;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
-using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
 namespace NovaLab.Api.Twitch.ManagedRewards;
+
+using TwitchLib.Api.Interfaces;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -22,8 +23,8 @@ namespace NovaLab.Api.Twitch.ManagedRewards;
 [ApiController]
 [Route("api/{userId}/twitch/managed-rewards/")]
 public class TwitchManagedRewardController(
-    TwitchAPI twitchApi,
-    ApplicationDbContext dbContext,
+    ITwitchAPI twitchApi,
+    NovaLabDbContext dbContext,
     TwitchTokensManager twitchTokensService,
     ILogger logger) : AbstractBaseController{
 
@@ -60,7 +61,7 @@ public class TwitchManagedRewardController(
         customRewardsRequest.IsEnabled = true;
         
         try {
-            ApplicationUser user = await dbContext.Users.FirstAsync(u => u.Id == userId);
+            NovaLabUser user = await dbContext.Users.FirstAsync(u => u.Id == userId);
             
             CreateCustomRewardsResponse result = await twitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(
                 user.TwitchBroadcasterId,

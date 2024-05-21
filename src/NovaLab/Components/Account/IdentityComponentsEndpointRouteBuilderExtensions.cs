@@ -22,7 +22,7 @@ internal static class IdentityComponentsEndpointRouteBuilderExtensions {
 
         accountGroup.MapPost("/PerformExternalLogin", (
             HttpContext context,
-            [FromServices] SignInManager<ApplicationUser> signInManager,
+            [FromServices] SignInManager<NovaLabUser> signInManager,
             [FromForm] string provider,
             [FromForm] string returnUrl) => {
             IEnumerable<KeyValuePair<string, StringValues>> query = [
@@ -41,7 +41,7 @@ internal static class IdentityComponentsEndpointRouteBuilderExtensions {
 
         accountGroup.MapPost("/Logout", async (
             ClaimsPrincipal user,
-            SignInManager<ApplicationUser> signInManager,
+            SignInManager<NovaLabUser> signInManager,
             [FromForm] string returnUrl) => {
             await signInManager.SignOutAsync();
             return TypedResults.LocalRedirect($"~/{returnUrl}");
@@ -51,7 +51,7 @@ internal static class IdentityComponentsEndpointRouteBuilderExtensions {
 
         manageGroup.MapPost("/LinkExternalLogin", async (
             HttpContext context,
-            [FromServices] SignInManager<ApplicationUser> signInManager,
+            [FromServices] SignInManager<NovaLabUser> signInManager,
             [FromForm] string provider) => {
             // Clear the existing external cookie to ensure a clean login process
             await context.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -71,9 +71,9 @@ internal static class IdentityComponentsEndpointRouteBuilderExtensions {
 
         manageGroup.MapPost("/DownloadPersonalData", async (
             HttpContext context,
-            [FromServices] UserManager<ApplicationUser> userManager,
+            [FromServices] UserManager<NovaLabUser> userManager,
             [FromServices] AuthenticationStateProvider authenticationStateProvider) => {
-            ApplicationUser? user = await userManager.GetUserAsync(context.User);
+            NovaLabUser? user = await userManager.GetUserAsync(context.User);
             if (user is null) {
                 return Results.NotFound($"Unable to load user with ID '{userManager.GetUserId(context.User)}'.");
             }
@@ -83,7 +83,7 @@ internal static class IdentityComponentsEndpointRouteBuilderExtensions {
 
             // Only include personal data for download
             var personalData = new Dictionary<string, string>();
-            IEnumerable<PropertyInfo> personalDataProps = typeof(ApplicationUser).GetProperties().Where(
+            IEnumerable<PropertyInfo> personalDataProps = typeof(NovaLabUser).GetProperties().Where(
                 prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
             foreach (PropertyInfo p in personalDataProps) {
                 personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");

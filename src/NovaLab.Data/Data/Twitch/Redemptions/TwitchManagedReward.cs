@@ -12,11 +12,11 @@ namespace NovaLab.Data.Data.Twitch.Redemptions;
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
 public class TwitchManagedReward {
     [Key]
-    public Guid Id { get; set; }
-    public virtual ApplicationUser User { get; set; } = null!; // virtual is being used here by EFC
+    public Guid Id { get; init; }
+    public virtual NovaLabUser User { get; init; } = null!; // virtual is being used here by EFC
     
     // Delivered by Twitch
-    [MaxLength(128)] public string RewardId { get; set; } = null!;
+    [MaxLength(128)] public string RewardId { get; init; } = null!;
     
     [Required(ErrorMessage = "Output Template Per Reward is required")]
     [MaxLength(255)]

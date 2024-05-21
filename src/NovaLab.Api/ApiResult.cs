@@ -6,10 +6,12 @@ using System.Net;
 
 namespace NovaLab.Api;
 
+using JetBrains.Annotations;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-
+[UsedImplicitly]
 public record ApiResult<T>(
     HttpStatusCode Status, 
     string? Message, 

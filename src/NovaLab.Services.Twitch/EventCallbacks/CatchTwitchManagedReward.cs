@@ -20,7 +20,7 @@ namespace NovaLab.Services.Twitch.EventCallbacks;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public class CatchTwitchManagedReward(ILogger logger, ApplicationDbContext dbContext, IHubContext<TwitchHub> hubContext, IHttpClientFactory clientFactory) {
+public class CatchTwitchManagedReward(ILogger logger, NovaLabDbContext dbContext, IHubContext<TwitchHub> hubContext, IHttpClientFactory clientFactory) {
     private HttpClient? _clientCache;
     private HttpClient Client => _clientCache ??=  clientFactory.CreateClient("TwitchServicesClient") ;
     

@@ -22,7 +22,7 @@ namespace NovaLab.Api.Twitch.ManagedRewards;
 [ApiController]
 [Route("api/{userId}/twitch/managed-rewards-redemptions/")]
 public class TwitchManagedRewardRedemptionController(
-    ApplicationDbContext dbContext,
+    NovaLabDbContext dbContext,
     ILogger logger,
     IHubContext<TwitchHub> hubContext,
     IUserConnectionManager userConnectionManager

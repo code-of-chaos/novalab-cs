@@ -17,7 +17,7 @@ namespace NovaLab.Services.Twitch.TwitchTokens;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManager<ApplicationUser> userManager) {
+public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManager<NovaLabUser> userManager) {
     internal const string AccessToken = "access_token";
     internal const string RefreshToken = "refresh_token";
     internal const string ExpiresAt = "expires_at";
@@ -27,7 +27,7 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManage
     // -----------------------------------------------------------------------------------------------------------------
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private async Task<TwitchTokenRecord> GetTokensAsync(ApplicationUser user) {
+    private async Task<TwitchTokenRecord> GetTokensAsync(NovaLabUser user) {
         var ex =new AccessTokenCouldNotBeRetrievedException($"Database held no tokens, or the incorrect amount of tokens attached to user {user.Id} ");
 
         return new TwitchTokenRecord(
@@ -38,7 +38,7 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManage
         );
     }
 
-    private async Task StoreTokensAsync(ApplicationUser user, TwitchTokenRecord tokens) {
+    private async Task StoreTokensAsync(NovaLabUser user, TwitchTokenRecord tokens) {
         foreach ((string tokenName, string tokenValue) in tokens.GetAsEnumerator()) {
             await userManager.SetAuthenticationTokenAsync(user, Provider, tokenName, tokenValue);
         }
@@ -47,7 +47,7 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManage
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task<string> GetAccessTokenOrRefreshAsync(ApplicationUser user) {
+    public async Task<string> GetAccessTokenOrRefreshAsync(NovaLabUser user) {
         try {
             // Can throw AccessTokenCouldNotBeRetrievedException due to some weirdness if we stored the tokens wrong.
             TwitchTokenRecord tokens = await GetTokensAsync(user);
@@ -65,7 +65,7 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManage
         }
     }
    
-    public async Task<bool> RefreshAccessTokenAsync(ApplicationUser user) {
+    public async Task<bool> RefreshAccessTokenAsync(NovaLabUser user) {
         try {
             // Refresh the stored tokens
             RefreshResponse? response = await twitchApi.Auth.RefreshAuthTokenAsync( 
@@ -93,7 +93,7 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, UserManage
         }
     }
 
-    public async Task IngestTokensWithUserManager(ApplicationUser user, IEnumerable<AuthenticationToken> authenticationTokens) {
+    public async Task IngestTokensWithUserManager(NovaLabUser user, IEnumerable<AuthenticationToken> authenticationTokens) {
         IEnumerable<AuthenticationToken> enumerable = authenticationTokens as AuthenticationToken[] ?? authenticationTokens.ToArray();
         
         foreach (string name in (string[])[AccessToken, RefreshToken, ExpiresAt, TokenType]) {

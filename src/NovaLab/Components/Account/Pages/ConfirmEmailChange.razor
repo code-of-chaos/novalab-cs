@@ -5,8 +5,8 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using NovaLab.Data
 
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<NovaLabUser> UserManager
+@inject SignInManager<NovaLabUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Confirm email change</PageTitle>
@@ -32,7 +32,7 @@
                 "Account/Login", "Error: Invalid email change confirmation link.", HttpContext);
         }
 
-        ApplicationUser? user = await UserManager.FindByIdAsync(UserId);
+        NovaLabUser? user = await UserManager.FindByIdAsync(UserId);
         if (user is null) {
             message = "Unable to find user with Id '{userId}'";
             return;

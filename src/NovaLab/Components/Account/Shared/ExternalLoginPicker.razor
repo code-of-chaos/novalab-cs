@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @using NovaLab.Data
 
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<NovaLabUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
 
 @if (externalLogins.Length == 0) {

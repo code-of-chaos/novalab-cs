@@ -9,10 +9,10 @@
 @using NovaLab.Services.Twitch.TwitchTokens
 @using NovaLab.Data
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@inject IUserStore<ApplicationUser> UserStore
-@inject IEmailSender<ApplicationUser> EmailSender
+@inject SignInManager<NovaLabUser> SignInManager
+@inject UserManager<NovaLabUser> UserManager
+@inject IUserStore<NovaLabUser> UserStore
+@inject IEmailSender<NovaLabUser> EmailSender
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<ExternalLogin> Logger
@@ -114,8 +114,8 @@
     }
 
     private async Task OnValidSubmitAsync() {
-        IUserEmailStore<ApplicationUser> emailStore = GetEmailStore();
-        ApplicationUser user = CreateUser();
+        IUserEmailStore<NovaLabUser> emailStore = GetEmailStore();
+        NovaLabUser user = CreateUser();
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -164,22 +164,22 @@
         message = $"Error: {string.Join(",", result.Errors.Select(error => error.Description))}";
     }
 
-    private ApplicationUser CreateUser() {
+    private NovaLabUser CreateUser() {
         try {
-            return Activator.CreateInstance<ApplicationUser>();
+            return Activator.CreateInstance<NovaLabUser>();
         }
         catch {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                                                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor");
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(NovaLabUser)}'. " +
+                                                $"Ensure that '{nameof(NovaLabUser)}' is not an abstract class and has a parameterless constructor");
         }
     }
 
-    private IUserEmailStore<ApplicationUser> GetEmailStore() {
+    private IUserEmailStore<NovaLabUser> GetEmailStore() {
         if (!UserManager.SupportsUserEmail) {
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
 
-        return (IUserEmailStore<ApplicationUser>)UserStore;
+        return (IUserEmailStore<NovaLabUser>)UserStore;
     }
 
     private sealed class InputModel {

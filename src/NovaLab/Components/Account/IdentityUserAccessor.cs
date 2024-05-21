@@ -4,10 +4,10 @@ using NovaLab.Data;
 namespace NovaLab.Components.Account;
 
 internal sealed class IdentityUserAccessor(
-    UserManager<ApplicationUser> userManager,
+    UserManager<NovaLabUser> userManager,
     IdentityRedirectManager redirectManager) {
-    public async Task<ApplicationUser> GetRequiredUserAsync(HttpContext context) {
-        ApplicationUser? user = await userManager.GetUserAsync(context.User);
+    public async Task<NovaLabUser> GetRequiredUserAsync(HttpContext context) {
+        NovaLabUser? user = await userManager.GetUserAsync(context.User);
 
         if (user is null) {
             redirectManager.RedirectToWithStatus("Account/InvalidUser",
