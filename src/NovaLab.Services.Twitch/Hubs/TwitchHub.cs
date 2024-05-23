@@ -9,26 +9,39 @@ using Serilog;
 
 namespace NovaLab.Services.Twitch.Hubs;
 
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[Authorize]
 public class TwitchHub(IUserConnectionManager userConnectionManager, ILogger logger) : Hub {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task OnConnectedAsync() {
-        if (Context.UserIdentifier is { } identityUserId // checks for not null as well, because awesome object pattern
-            && !userConnectionManager.TryStoreUserConnection(identityUserId, Context.ConnectionId)) {
-            logger.Warning("Identity {identity} could not be added to connection manager", identityUserId);
-        }
-
         await base.OnConnectedAsync();
+        if (Context.User is null) {
+            logger.Warning("User could not be defined");
+            return;
+        }
+        string? id = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (id is null) {
+            logger.Warning("Id could not be defined");
+            return;
+        }
+        
+        string userId = Guid.Parse(id).ToString();
+        if (!userConnectionManager.TryStoreUserConnection(userId, Context.ConnectionId)) {
+            logger.Warning("Identity {identity} could not be added to connection manager", userId);
+        }
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception) {
-        if (Context.UserIdentifier is { } identityUserId 
-            && !userConnectionManager.TryRemoveUserConnection(identityUserId)) {
-            logger.Warning("Identity {identity} could not be removed from connection manager", identityUserId);
+        string userId = Guid.Parse(Context.User!.FindFirstValue(ClaimTypes.NameIdentifier)!).ToString();
+        if (!userConnectionManager.TryRemoveUserConnection(userId)) {
+            logger.Warning("Identity {identity} could not be removed from connection manager", userId);
         }
 
         await base.OnDisconnectedAsync(exception);

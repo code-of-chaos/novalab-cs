@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @using Serilog
 @using NovaLab.ApiClient.Api
-
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using NovaLab.ApiClient.Model
 @using NovaLab.Services.Twitch.Hubs
 @using ApplicationUser = NovaLab.Data.NovaLabUser
@@ -16,6 +16,7 @@
 @inject IMessageService MessageService
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAccessTokenProvider AccessTokenProvider
 
 <h2>REDEMPTIONS TABLE</h2>
 <Table>
@@ -36,7 +37,7 @@
 </Table>
 
 @code {
-    private List<NovaLab.ApiClient.Model.TwitchManagedRewardRedemption> Items { get; set; } = [];
+    private List<TwitchManagedRewardRedemption> Items { get; set; } = [];
     private HubConnection? _connection;
 
     private ApplicationUser? _user;
@@ -53,8 +54,14 @@
         
         // Setup hub connection
         _connection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/twitch"))
-            .Build();
+                .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/twitch"), options => {
+                    options.AccessTokenProvider = async () => {
+                        var accessTokenResult = await AccessTokenProvider.RequestAccessToken();
+                        accessTokenResult.TryGetToken(out var accessToken);
+                        return accessToken.Value;
+                    };
+                })
+                .Build();
 
         // Listen on the NewManagedRewardRedemption method
         _connection.On<TwitchManagedRewardRedemption>(TwitchHubMethods.NewManagedRewardRedemption, newRecord => {
@@ -70,7 +77,6 @@
 
         // Start the connection
         await _connection.StartAsync();
-
         
     }
     

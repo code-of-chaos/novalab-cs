@@ -7,11 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NovaLab.Api;
 
+using Data;
+using Microsoft.EntityFrameworkCore;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class AbstractBaseController : Controller {
-
+public abstract class AbstractBaseController(IDbContextFactory<NovaLabDbContext> contextFactory) : Controller {
+    protected Task<NovaLabDbContext> NovalabDb => contextFactory.CreateDbContextAsync();
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Success Methods
     // -----------------------------------------------------------------------------------------------------------------

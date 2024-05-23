@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-
 using System.Text.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,14 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using NovaLab.Components;
 using NovaLab.Components.Account;
 using NovaLab.Data;
-using NovaLab.Services.Twitch;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.OpenApi.Models;
 using NovaLab.Hosted;
-using NovaLab.Services.Twitch.EventCallbacks;
-using NovaLab.Services.Twitch.EventRegistering;
 using NovaLab.Services.Twitch.Hubs;
 using NovaLab.Services.Twitch.TwitchTokens;
 using Serilog;
@@ -28,7 +24,7 @@ using static TwitchLib.Api.Core.Common.Helpers;
 
 namespace NovaLab;
 
-using TwitchLib.Api.Interfaces;
+using Hosted.Twitch;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -67,7 +63,6 @@ public class Program {
             .AddTwitch(twitchOptions => {
                 twitchOptions.ClientId = builder.Configuration["Authentication:Twitch:ClientId"]!;
                 twitchOptions.ClientSecret = builder.Configuration["Authentication:Twitch:ClientSecret"]!;
-                
                 // Update scopes as needed
                 //      This might look weird, but the idea is te that we don't reuse this at all anywhere, just create the list and move on
                 ((AuthScopes[])[AuthScopes.Helix_Analytics_Read_Extensions, AuthScopes.Helix_Analytics_Read_Games,AuthScopes.Helix_Bits_Read, AuthScopes.Helix_Channel_Edit_Commercial,AuthScopes.Helix_Channel_Manage_Broadcast, AuthScopes.Helix_Channel_Manage_Extensions,AuthScopes.Helix_Channel_Manage_Moderators, AuthScopes.Helix_Channel_Manage_Polls,AuthScopes.Helix_Channel_Manage_Predictions, AuthScopes.Helix_Channel_Manage_Redemptions,AuthScopes.Helix_Channel_Manage_Schedule, AuthScopes.Helix_Channel_Manage_VIPs,AuthScopes.Helix_Channel_Manage_Videos, AuthScopes.Helix_Channel_Read_Charity,AuthScopes.Helix_Channel_Read_Editors, AuthScopes.Helix_Channel_Read_Goals,AuthScopes.Helix_Channel_Read_Hype_Train, AuthScopes.Helix_Channel_Read_Polls,AuthScopes.Helix_Channel_Read_Predictions, AuthScopes.Helix_Channel_Read_Redemptions,AuthScopes.Helix_Channel_Read_Stream_Key, AuthScopes.Helix_Channel_Read_Subscriptions,AuthScopes.Helix_Channel_Read_VIPs, AuthScopes.Helix_Clips_Edit, AuthScopes.Helix_Moderation_Read,AuthScopes.Helix_Moderator_Manage_Announcements, AuthScopes.Helix_Moderator_Manage_Automod,AuthScopes.Helix_Moderator_Manage_Automod_Settings, AuthScopes.Helix_Moderator_Manage_Banned_Users,AuthScopes.Helix_Moderator_Manage_Blocked_Terms, AuthScopes.Helix_Moderator_Manage_Chat_Settings,AuthScopes.Helix_Moderator_Read_Automod_Settings, AuthScopes.Helix_Moderator_Read_Blocked_Terms,AuthScopes.Helix_Moderator_Read_Chat_Settings, AuthScopes.Helix_Moderator_Read_Chatters,AuthScopes.Helix_User_Edit, AuthScopes.Helix_User_Edit_Broadcast,AuthScopes.Helix_User_Edit_Follows, AuthScopes.Helix_User_Manage_BlockedUsers,AuthScopes.Helix_User_Manage_Chat_Color, AuthScopes.Helix_User_Manage_Whispers,AuthScopes.Helix_User_Read_BlockedUsers, AuthScopes.Helix_User_Read_Broadcast,AuthScopes.Helix_User_Read_Email, AuthScopes.Helix_User_Read_Follows,AuthScopes.Helix_User_Read_Subscriptions, AuthScopes.Helix_moderator_Manage_Chat_Messages])
@@ -85,9 +80,14 @@ public class Program {
         
         // - DB -
         string connectionString = builder.Configuration["Database:MariaDb:ConnectionString"]!;
-        builder.Services.AddDbContext<NovaLabDbContext>(options =>
-            options.UseMySql(connectionString: connectionString, ServerVersion.AutoDetect(connectionString))
-        );
+        builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            // options.
+        });
+        
+        builder.Services.AddScoped(options => 
+            options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
+        
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddIdentityCore<NovaLabUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -101,7 +101,7 @@ public class Program {
         
         // TwitchApi is a singleton because they don't use injection
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
-        builder.Services.AddSingleton<ITwitchAPI>(_ => new TwitchAPI {
+        builder.Services.AddSingleton(new TwitchAPI {
             Settings = {
                 ClientId = builder.Configuration["Authentication:Twitch:ClientId"],
                 Secret = builder.Configuration["Authentication:Twitch:ClientSecret"]
@@ -110,9 +110,8 @@ public class Program {
         builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
         
         builder.Services.AddSingleton<IUserConnectionManager, UserConnectionManager>();
-        builder.Services.AddHostedService<HostedTwitchWebsocket>();
-        builder.Services.AddScoped<CatchTwitchManagedReward>();
-        builder.Services.AddScoped<RegisterCustomRewardRedemption>();
+        builder.Services.AddHostedTwitchServices();
+
         builder.Services.AddScoped<TwitchTokensManager>();
 
         builder.Services.AddAuthorization();

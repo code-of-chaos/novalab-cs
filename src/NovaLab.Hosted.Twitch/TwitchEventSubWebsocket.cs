@@ -1,6 +1,10 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+namespace NovaLab.Hosted.Twitch;
+
+using EventCallbacks;
+using EventRegistering;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,16 +12,13 @@ using Serilog;
 using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
 
-namespace NovaLab.Services.Twitch;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class HostedTwitchWebsocket(
+public class TwitchEventSubWebsocket(
     ILogger logger,
     EventSubWebsocketClient eventSubWebsocketClient,
-    IHttpClientFactory httpClientFactory,
     IServiceScopeFactory scopeFactory
     ) : IHostedService {
 
@@ -33,14 +34,13 @@ public class HostedTwitchWebsocket(
 
     public async Task StartAsync(CancellationToken cancellationToken) {
         _scope = scopeFactory.CreateScope();
-        var eventCallbacks = new TwitchEventsCallback(_scope);
         
         eventSubWebsocketClient.WebsocketConnected += OnWebsocketConnected;
         eventSubWebsocketClient.WebsocketDisconnected += OnWebsocketDisconnected;
         eventSubWebsocketClient.WebsocketReconnected += OnWebsocketReconnected;
         eventSubWebsocketClient.ErrorOccurred += OnErrorOccurred;
 
-        eventSubWebsocketClient.ChannelPointsCustomRewardRedemptionAdd += eventCallbacks.CatchTwitchManagedReward.Callback;
+        eventSubWebsocketClient.ChannelPointsCustomRewardRedemptionAdd += _scope.ServiceProvider.GetRequiredService<CatchTwitchManagedReward>().Callback;
         
         await eventSubWebsocketClient.ConnectAsync();
     }
@@ -54,9 +54,9 @@ public class HostedTwitchWebsocket(
         if (websocketConnectedArgs.IsRequestedReconnect) return;
         
         logger.Information($"Websocket {eventSubWebsocketClient.SessionId} connected!");
-        
-        var eventRegisters = new TwitchRegisterAtWebsocket(_scope);
-        await eventRegisters.RegisterCustomRewardRedemption.RegisterAtWebSocket(eventSubWebsocketClient);
+
+        using IServiceScope scope = scopeFactory.CreateScope();
+        await scope.ServiceProvider.GetRequiredService<RegisterCustomRewardRedemption>().RegisterAtWebSocket(eventSubWebsocketClient);
     }
     
     private async Task OnWebsocketDisconnected(object sender, EventArgs e) {

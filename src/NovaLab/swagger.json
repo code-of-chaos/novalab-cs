@@ -2,10 +2,11 @@
   "openapi": "3.0.1",
   "info": {
     "title": "NovaLab API",
+    "description": "An ASP.NET Core Web API for managing your streams",
     "version": "v1"
   },
   "paths": {
-    "/api/{userId}/twitch/tokens/refresh": {
+    "/api/twitch/tokens/refresh": {
       "get": {
         "tags": [
           "AccessToken"
@@ -14,8 +15,7 @@
         "parameters": [
           {
             "name": "userId",
-            "in": "path",
-            "required": true,
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -23,7 +23,64 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
           }
         }
       }
@@ -210,7 +267,7 @@
         }
       }
     },
-    "/api/{userId}/twitch/managed-rewards": {
+    "/api/twitch/managed-rewards": {
       "get": {
         "tags": [
           "TwitchManagedReward"
@@ -219,8 +276,7 @@
         "parameters": [
           {
             "name": "userId",
-            "in": "path",
-            "required": true,
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -237,6 +293,26 @@
         "responses": {
           "200": {
             "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
             "content": {
               "text/plain": {
                 "schema": {
@@ -265,8 +341,7 @@
         "parameters": [
           {
             "name": "userId",
-            "in": "path",
-            "required": true,
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -297,17 +372,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -317,17 +392,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -335,7 +410,7 @@
         }
       }
     },
-    "/api/{userId}/twitch/managed-rewards-redemptions": {
+    "/api/twitch/managed-rewards-redemptions": {
       "get": {
         "tags": [
           "TwitchManagedRewardRedemption"
@@ -343,9 +418,8 @@
         "operationId": "GetRedemptions",
         "parameters": [
           {
-            "name": "userId",
-            "in": "path",
-            "required": true,
+            "name": "user-id",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -423,16 +497,6 @@
           "TwitchManagedRewardRedemption"
         ],
         "operationId": "PostRedemption",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -455,6 +519,26 @@
         "responses": {
           "200": {
             "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
             "content": {
               "text/plain": {
                 "schema": {
@@ -512,77 +596,6 @@
           "data": {
             "type": "array",
             "items": { },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ApplicationUser": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "nullable": true
-          },
-          "userName": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedUserName": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedEmail": {
-            "type": "string",
-            "nullable": true
-          },
-          "emailConfirmed": {
-            "type": "boolean"
-          },
-          "passwordHash": {
-            "type": "string",
-            "nullable": true
-          },
-          "securityStamp": {
-            "type": "string",
-            "nullable": true
-          },
-          "concurrencyStamp": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumberConfirmed": {
-            "type": "boolean"
-          },
-          "twoFactorEnabled": {
-            "type": "boolean"
-          },
-          "lockoutEnd": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "lockoutEnabled": {
-            "type": "boolean"
-          },
-          "accessFailedCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "twitchBroadcasterId": {
-            "type": "string",
-            "nullable": true
-          },
-          "twitchAccessToken": {
-            "type": "string",
             "nullable": true
           }
         },
@@ -710,6 +723,74 @@
         "type": "integer",
         "format": "int32"
       },
+      "NovaLabUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedUserName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailConfirmed": {
+            "type": "boolean"
+          },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "securityStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumberConfirmed": {
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "lockoutEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lockoutEnabled": {
+            "type": "boolean"
+          },
+          "accessFailedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "twitchBroadcasterId": {
+            "maxLength": 16,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "TwitchManagedReward": {
         "required": [
           "outputTemplate",
@@ -722,7 +803,7 @@
             "format": "uuid"
           },
           "user": {
-            "$ref": "#/components/schemas/ApplicationUser"
+            "$ref": "#/components/schemas/NovaLabUser"
           },
           "rewardId": {
             "maxLength": 128,

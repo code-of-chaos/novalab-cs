@@ -20,14 +20,14 @@ namespace NovaLab.Api.Twitch.ManagedRewards;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [ApiController]
-[Route("api/{userId}/twitch/managed-rewards-redemptions/")]
+[Route("api/twitch/managed-rewards-redemptions/")]
 public class TwitchManagedRewardRedemptionController(
-    NovaLabDbContext dbContext,
+    IDbContextFactory<NovaLabDbContext> contextFactory,
     ILogger logger,
     IHubContext<TwitchHub> hubContext,
     IUserConnectionManager userConnectionManager
     
-    ) : AbstractBaseController{
+    ) : AbstractBaseController(contextFactory){
     
     // -----------------------------------------------------------------------------------------------------------------
     // GET Methods
@@ -37,11 +37,13 @@ public class TwitchManagedRewardRedemptionController(
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
     [SwaggerOperation(OperationId = "GetRedemptions")]
     public async Task<IActionResult> GetRedemptions(
-        [FromRoute] string userId, 
+        [FromQuery(Name = "user-id")] string userId, 
         [FromQuery(Name = "reward-id")] Guid? rewardId = null,
         [FromQuery(Name = "after")] DateTime? after = null,
         [FromQuery(Name = "limit")] uint? limit = null ) {
 
+        await using NovaLabDbContext dbContext = await NovalabDb;
+        
         IQueryable<TwitchManagedRewardRedemption> query = dbContext
             .TwitchManagedRewardRedemptions
             .Include(redemption => redemption.TwitchManagedReward)
@@ -63,26 +65,38 @@ public class TwitchManagedRewardRedemptionController(
     // -----------------------------------------------------------------------------------------------------------------
     [HttpPost]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = "PostRedemption")]
     public async Task<IActionResult> PostRedemption(
-        [FromRoute] string userId,
-        [FromBody] TwitchManagedRewardRedemptionDto rewardRedemption) {
-
+        [FromBody] TwitchManagedRewardRedemptionDto rewardRedemption
+        ) {
+        await using NovaLabDbContext dbContext = await NovalabDb;
+        
         try {
+            TwitchManagedReward? reward = await dbContext.TwitchManagedRewards
+                .Include(twitchManagedReward => twitchManagedReward.User)
+                .FirstOrDefaultAsync(reward => reward.RewardId == rewardRedemption.RewardId);
+            if (reward is null) {
+                logger.Warning("Could not map reward to rewardId {i}", rewardRedemption.RewardId);
+                return FailureClient();
+            }
+            
             var redemption = new TwitchManagedRewardRedemption {
-                TwitchManagedReward = await dbContext.TwitchManagedRewards.FirstAsync(reward => reward.RewardId == rewardRedemption.RewardId),
+                TwitchManagedReward = reward,
                 Username = rewardRedemption.Username,
-                Message = rewardRedemption.Message
+                Message = rewardRedemption.Message,
+                TimeStamp = DateTime.Now
             };
 
             await dbContext.TwitchManagedRewardRedemptions.AddAsync(redemption);
-        
             await dbContext.SaveChangesAsync();
+            
+            logger.Error("{@e}", userConnectionManager.Map);
             
             // send the client that this is to be updated
             //  TODO eventually don't send to all clients, but only to the client which needs it.
-            if ( userConnectionManager.TryGetConnectionId(userId, out string? connectionId)) {
+            if ( userConnectionManager.TryGetConnectionId(reward.User.Id, out string? connectionId)) {
                 await hubContext.Clients.Client(connectionId)
                     .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, redemption)
                     .ConfigureAwait(false);

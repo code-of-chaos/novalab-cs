@@ -18,12 +18,12 @@
         </CliArgumentViewModel>
         <CliArgumentViewModel>
           <option name="name" value="targetFramework" />
-          <option name="value" value="net8.0" />
+          <option name="value" value="net6.0" />
         </CliArgumentViewModel>
       </list>
     </option>
     <option name="generatorType" value="OPENAPI_GENERATOR_V6" />
-    <option name="jdkPath" value="C:\Users\andre\AppData\Local\Programs\Rider\jbr\bin\java.exe" />
+    <option name="jdkPath" value="C:\JetBrains\Toolbox\Rider\jbr\bin\java.exe" />
     <option name="language" value="csharp-netcore" />
     <option name="passParentEnvs" value="true" />
     <option name="programParameters" />
@@ -31,8 +31,8 @@
     <option name="selectedOptions">
       <list />
     </option>
-    <option name="specificationPath" value="E:\Portfolio\internal\002-code_of_chaos\0005-cs-novalab\0005-00-cs-novalab\src\NovaLab\swagger.json" />
-    <option name="workingDirectory" value="E:\Portfolio\internal\002-code_of_chaos\0005-cs-novalab\0005-00-cs-novalab\src\NovaLab" />
+    <option name="specificationPath" value="E:\Portfolio\internal\002-code_of_chaos\0005-cs-novalab\0005-00-cs-novalab-web\src\NovaLab\swagger.json" />
+    <option name="workingDirectory" value="E:\Portfolio\internal\002-code_of_chaos\0005-cs-novalab\0005-00-cs-novalab-web\src\NovaLab" />
     <method v="2" />
   </configuration>
 </component>

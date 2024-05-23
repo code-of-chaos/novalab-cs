@@ -1,7 +1,9 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+namespace NovaLab.Api.Twitch.Tokens;
 
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,22 +11,23 @@ using NovaLab.Data;
 using NovaLab.Services.Twitch.TwitchTokens;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace NovaLab.Api.Twitch.Tokens;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [ApiController]
-// [Authorize]
-[Route("api/{userId}/twitch/tokens")]
-public class AccessTokenController(TwitchTokensManager twitchTokensManager, UserManager<NovaLabUser> userManager) : AbstractBaseController {
+[Route("api/twitch/tokens")]
+public class AccessTokenController(
+    IDbContextFactory<NovaLabDbContext> contextFactory,
+    TwitchTokensManager twitchTokensManager,
+    UserManager<NovaLabUser> userManager
+) : AbstractBaseController(contextFactory) {
     
     [HttpGet("refresh")]
     [SwaggerOperation(OperationId = "RefreshTokens")]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
-    public async Task<IActionResult> RefreshTokens([FromRoute] string userId) {
+    public async Task<IActionResult> RefreshTokens([FromQuery] string userId) {
         NovaLabUser? user = await userManager.FindByIdAsync(userId);
         if (user is null) 
             return FailureClient(msg: "User could not be retrieved");

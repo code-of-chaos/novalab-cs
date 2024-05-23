@@ -10,9 +10,10 @@ namespace NovaLab.Data;
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-public class NovaLabDbContext(DbContextOptions<NovaLabDbContext> options)
-    : IdentityDbContext<NovaLabUser>(options) {
-    
+public class NovaLabDbContext : IdentityDbContext<NovaLabUser> {
     public DbSet<TwitchManagedReward> TwitchManagedRewards { get; set; }
     public DbSet<TwitchManagedRewardRedemption> TwitchManagedRewardRedemptions { get; set; }
+
+    public NovaLabDbContext() {}
+    public NovaLabDbContext(DbContextOptions<NovaLabDbContext> options) : base(options) {}
 }

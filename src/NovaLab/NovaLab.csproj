@@ -41,6 +41,7 @@
       <ProjectReference Include="..\NovaLab.Api.Twitch\NovaLab.Api.Twitch.csproj" />
       <ProjectReference Include="..\NovaLab.Api\NovaLab.Api.csproj" />
       <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
+      <ProjectReference Include="..\NovaLab.Hosted.Twitch\NovaLab.Hosted.Twitch.csproj" />
       <ProjectReference Include="..\NovaLab.RazorLib\NovaLab.RazorLib.csproj" />
       <ProjectReference Include="..\NovaLab.Services.Twitch\NovaLab.Services.Twitch.csproj" />
     </ItemGroup>
