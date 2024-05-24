@@ -1,34 +1,30 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Text.Json;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using NovaLab.Components;
-using NovaLab.Components.Account;
-using NovaLab.Data;
+namespace NovaLab;
+
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using Components;
+using Components.Account;
+using Data;
+using Hosted;
+using Hosted.Twitch;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using NovaLab.Hosted;
-using NovaLab.Services.Twitch.Hubs;
-using NovaLab.Services.Twitch.TwitchTokens;
+using RazorLib.Lib;
 using Serilog;
 using Serilog.Core;
+using Services.Twitch.Hubs;
+using Services.Twitch.TwitchTokens;
+using System.Text.Json;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.EventSub.Websockets.Extensions;
 using static TwitchLib.Api.Core.Common.Helpers;
-
-namespace NovaLab;
-
-using Hosted.Twitch;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Primitives;
-using Serilog.Events;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -43,7 +39,7 @@ public class Program {
         // - Logger : SeriLog -
         builder.Logging.ClearProviders();
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.ControlledBy( new LoggingLevelSwitch(LogEventLevel.Information))
+            .MinimumLevel.ControlledBy( new LoggingLevelSwitch())
             .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))
             .WriteTo.Async(lsc => lsc.Console())
             .CreateLogger();
@@ -104,6 +100,7 @@ public class Program {
         builder.Services.AddSingleton<IEmailSender<NovaLabUser>, IdentityNoOpEmailSender>();
         
         // - Extra Services - 
+        builder.Services.AddScoped<UserAccessor>();
         
         // TwitchApi is a singleton because they don't use injection
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?

@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using NovaLab.ApiClient.Api
+@using NovaLab.ApiClient.Model
+@using NovaLab.RazorLib.Lib
+@using Serilog
+@using NovaLabUser=NovaLab.Data.NovaLabUser
+
+@attribute [StreamRendering, Authorize]
+
+@inject UserAccessor UserAccessor
+@inject NavigationManager NavigationManager
+@inject ILogger logger
+
+<SelectList TItem="ManagedRewardModel"
+            TValue="int"
+            Data="@_indexedRewardData"
+            TextField="@(item => item.Name)"
+            ValueField="@(item => item.Id)"
+            SelectedValue="@SelectedListValue"
+            DefaultItemText="Choose Rewards"
+            SelectedValueChanged="@SelectedValueChangedCallback"
+            />
+
+@code {
+    public class ManagedRewardModel {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    [Parameter]
+    public EventCallback<TwitchManagedReward> Callback { get; set; }
+
+    private TwitchManagedReward[] _rewards = [];
+    private IEnumerable<ManagedRewardModel> _indexedRewardData  = [];
+    private int SelectedListValue { get; set; }
+    private TwitchManagedRewardApi? _rewardApiCache;
+    private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi(NavigationManager.BaseUri);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        NovaLabUser? user = await UserAccessor.GetUser();
+        if (user is null) return;
+
+        TwitchManagedRewardApiResult result = await RewardApi.GetManagedRewardsAsync(user.Id);
+        if (result.Status != HttpStatusCode.NUMBER_200) return;
+        
+        _rewards = result.Data.ToArray();
+        _indexedRewardData = _rewards.Select((reward, i) => new ManagedRewardModel { Id = i, Name = reward.RewardId });
+    }
+
+    private async Task SelectedValueChangedCallback(int index) {
+        logger.Warning("TRIGGERED inside");
+        SelectedListValue = index; 
+        await Callback.InvokeAsync(_rewards[index]);
+    }
+}

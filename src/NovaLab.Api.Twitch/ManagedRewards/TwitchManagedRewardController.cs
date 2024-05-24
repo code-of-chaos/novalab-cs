@@ -97,24 +97,26 @@ public class TwitchManagedRewardController(
     [SwaggerOperation(OperationId = "PostManagedReward")]
     public async Task<IActionResult> PostManagedReward(
         [FromQuery] string? userId, 
-        [FromBody] CreateCustomRewardsRequest customRewardsRequest) {
+        [FromBody] PostManagedRewardDto postManagedRewardDto) {
         
         await using NovaLabDbContext dbContext = await NovalabDb;
-        customRewardsRequest.IsEnabled = true;
+        postManagedRewardDto.TwitchApiRequest.IsEnabled = true;
         
         try {
             NovaLabUser user = await dbContext.Users.FirstAsync(u => u.Id == userId);
             
             CreateCustomRewardsResponse result = await twitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(
                 user.TwitchBroadcasterId,
-                customRewardsRequest,
+                postManagedRewardDto.TwitchApiRequest,
                 await twitchTokensService.GetAccessTokenOrRefreshAsync(user)
             );
             
             await dbContext.TwitchManagedRewards.AddAsync(
                 new TwitchManagedReward {
                     User = user,
-                    RewardId = result.Data.First().Id
+                    RewardId = result.Data.First().Id,
+                    OutputTemplatePerRedemption = postManagedRewardDto.OutputTemplatePerRedemption,
+                    OutputTemplatePerReward = postManagedRewardDto.OutputTemplatePerReward
                 }
             );
             

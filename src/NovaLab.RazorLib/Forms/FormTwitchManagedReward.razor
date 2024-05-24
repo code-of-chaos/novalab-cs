@@ -5,7 +5,6 @@
 @using Serilog
 @using  NovaLab.ApiClient.Model
 @using ApplicationUser = NovaLab.Data.NovaLabUser
-@using CreateCustomRewardsRequest = TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward.CreateCustomRewardsRequest
 
 @attribute [StreamRendering]
 
@@ -18,38 +17,56 @@
 
 <Row>
     <Column>
-        <Validations @ref="@(ValidationsRef)" Mode="ValidationMode.Auto" Model="@CreateCustomRewardsRequestModel" ValidateOnLoad="false" StatusChanged="@ValidationChanged">
+        <Validations @ref="@(ValidationsRefRequest)" Mode="ValidationMode.Auto" Model="@CreateNewRewardModel" ValidateOnLoad="false" StatusChanged="@ValidationChanged">
             <Fields>
                 <ValidatedTextEditFormField 
                     FieldLabel="@("Reward's Title")"
                     Validator="@ValidationRule.IsNotEmpty" 
-                    @bind-BindValue="@CreateCustomRewardsRequestModel.Title"
+                    @bind-BindValue="@CreateNewRewardModel.TwitchApiRequest.Title"
                     SizeColumn="@ColumnSize.IsAuto"
                 />
 
                 <ValidatedNumericEditFormField
                     FieldLabel="@("Channel Points Cost")"
                     Validator="@ValidationRuleExtensions.IsIntPositiveNonZero"
-                    @bind-BindValue="@CreateCustomRewardsRequestModel.Cost"
+                    @bind-BindValue="@CreateNewRewardModel.TwitchApiRequest.Cost"
                     SizeColumn="@ColumnSize.IsAuto"
                 />
-
             </Fields>
         </Validations>
 
-        <Button Color="Color.Primary" Clicked="@OnSaveClicked" Disabled="@ValidationFailed">
-            Validate and Submit
-        </Button>
-
-
     </Column>
+    <Column>
+        <Validations @ref="@(ValidationsRefMessageTemplates)" Mode="ValidationMode.Auto" Model="@CreateNewRewardModel" ValidateOnLoad="false" StatusChanged="@ValidationChanged">
+            <Fields>
+                <ValidatedMemoEditFormField
+                    FieldLabel="Full Message Template"
+                    Validator="@ValidationRule.IsNotEmpty"
+                    @bind-BindValue="@CreateNewRewardModel.OutputTemplatePerReward"
+                    SizeColumn="@ColumnSize.IsAuto"
+                />
+                
+                <ValidatedMemoEditFormField
+                    FieldLabel="Redemption Message Template"
+                    Validator="@ValidationRule.IsNotEmpty"
+                    @bind-BindValue="@CreateNewRewardModel.OutputTemplatePerRedemption"
+                    SizeColumn="@ColumnSize.IsAuto"
+                />
+            </Fields>
+        </Validations>
+    </Column>
+
+    <Button Color="Color.Primary" Clicked="@OnSaveClicked" Disabled="@ValidationFailed">
+        Validate and Submit
+    </Button>
 </Row>
 
 
 @code {
-    Validations ValidationsRef { get; set; } = null!;
+    Validations ValidationsRefRequest { get; set; } = null!;
+    Validations ValidationsRefMessageTemplates { get; set; } = null!;
 
-    CreateCustomRewardsRequest CreateCustomRewardsRequestModel { get; } = new();
+    PostManagedRewardDto CreateNewRewardModel { get; } = new(new CreateCustomRewardsRequest());
     
     private bool ValidationFailed { get; set; }
 
@@ -70,36 +87,25 @@
         //     return;
         // }
         
-        if (!await ValidationsRef.ValidateAll() ) {
+        if (!await ValidationsRefRequest.ValidateAll() ) {
             logger.Warning("Some fields were not validated correctly");
             return;
         }
-        logger.Information( "Thank you for filling the form." );
+        if (!await ValidationsRefMessageTemplates.ValidateAll()) {
+            logger.Warning("Templates couldn't be validated");
+        }
         
         AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         string userName = authState.User.Identity!.Name!;
         ApplicationUser? user = await UserManager.FindByNameAsync(userName);
         string userId = user!.Id;
-        
-        logger.Warning("client {@e}", CreateCustomRewardsRequestModel);
 
-        var response = await RewardApi.PostManagedRewardAsync(userId, new ApiClient.Model.CreateCustomRewardsRequest(){
-            Title = CreateCustomRewardsRequestModel.Title,
-            Prompt = CreateCustomRewardsRequestModel.Prompt,
-            Cost = CreateCustomRewardsRequestModel.Cost,
-            IsEnabled = CreateCustomRewardsRequestModel.IsEnabled,
-            BackgroundColor = CreateCustomRewardsRequestModel.BackgroundColor,
-            IsUserInputRequired = CreateCustomRewardsRequestModel.IsUserInputRequired,
-            IsMaxPerStreamEnabled = CreateCustomRewardsRequestModel.IsMaxPerStreamEnabled,
-            MaxPerStream = CreateCustomRewardsRequestModel.MaxPerStream,
-            IsMaxPerUserPerStreamEnabled = CreateCustomRewardsRequestModel.IsMaxPerUserPerStreamEnabled,
-            MaxPerUserPerStream = CreateCustomRewardsRequestModel.MaxPerUserPerStream,
-            IsGlobalCooldownEnabled = CreateCustomRewardsRequestModel.IsGlobalCooldownEnabled,
-            GlobalCooldownSeconds = CreateCustomRewardsRequestModel.GlobalCooldownSeconds,
-            ShouldRedemptionsSkipRequestQueue = CreateCustomRewardsRequestModel.ShouldRedemptionsSkipRequestQueue,
-        });
+        ApiResult response = await RewardApi.PostManagedRewardAsync(userId, CreateNewRewardModel);
+        
+        
         if (response.Status == HttpStatusCode.NUMBER_200) {
-            await ValidationsRef.ClearAll();
+            await ValidationsRefRequest.ClearAll();
+            await ValidationsRefMessageTemplates.ClearAll();
         }
 
     }

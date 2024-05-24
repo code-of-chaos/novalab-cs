@@ -351,17 +351,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCustomRewardsRequest"
+                "$ref": "#/components/schemas/PostManagedRewardDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCustomRewardsRequest"
+                "$ref": "#/components/schemas/PostManagedRewardDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCustomRewardsRequest"
+                "$ref": "#/components/schemas/PostManagedRewardDto"
               }
             }
           }
@@ -791,9 +791,26 @@
         },
         "additionalProperties": false
       },
+      "PostManagedRewardDto": {
+        "type": "object",
+        "properties": {
+          "twitchApiRequest": {
+            "$ref": "#/components/schemas/CreateCustomRewardsRequest"
+          },
+          "outputTemplatePerReward": {
+            "type": "string",
+            "nullable": true
+          },
+          "outputTemplatePerRedemption": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "TwitchManagedReward": {
         "required": [
-          "outputTemplate",
+          "outputTemplatePerRedemption",
           "outputTemplatePerReward"
         ],
         "type": "object",
@@ -810,12 +827,12 @@
             "type": "string",
             "nullable": true
           },
-          "outputTemplatePerReward": {
+          "outputTemplatePerRedemption": {
             "maxLength": 255,
             "minLength": 1,
             "type": "string"
           },
-          "outputTemplate": {
+          "outputTemplatePerReward": {
             "maxLength": 255,
             "minLength": 1,
             "type": "string"
@@ -911,15 +928,6 @@
           },
           "message": {
             "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      }
-    }
-  }
-}         "$ref": "#/components/schemas/TwitchManagedRewardStringValueTuple"
-            },
             "nullable": true
           }
         },

@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using NovaLab.ApiClient.Model
+@using Serilog
+
+@inject ILogger logger
+
+@attribute [StreamRendering]
+
+<ManagedRewardList Callback="@SelectedListItemUpdate"/>
+<ManagedRewardOutput ManagedReward="@CurrentSelectedReward"></ManagedRewardOutput>
+
+@code {
+    private TwitchManagedReward? CurrentSelectedReward { get; set; }
+    
+    private void SelectedListItemUpdate(TwitchManagedReward reward) {
+        CurrentSelectedReward = reward;
+        
+        logger.Warning("TRIGGERED");
+    }
+
+}
