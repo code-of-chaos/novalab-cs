@@ -56,15 +56,13 @@ public class RegisterCustomRewardRedemption(
     // Support Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task RegisterSubscription(EventSubWebsocketClient client, TwitchManagedReward twitchManagedReward, NovaLabDbContext dbContext) {
-        if (twitchManagedReward.User is null) {
-            logger.Warning("USER IS NULL");
-            return;
-        }
         NovaLabUser? user = await dbContext.Users.Where(user => user.TwitchBroadcasterId == twitchManagedReward.User.TwitchBroadcasterId).FirstOrDefaultAsync();
         if (user is null) {
             logger.Warning("Broadcaster Id {broadcasterId} could not be tied to a NovalabUser", twitchManagedReward.User.TwitchBroadcasterId);
             return;
         }
+        
+        
         // subscribe to topics
         // see : https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd
         await twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync(
@@ -81,7 +79,7 @@ public class RegisterCustomRewardRedemption(
             null, // Don't set because we are using websocket
             null, // Don't set because we are using websocket
             twitchApi.Settings.ClientId, 
-            await twitchAccessToken.GetAccessTokenOrRefreshAsync(user)
+            await twitchAccessToken.GetAccessTokenOrRefreshAsync(user.Id)
         );
                 
         logger.Information("ASSIGNED!");

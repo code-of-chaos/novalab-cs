@@ -101,7 +101,15 @@
                 "{Name} logged in with {LoginProvider} provider.",
                 externalLoginInfo.Principal.Identity?.Name,
                 externalLoginInfo.LoginProvider);
-            RedirectManager.RedirectTo(ReturnUrl);
+            
+            // Fetch the user
+            NovaLabUser? user = await UserManager.FindByLoginAsync(externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey);
+            
+            // Update user tokens on each successful login
+            if (user != null && externalLoginInfo.AuthenticationTokens != null)
+                await TwitchTokensManager.IngestTokensWithUserManager(user.Id, externalLoginInfo.AuthenticationTokens);
+            
+            RedirectManager.RedirectTo(ReturnUrl);;
         }
         else if (result.IsLockedOut) {
             RedirectManager.RedirectTo("Account/Lockout");
@@ -137,7 +145,7 @@
                 
                 // THis should store the tokens to AspNetUserTokens table?
                 if (info.AuthenticationTokens != null) 
-                    await TwitchTokensManager.IngestTokensWithUserManager(user, info.AuthenticationTokens);
+                    await TwitchTokensManager.IngestTokensWithUserManager(user.Id, info.AuthenticationTokens);
                 
                 // Update the user in one go
                 await UserStore.UpdateAsync(user, CancellationToken.None);

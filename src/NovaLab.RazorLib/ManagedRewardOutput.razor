@@ -53,7 +53,7 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
-        _user = await UserAccessor.GetUser();
+        _user = await UserAccessor.GetUserAsync();
         await PopulateItems();
     }
     

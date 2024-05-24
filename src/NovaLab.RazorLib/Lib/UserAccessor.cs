@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 // ---------------------------------------------------------------------------------------------------------------------
 
 public class UserAccessor(AuthenticationStateProvider authenticationStateProvider, IServiceScopeFactory scopeFactory) {
-    public async Task<NovaLabUser?> GetUser() {
+    public async Task<NovaLabUser?> GetUserAsync() {
         await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<NovaLabUser>>();
         

@@ -1,21 +1,32 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using NovaLab.ApiClient.Api
 @using NovaLab.ApiClient.Model
 @using Serilog
 
 @inject ILogger logger
+@inject NavigationManager NavigationManager
 
 @attribute [StreamRendering]
 
 <ManagedRewardList Callback="@SelectedListItemUpdate"/>
 <ManagedRewardOutput ManagedReward="@CurrentSelectedReward"></ManagedRewardOutput>
+<Button Color="Color.Primary" Clicked="@OnButtonClicked">Clear Current Selection</Button>
 
 @code {
     private TwitchManagedReward? CurrentSelectedReward { get; set; }
+    
+    private TwitchManagedRewardApi? _rewardApiCache;
+    private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi(NavigationManager.BaseUri);
+
     
     private void SelectedListItemUpdate(TwitchManagedReward reward) {
         CurrentSelectedReward = reward;
         
         logger.Warning("TRIGGERED");
+    }
+
+    private async Task OnButtonClicked() {
+        await RewardApi.PostNewLastClearedAsync(CurrentSelectedReward?.RewardId);
     }
 
 }

@@ -18,8 +18,7 @@ using Swashbuckle.AspNetCore.Annotations;
 [Route("api/twitch/tokens")]
 public class AccessTokenController(
     IDbContextFactory<NovaLabDbContext> contextFactory,
-    TwitchTokensManager twitchTokensManager,
-    UserManager<NovaLabUser> userManager
+    TwitchTokensManager twitchTokensManager
 ) : AbstractBaseController(contextFactory) {
     
     [HttpGet("refresh")]
@@ -28,10 +27,7 @@ public class AccessTokenController(
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> RefreshTokens([FromQuery] string userId) {
-        NovaLabUser? user = await userManager.FindByIdAsync(userId);
-        if (user is null) 
-            return FailureClient(msg: "User could not be retrieved");
-        if (!await twitchTokensManager.RefreshAccessTokenAsync(user))
+        if (!await twitchTokensManager.RefreshAccessTokenAsync(userId))
             return FailureServer(msg: "Token could not be refreshed");
         return Success(HttpStatusCode.ResetContent,"Token refreshed");
     }

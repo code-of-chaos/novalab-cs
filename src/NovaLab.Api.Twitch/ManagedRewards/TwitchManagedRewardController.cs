@@ -55,7 +55,7 @@ public class TwitchManagedRewardController(
                 );
 
             string[] accessTokens = await Task.WhenAll(rewards.Keys
-                .Select(twitchTokensService.GetAccessTokenOrRefreshAsync)
+                .Select(user => twitchTokensService.GetAccessTokenOrRefreshAsync(user.Id))
                 .ToArray()
             );
 
@@ -108,7 +108,7 @@ public class TwitchManagedRewardController(
             CreateCustomRewardsResponse result = await twitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(
                 user.TwitchBroadcasterId,
                 postManagedRewardDto.TwitchApiRequest,
-                await twitchTokensService.GetAccessTokenOrRefreshAsync(user)
+                await twitchTokensService.GetAccessTokenOrRefreshAsync(user.Id)
             );
             
             await dbContext.TwitchManagedRewards.AddAsync(
@@ -127,5 +127,25 @@ public class TwitchManagedRewardController(
             logger.Warning(e, "Reward could not be created");
             return FailureServer(msg:"Reward could not be created");
         }
+    }
+
+    [HttpPost("clear")]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
+    [SwaggerOperation(OperationId = "PostNewLastCleared")]
+    public async Task<IActionResult> PostNewLastCleared(
+        [FromQuery] string managedRewardId
+    ) {
+        await using NovaLabDbContext dbContext = await NovalabDb;
+
+        TwitchManagedReward? reward = await dbContext.TwitchManagedRewards
+            .FirstOrDefaultAsync(reward => reward.RewardId == managedRewardId);
+
+        if (reward is null) return FailureClient();
+
+        reward.LastCleared = DateTime.Now;
+        await dbContext.SaveChangesAsync();
+
+        return Success();
     }
 }

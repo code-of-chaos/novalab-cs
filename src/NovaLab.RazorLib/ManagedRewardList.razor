@@ -40,7 +40,7 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
-        NovaLabUser? user = await UserAccessor.GetUser();
+        NovaLabUser? user = await UserAccessor.GetUserAsync();
         if (user is null) return;
 
         TwitchManagedRewardApiResult result = await RewardApi.GetManagedRewardsAsync(user.Id);

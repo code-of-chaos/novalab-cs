@@ -48,6 +48,7 @@ public class TwitchManagedRewardRedemptionController(
             .TwitchManagedRewardRedemptions
             .Include(redemption => redemption.TwitchManagedReward)
             .Where(redemption => redemption.TwitchManagedReward.User.Id == userId)
+            .Where(redemption => redemption.TimeStamp >= redemption.TwitchManagedReward.LastCleared)
             .AsQueryable();
 
         if (rewardId is not null) query = query.Where(redemption => redemption.TwitchManagedReward.Id == rewardId);

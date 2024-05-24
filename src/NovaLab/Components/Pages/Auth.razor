@@ -18,7 +18,7 @@
 <h1>You are authenticated</h1>
 
 <AuthorizeView>
-    <BtnTwitchAccessTokenRefresh UserId="@(context.User.FindFirst(u => u.Type.Contains("nameidentifier"))!.Value)"/>
+    <BtnTwitchAccessTokenRefresh/>
     <FormTwitchManagedReward/>
     <ManagedRewardComponent/>
 </AuthorizeView>

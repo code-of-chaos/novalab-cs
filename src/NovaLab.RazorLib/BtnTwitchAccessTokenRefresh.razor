@@ -1,4 +1,6 @@
 ﻿@using NovaLab.ApiClient.Api
+@using NovaLab.ApiClient.Model
+@using NovaLab.RazorLib.Lib
 @using Serilog
 
 @inherits ComponentBase
@@ -6,6 +8,7 @@
 @inject HttpClient Http
 @inject ILogger logger
 @inject NavigationManager NavigationManager
+@inject UserAccessor UserAccessor
 
 @attribute [StreamRendering]
 
@@ -19,7 +22,6 @@
 </Row>
 
 @code {
-    [Parameter]
     public required string UserId { get; set; }
 
     private IconLoadingState.StateEnum _iconState = IconLoadingState.StateEnum.Undefined;
@@ -33,11 +35,11 @@
     // -----------------------------------------------------------------------------------------------------------------
     private async Task OnClickCallback() {
         try {
-            // _iconState = IconLoadingState.StateEnum.Loading;
-            // bool result = await AccessTokenApi.RefreshTokensAsync(UserId);
-            // _iconState = result
-            //     ? IconLoadingState.StateEnum.Success
-            //     : IconLoadingState.StateEnum.Failure;
+            _iconState = IconLoadingState.StateEnum.Loading;
+            ApiResult result = await AccessTokenApi.RefreshTokensAsync((await UserAccessor.GetUserAsync())?.Id);
+            _iconState = result.Status == HttpStatusCode.NUMBER_200
+                ? IconLoadingState.StateEnum.Success
+                : IconLoadingState.StateEnum.Failure;
         }
         catch (Exception e) {
             logger.Error(e, "An Exception occured");
