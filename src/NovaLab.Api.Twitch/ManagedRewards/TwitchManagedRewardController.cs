@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +14,7 @@ using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 namespace NovaLab.Api.Twitch.ManagedRewards;
 
 using TwitchLib.Api;
+using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -41,28 +41,44 @@ public class TwitchManagedRewardController(
 
         try {
             IQueryable<TwitchManagedReward> query = dbContext.TwitchManagedRewards
+                .AsNoTracking()
                 .Include(reward => reward.User)
                 .AsQueryable();
 
             if (userId is not null) query = query.Where(reward => reward.User.Id == userId);
             if (limit is not null) query = query.Take((int)limit);
-            Dictionary<NovaLabUser, TwitchManagedReward[]> rewards = await query
+            Dictionary<NovaLabUser, string[]> rewards = await query
                 .GroupBy(reward => reward.User)
-                .ToDictionaryAsync(grouping => grouping.Key, grouping => grouping.ToArray());
+                .ToDictionaryAsync(
+                    grouping => grouping.Key, 
+                    grouping => grouping.Select(reward => reward.RewardId).ToArray()
+                );
 
-            // Then create a new list for redeemed rewards
-            foreach (NovaLabUser user in rewards.Keys) {
-                IEnumerable<string> responseIds = (await twitchApi.Helix.ChannelPoints.GetCustomRewardAsync(
-                user.TwitchBroadcasterId,
-                accessToken: await twitchTokensService.GetAccessTokenOrRefreshAsync(user)
-                )).Data.Select(d => d.Id);
+            string[] accessTokens = await Task.WhenAll(rewards.Keys
+                .Select(twitchTokensService.GetAccessTokenOrRefreshAsync)
+                .ToArray()
+            );
 
-                rewards[user] = rewards[user].Where(r => responseIds.Contains(r.RewardId)).ToArray();
-            }
+            GetCustomRewardsResponse[] responses = await Task.WhenAll(rewards.Keys
+                .Zip(accessTokens)
+                .Select(item => twitchApi.Helix.ChannelPoints.GetCustomRewardAsync(item.First.TwitchBroadcasterId, accessToken: item.Second))
+                .ToArray()
+            );
+  
+            HashSet<string> responseIds = responses
+                .SelectMany(d => d.Data.Select(r => r.Id))
+                .ToHashSet();
+
+            HashSet<string> validIds = rewards.Values
+                .SelectMany(rewardId => rewardId)
+                .Where(rewardId => responseIds.Contains(rewardId))
+                .ToHashSet();
             
-            return Success(rewards.Values
-                .SelectMany(r => r) // FLAT PACK THE VALUES
-                .ToArray());
+            return Success(
+                await query
+                    .Where(reward => validIds.Contains(reward.RewardId))
+                    .ToArrayAsync()
+            );
         }
 
         catch (Exception ex) {

@@ -25,6 +25,7 @@ using static TwitchLib.Api.Core.Common.Helpers;
 namespace NovaLab;
 
 using Hosted.Twitch;
+using Serilog.Events;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -39,7 +40,7 @@ public class Program {
         // - Logger : SeriLog -
         builder.Logging.ClearProviders();
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.ControlledBy( new LoggingLevelSwitch())
+            .MinimumLevel.ControlledBy( new LoggingLevelSwitch(LogEventLevel.Debug))
             .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))
             .WriteTo.Async(lsc => lsc.Console())
             .CreateLogger();
@@ -82,6 +83,9 @@ public class Program {
         string connectionString = builder.Configuration["Database:MariaDb:ConnectionString"]!;
         builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            options.EnableDetailedErrors();
+            // options.EnableSensitiveDataLogging();
+            // options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); 
             // options.
         });
         

@@ -56,6 +56,10 @@ public class RegisterCustomRewardRedemption(
     // Support Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task RegisterSubscription(EventSubWebsocketClient client, TwitchManagedReward twitchManagedReward, NovaLabDbContext dbContext) {
+        if (twitchManagedReward.User is null) {
+            logger.Warning("USER IS NULL");
+            return;
+        }
         NovaLabUser? user = await dbContext.Users.Where(user => user.TwitchBroadcasterId == twitchManagedReward.User.TwitchBroadcasterId).FirstOrDefaultAsync();
         if (user is null) {
             logger.Warning("Broadcaster Id {broadcasterId} could not be tied to a NovalabUser", twitchManagedReward.User.TwitchBroadcasterId);

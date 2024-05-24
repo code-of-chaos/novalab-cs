@@ -16,7 +16,6 @@
 @inject IMessageService MessageService
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IAccessTokenProvider AccessTokenProvider
 
 <h2>REDEMPTIONS TABLE</h2>
 <Table>
@@ -54,13 +53,7 @@
         
         // Setup hub connection
         _connection = new HubConnectionBuilder()
-                .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/twitch"), options => {
-                    options.AccessTokenProvider = async () => {
-                        var accessTokenResult = await AccessTokenProvider.RequestAccessToken();
-                        accessTokenResult.TryGetToken(out var accessToken);
-                        return accessToken.Value;
-                    };
-                })
+                .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/twitch"))
                 .Build();
 
         // Listen on the NewManagedRewardRedemption method

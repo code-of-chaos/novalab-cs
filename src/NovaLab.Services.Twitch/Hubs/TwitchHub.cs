@@ -10,18 +10,24 @@ using Serilog;
 namespace NovaLab.Services.Twitch.Hubs;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [Authorize]
-public class TwitchHub(IUserConnectionManager userConnectionManager, ILogger logger) : Hub {
+public class TwitchHub(IUserConnectionManager userConnectionManager, ILogger logger, IHttpContextAccessor httpContextAccessor) : Hub {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task OnConnectedAsync() {
         await base.OnConnectedAsync();
+
+        if (httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value is {} user) {
+            logger.Warning(user);
+        };
+        
         if (Context.User is null) {
             logger.Warning("User could not be defined");
             return;

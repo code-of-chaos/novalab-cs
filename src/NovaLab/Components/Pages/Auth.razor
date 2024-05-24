@@ -20,7 +20,7 @@
 <AuthorizeView>
     <BtnTwitchAccessTokenRefresh UserId="@(context.User.FindFirst(u => u.Type.Contains("nameidentifier"))!.Value)"/>
     <FormTwitchManagedReward/>
-    <TableTwitchManagedRewardRedemptions/>
+    @* <TableTwitchManagedRewardRedemptions/> *@
 </AuthorizeView>
 
 @code {

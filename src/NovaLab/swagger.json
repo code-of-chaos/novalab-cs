@@ -918,4 +918,13 @@
       }
     }
   }
+}         "$ref": "#/components/schemas/TwitchManagedRewardStringValueTuple"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
 }
