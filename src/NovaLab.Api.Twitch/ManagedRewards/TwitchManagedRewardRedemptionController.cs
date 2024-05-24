@@ -96,15 +96,10 @@ public class TwitchManagedRewardRedemptionController(
             
             // send the client that this is to be updated
             //  TODO eventually don't send to all clients, but only to the client which needs it.
-            if ( userConnectionManager.TryGetConnectionId(reward.User.Id, out string? connectionId)) {
-                await hubContext.Clients.Client(connectionId)
-                    .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, redemption)
-                    .ConfigureAwait(false);
-                logger.Information("Sent to client");
-                return Success();
-            }
-
-            logger.Warning("Could not send to client ");
+            await hubContext.Clients.All
+                .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, redemption)
+                .ConfigureAwait(false);
+            logger.Information("Sent to client");
             return Success();
         }
         catch (Exception e) {

@@ -25,6 +25,9 @@ using static TwitchLib.Api.Core.Common.Helpers;
 namespace NovaLab;
 
 using Hosted.Twitch;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Primitives;
 using Serilog.Events;
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -40,7 +43,7 @@ public class Program {
         // - Logger : SeriLog -
         builder.Logging.ClearProviders();
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.ControlledBy( new LoggingLevelSwitch(LogEventLevel.Debug))
+            .MinimumLevel.ControlledBy( new LoggingLevelSwitch(LogEventLevel.Information))
             .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))
             .WriteTo.Async(lsc => lsc.Console())
             .CreateLogger();
@@ -75,7 +78,6 @@ public class Program {
                 //      This is needed to make that work
                 twitchOptions.SaveTokens = true;
             })
-            .AddJwtBearer()
             .AddBearerToken()
             .AddIdentityCookies();
         
@@ -83,7 +85,7 @@ public class Program {
         string connectionString = builder.Configuration["Database:MariaDb:ConnectionString"]!;
         builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-            options.EnableDetailedErrors();
+            // options.EnableDetailedErrors();
             // options.EnableSensitiveDataLogging();
             // options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); 
             // options.
@@ -141,6 +143,9 @@ public class Program {
             });
             options.EnableAnnotations();
         });
+
+        builder.Services.AddSignalR();
+        // builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
         
         // - Blazorise -
         builder.Services
