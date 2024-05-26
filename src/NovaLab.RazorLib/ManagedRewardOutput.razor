@@ -1,7 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.SignalR.Client
 @using Serilog
 @using NovaLab.ApiClient.Api
 @using NovaLab.ApiClient.Model
@@ -20,9 +19,10 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserAccessor UserAccessor
+@inject TwitchHubClient TwitchHubClient
 
 <h2>REDEMPTIONS</h2>
-<MemoEdit AutoSize @bind-Text="@TextOutput"/>
+<MemoEdit AutoSize @bind-Text="@_textOutput"/>
 
 @code {
     private TwitchManagedReward? _managedReward;
@@ -31,9 +31,10 @@
     public TwitchManagedReward? ManagedReward {
         get => _managedReward;
         set {
-            if (_managedReward?.RewardId != value?.RewardId) {
-                // Reward Id changed, clear the items
-                Items.Clear();
+            if (_managedReward?.Id != value?.Id) {
+                Items.Clear();  // RewardId changed, clear the items
+                InvokeAsync(PopulateItems);
+                logger.Information("ManagedReward changed, clearing items");
             }
             _managedReward = value;
         }
@@ -41,19 +42,12 @@
     
     private List<TwitchManagedRewardRedemption> Items { get; set; } = [];
 
-    private HubConnection? _twitchHubConnectionCache;
-    private HubConnection TwitchHubConnection => _twitchHubConnectionCache ??= new HubConnectionBuilder()
-        .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/twitch"), options => { options.UseDefaultCredentials = true; })
-        .Build();
-
     private ApplicationUser? _user;
 
     private TwitchManagedRewardRedemptionApi? _redemptionApiCache;
     private TwitchManagedRewardRedemptionApi RedemptionApi => _redemptionApiCache ??= new TwitchManagedRewardRedemptionApi(NavigationManager.BaseUri);
 
-    private StringBuilder? _textBuilderCache ;
-    private StringBuilder TextBuilder => _textBuilderCache ??= new StringBuilder();
-    public string TextOutput = string.Empty;
+    private string _textOutput = string.Empty;
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -64,59 +58,52 @@
     }
     
     // Ensure to stop the connection when the component is being disposed
-    public async ValueTask DisposeAsync() {
-        if (_twitchHubConnectionCache is not null) {
-            await _twitchHubConnectionCache.StopAsync();
-            await _twitchHubConnectionCache.DisposeAsync();
-            _twitchHubConnectionCache = null;
-        }
-
-        _textBuilderCache = null;
+    private async ValueTask DisposeAsync() {
+        await TwitchHubClient.DisposeAsync();
     }
 
     private async Task PopulateItems() {
-        if (_user is null || ManagedReward is null) return;
+        if (_user is null) return;
         
         // Setup hub connection
-        TwitchHubConnection.On<TwitchManagedRewardRedemption>(TwitchHubMethods.NewManagedRewardRedemption, newRecord => {
-                if (newRecord.TwitchManagedReward.RewardId != ManagedReward?.RewardId) return;
+        TwitchHubClient.OnNewManagedRewardRedemption(newRecord => {
+            if (newRecord.TwitchManagedReward.RewardId != ManagedReward?.RewardId) return;
 
-                Items.Add(newRecord);
-                TextOutput = ParseTemplate() ?? string.Empty;
-                
-                // Notify the UI to update
-                _ = InvokeAsync(StateHasChanged);
-            });
+            Items.Add(newRecord);
+            _textOutput = ParseTemplate() ?? string.Empty;
+            
+            // Notify the UI to update
+            _ = InvokeAsync(StateHasChanged);
+        });
         
-        TwitchHubConnection.On<Guid>(TwitchHubMethods.ClearedManagedRewardRedemption, (clearedRewardId) => {
-            if (ManagedReward?.RewardId != clearedRewardId.ToString()) return;
+        TwitchHubClient.OnClearedManagedReward(clearedRewardId => {
+            if (clearedRewardId.ToString() != ManagedReward?.RewardId) return;
             Items.Clear();
-            TextOutput = ParseTemplate() ?? string.Empty;
+            _textOutput = ParseTemplate() ?? string.Empty;
                 
             // Notify the UI to update
             _ = InvokeAsync(StateHasChanged);
         });
 
-        await TwitchHubConnection.StartAsync();
-        await TwitchHubConnection.InvokeAsync("AddToGroup", _user.Id);
+        await TwitchHubClient.StartAsync(userId:_user.Id);
         
-        TwitchManagedRewardRedemptionApiResult result = await RedemptionApi.GetRedemptionsAsync(_user.Id, rewardId:ManagedReward.Id);
+        TwitchManagedRewardRedemptionApiResult result = await RedemptionApi.GetRedemptionsAsync(_user.Id, rewardId:ManagedReward?.Id);
         Items = result.Data;
-        TextOutput = ParseTemplate() ?? string.Empty;
+        _textOutput = ParseTemplate() ?? string.Empty;
     }
 
     protected override async Task OnParametersSetAsync() {
         await DisposeAsync();  // Dispose the current connection if any
         await PopulateItems(); // Populate items which will restart the connection
     }
-    
-    public string? ParseTemplate() {
+
+    private string? ParseTemplate() {
         return ManagedReward?.OutputTemplatePerReward
             .Replace("{redemptions}", string.Join("\n", Items.Select(ParseTemplateRedemption)))
-            ;
+        ;
     }
 
-    public string? ParseTemplateRedemption(TwitchManagedRewardRedemption rewardRedemption) {
+    private string? ParseTemplateRedemption(TwitchManagedRewardRedemption rewardRedemption) {
         return ManagedReward?.OutputTemplatePerRedemption
             .Replace("{time}", rewardRedemption.TimeStamp.ToString(CultureInfo.InvariantCulture))
             .Replace("{user}", rewardRedemption.Username)

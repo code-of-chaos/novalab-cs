@@ -20,10 +20,12 @@ public static class TwitchHubExtensions {
             .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, newRecord)
             .ConfigureAwait(false);
     }
+    
+    
     public async static Task SendClearedManagedRewardRedemption(this IHubContext<TwitchHub> context, string userId, Guid rewardId) {
         await context.Clients
             .Groups($"user_{userId}")
-            .SendAsync(TwitchHubMethods.ClearedManagedRewardRedemption, rewardId)
+            .SendAsync(TwitchHubMethods.ClearedManagedReward, rewardId)
             .ConfigureAwait(false);
     }
 }

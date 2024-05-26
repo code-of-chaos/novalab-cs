@@ -37,7 +37,7 @@
         try {
             _iconState = IconLoadingState.StateEnum.Loading;
             ApiResult result = await AccessTokenApi.RefreshTokensAsync((await UserAccessor.GetUserAsync())?.Id);
-            _iconState = result.Status == HttpStatusCode.NUMBER_200
+            _iconState = result.Status == HttpStatusCode.NUMBER_205
                 ? IconLoadingState.StateEnum.Success
                 : IconLoadingState.StateEnum.Failure;
         }

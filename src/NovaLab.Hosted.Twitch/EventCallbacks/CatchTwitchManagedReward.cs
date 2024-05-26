@@ -5,7 +5,6 @@ namespace NovaLab.Hosted.Twitch.EventCallbacks;
 
 using ApiClient.Api;
 using ApiClient.Model;
-using Microsoft.AspNetCore.Components;
 using Serilog;
 using TwitchLib.Api.Core.Exceptions;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;

@@ -5,7 +5,6 @@ namespace NovaLab.Api.Twitch.Tokens;
 
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NovaLab.Data;
 using NovaLab.Services.Twitch.TwitchTokens;

@@ -116,6 +116,7 @@ public class Program {
         builder.Services.AddHostedTwitchServices();
 
         builder.Services.AddScoped<TwitchTokensManager>();
+        builder.Services.AddScoped<TwitchHubClient>();
 
         builder.Services.AddAuthorization();
         builder.Services.AddHttpClient();
