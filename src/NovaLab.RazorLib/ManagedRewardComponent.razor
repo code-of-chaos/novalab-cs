@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using NovaLab.ApiClient.Api
+﻿@using NovaLab.ApiClient.Api
 @using NovaLab.ApiClient.Model
 @using Serilog
 
@@ -21,8 +20,8 @@
     
     private void SelectedListItemUpdate(TwitchManagedReward reward) {
         CurrentSelectedReward = reward;
-        
         logger.Warning("TRIGGERED");
+        _ = InvokeAsync(StateHasChanged);
     }
 
     private async Task OnButtonClicked() {

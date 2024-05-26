@@ -32,7 +32,7 @@
 
     private TwitchManagedReward[] _rewards = [];
     private IEnumerable<ManagedRewardModel> _indexedRewardData  = [];
-    private int SelectedListValue { get; set; }
+    private int SelectedListValue { get; set; } = -1;
     private TwitchManagedRewardApi? _rewardApiCache;
     private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi(NavigationManager.BaseUri);
 

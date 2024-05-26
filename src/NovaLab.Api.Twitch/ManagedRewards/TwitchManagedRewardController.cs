@@ -13,6 +13,8 @@ using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
 namespace NovaLab.Api.Twitch.ManagedRewards;
 
+using Microsoft.AspNetCore.SignalR;
+using Services.Twitch.Hubs;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 
@@ -24,6 +26,7 @@ using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 public class TwitchManagedRewardController(
     IDbContextFactory<NovaLabDbContext> contextFactory,
     TwitchAPI twitchApi,
+    IHubContext<TwitchHub> hubContext,
     TwitchTokensManager twitchTokensService,
     ILogger logger) : AbstractBaseController(contextFactory){
 
@@ -139,13 +142,17 @@ public class TwitchManagedRewardController(
         await using NovaLabDbContext dbContext = await NovalabDb;
 
         TwitchManagedReward? reward = await dbContext.TwitchManagedRewards
+            .Include(twitchManagedReward => twitchManagedReward.User)
             .FirstOrDefaultAsync(reward => reward.RewardId == managedRewardId);
 
         if (reward is null) return FailureClient();
 
         reward.LastCleared = DateTime.Now;
         await dbContext.SaveChangesAsync();
-
+        
+        // send the client that this is to be updated
+        await hubContext.SendClearedManagedRewardRedemption(reward.User.Id, reward.Id);
+        logger.Information("Sent to client");
         return Success();
     }
 }

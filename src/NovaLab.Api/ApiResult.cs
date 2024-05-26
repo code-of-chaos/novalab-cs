@@ -36,4 +36,5 @@ public record ApiResult<T>(
     }
 }
 
+[UsedImplicitly]
 public record ApiResult(HttpStatusCode Status, string? Message, object[] Data) : ApiResult<object>(Status, Message, Data);
