@@ -1,20 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Data.Data.Twitch.Followers;
+namespace NovaLab.Api.Twitch.ManagedRewards.ManagedReward;
 
-using System.ComponentModel.DataAnnotations;
+using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-// ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-public class TwitchNewFollower {
-    [Key]
-    public Guid Id { get; init; }
-    public virtual TwitchFollowerGoal Goal { get; init; } = null!; // virtual is being used here by EFC
-      
-    public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
-    [MaxLength(128)] public required string FollowerTwitchUserId { get; set; }
-}
+public record PostManagedRewardDto(
+    string UserId,
+    CreateCustomRewardsRequest TwitchApiRequest,
+    string OutputTemplatePerReward,
+    string OutputTemplatePerRedemption
+    
+);

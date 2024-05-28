@@ -1,24 +1,25 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Hosted.Twitch.EventRegistering;
+namespace NovaLab.Hosted.Twitch.Events.TwitchFollow;
 
-using ApiClient.Api;
-using ApiClient.Model;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
-using Data;
+using NovaLab.ApiClient.Api;
+using NovaLab.ApiClient.Model;
+using NovaLab.Data;
 using NovaLab.Services.Twitch.TwitchTokens;
 using Serilog;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.EventSub.Websockets;
-using NovaLabUser=Data.NovaLabUser;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public class RegisterCustomRewardRedemption(
+[UsedImplicitly]
+public class RegisterTwitchFollow(
     ILogger logger, 
     IHttpClientFactory clientFactory,
     IDbContextFactory<NovaLabDbContext> dbContextFactory, 
@@ -28,8 +29,8 @@ public class RegisterCustomRewardRedemption(
     private HttpClient? _clientCache;
     private HttpClient Client => _clientCache ??=  clientFactory.CreateClient("TwitchServicesClient") ;
 
-    private TwitchManagedRewardApi? _rewardApiCache;
-    private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi(Client.BaseAddress!.ToString());
+    private TwitchFollowerGoalApi? _followerGoalApi;
+    private TwitchFollowerGoalApi FollowerGoalApi => _followerGoalApi ??= new TwitchFollowerGoalApi(Client.BaseAddress!.ToString());
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -37,14 +38,13 @@ public class RegisterCustomRewardRedemption(
     public async Task RegisterAtWebSocket(EventSubWebsocketClient client) {
         await using NovaLabDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
         try {
-            // Thanks to Noyainrain for helping me!
-            TwitchManagedRewardApiResult result = await RewardApi.GetManagedRewardsAsync();
+            FollowerGoalDtoApiResult result = await FollowerGoalApi.GetFollowerGoalsAsync();
             if (result is { Data: null } or null) {
-                logger.Warning("API endpoint of GetManagedRewards yielded no result");
+                logger.Warning("API endpoint of GetFollowerGoalsAsync yielded no result");
                 return;
             }
-            foreach (TwitchManagedReward reward in result.Data) {
-                await RegisterSubscription(client, reward, dbContext);
+            foreach (FollowerGoalDto followerGoal in result.Data) {
+                await RegisterSubscription(client, followerGoal);
             }
         }
         catch (Exception ex){
@@ -55,23 +55,16 @@ public class RegisterCustomRewardRedemption(
     // -----------------------------------------------------------------------------------------------------------------
     // Support Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private async Task RegisterSubscription(EventSubWebsocketClient client, TwitchManagedReward twitchManagedReward, NovaLabDbContext dbContext) {
-        NovaLabUser? user = await dbContext.Users.Where(user => user.TwitchBroadcasterId == twitchManagedReward.User.TwitchBroadcasterId).FirstOrDefaultAsync();
-        if (user is null) {
-            logger.Warning("Broadcaster Id {broadcasterId} could not be tied to a NovalabUser", twitchManagedReward.User.TwitchBroadcasterId);
-            return;
-        }
-        
-        
+    private async Task RegisterSubscription(EventSubWebsocketClient client, FollowerGoalDto followerGoal) {
         // subscribe to topics
-        // see : https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd
+        // see : https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelfollow
         await twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync(
-            "channel.channel_points_custom_reward_redemption.add",
-            "1",
-            new Dictionary<string, string>() {
-                // see : https://dev.twitch.tv/docs/eventsub/eventsub-reference/#channel-points-custom-reward-redemption-add-condition
-                { "broadcaster_user_id", user.TwitchBroadcasterId! },
-                // { "reward_id", "..." } // Technically not needed as we want to listen to all rewards and then filter
+            "channel.follow",
+            "2",
+            new Dictionary<string, string> {
+                // see : https://dev.twitch.tv/docs/eventsub/eventsub-reference/#channel-follow-condition
+                { "broadcaster_user_id", followerGoal.TwitchBroadcasterId },
+                { "moderator_user_id", followerGoal.TwitchBroadcasterId },
             },
             // see: https://dev.twitch.tv/docs/eventsub/eventsub-reference/#transport
             EventSubTransportMethod.Websocket,
@@ -79,10 +72,8 @@ public class RegisterCustomRewardRedemption(
             null, // Don't set because we are using websocket
             null, // Don't set because we are using websocket
             twitchApi.Settings.ClientId, 
-            await twitchAccessToken.GetAccessTokenOrRefreshAsync(user.Id)
+            await twitchAccessToken.GetAccessTokenOrRefreshAsync(followerGoal.UserId)
         );
-                
-        logger.Information("ASSIGNED!");
     }
     
 }

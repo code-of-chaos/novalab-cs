@@ -1,15 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Api.Twitch.Followers;
+namespace NovaLab.Api.Twitch.Followers.NewFollower;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public record PostFollowerGoalDto(
-    string UserId,
-    int DailyGoal = 1,
-    string Divider = "/",
-    string? CustomCssStyling = null
+public record PostNewFollowerDto(
+    string TwitchBoardcasterId,
+    string FollowerTwitchUserId    
 );

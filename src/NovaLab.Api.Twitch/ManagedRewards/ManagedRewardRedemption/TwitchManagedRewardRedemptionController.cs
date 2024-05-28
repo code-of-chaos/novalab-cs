@@ -2,7 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using System.Net;
+namespace NovaLab.Api.Twitch.ManagedRewards.ManagedRewardRedemption;
+
+using Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +14,7 @@ using NovaLab.Data.Data.Twitch.Redemptions;
 using NovaLab.Services.Twitch.Hubs;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
-
-namespace NovaLab.Api.Twitch.ManagedRewards;
-
-using Extensions;
+using System.Net;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

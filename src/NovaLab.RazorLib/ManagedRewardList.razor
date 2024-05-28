@@ -24,13 +24,13 @@
 @code {
     public class ManagedRewardModel {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 
     [Parameter]
-    public EventCallback<TwitchManagedReward> Callback { get; set; }
+    public EventCallback<TwitchManagedRewardDto> Callback { get; set; }
 
-    private TwitchManagedReward[] _rewards = [];
+    private TwitchManagedRewardDto[] _rewards = [];
     private IEnumerable<ManagedRewardModel> _indexedRewardData  = [];
     private int SelectedListValue { get; set; } = -1;
     private TwitchManagedRewardApi? _rewardApiCache;
@@ -43,15 +43,14 @@
         NovaLabUser? user = await UserAccessor.GetUserAsync();
         if (user is null) return;
 
-        TwitchManagedRewardApiResult result = await RewardApi.GetManagedRewardsAsync(user.Id);
+        TwitchManagedRewardDtoApiResult result = await RewardApi.GetManagedRewardsAsync(user.Id);
         if (result.Status != HttpStatusCode.NUMBER_200) return;
         
         _rewards = result.Data.ToArray();
-        _indexedRewardData = _rewards.Select((reward, i) => new ManagedRewardModel { Id = i, Name = reward.RewardId });
+        _indexedRewardData = _rewards.Select((reward, i) => new ManagedRewardModel { Id = i, Name = reward.TwitchRewardId });
     }
 
     private async Task SelectedValueChangedCallback(int index) {
-        logger.Warning("TRIGGERED inside");
         SelectedListValue = index; 
         await Callback.InvokeAsync(_rewards[index]);
     }

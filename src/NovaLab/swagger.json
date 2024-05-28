@@ -307,17 +307,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchFollowerGoalApiResult"
+                  "$ref": "#/components/schemas/FollowerGoalDtoApiResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchFollowerGoalApiResult"
+                  "$ref": "#/components/schemas/FollowerGoalDtoApiResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchFollowerGoalApiResult"
+                  "$ref": "#/components/schemas/FollowerGoalDtoApiResult"
                 }
               }
             }
@@ -374,17 +374,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResult"
+                  "$ref": "#/components/schemas/FollowerGoalDtoApiResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResult"
+                  "$ref": "#/components/schemas/FollowerGoalDtoApiResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResult"
+                  "$ref": "#/components/schemas/FollowerGoalDtoApiResult"
                 }
               }
             }
@@ -441,17 +441,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/TwitchManagedRewardDtoApiResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/TwitchManagedRewardDtoApiResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TwitchManagedRewardApiResult"
+                  "$ref": "#/components/schemas/TwitchManagedRewardDtoApiResult"
                 }
               }
             }
@@ -508,17 +508,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResult"
+                  "$ref": "#/components/schemas/TwitchManagedRewardDtoApiResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResult"
+                  "$ref": "#/components/schemas/TwitchManagedRewardDtoApiResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResult"
+                  "$ref": "#/components/schemas/TwitchManagedRewardDtoApiResult"
                 }
               }
             }
@@ -774,6 +774,95 @@
           }
         }
       }
+    },
+    "/api/twitch/followers/new-follower": {
+      "post": {
+        "tags": [
+          "TwitchNewFollower"
+        ],
+        "operationId": "PostNewFollower",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostNewFollowerDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostNewFollowerDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostNewFollowerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewFollowerDtoApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewFollowerDtoApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewFollowerDtoApiResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -851,6 +940,56 @@
         },
         "additionalProperties": false
       },
+      "FollowerGoalDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitchBroadcasterId": {
+            "type": "string",
+            "nullable": true
+          },
+          "goalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dailyGoalAmount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "divider": {
+            "type": "string",
+            "nullable": true
+          },
+          "customCssStyling": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FollowerGoalDtoApiResult": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/HttpStatusCode"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FollowerGoalDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "HttpStatusCode": {
         "enum": [
           100,
@@ -918,6 +1057,48 @@
         "type": "integer",
         "format": "int32"
       },
+      "NewFollowerDto": {
+        "type": "object",
+        "properties": {
+          "newFollowerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "followerGoalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "timeStamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "followerTwitchUserId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewFollowerDtoApiResult": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/HttpStatusCode"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewFollowerDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "NovaLabUser": {
         "type": "object",
         "properties": {
@@ -982,6 +1163,9 @@
             "maxLength": 16,
             "type": "string",
             "nullable": true
+          },
+          "twitchFollowerGoal": {
+            "$ref": "#/components/schemas/TwitchFollowerGoal"
           }
         },
         "additionalProperties": false
@@ -1029,12 +1213,31 @@
         },
         "additionalProperties": false
       },
+      "PostNewFollowerDto": {
+        "type": "object",
+        "properties": {
+          "twitchBoardcasterId": {
+            "type": "string",
+            "nullable": true
+          },
+          "followerTwitchUserId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "TwitchFollowerGoal": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "userId": {
+            "maxLength": 255,
+            "type": "string",
+            "nullable": true
           },
           "user": {
             "$ref": "#/components/schemas/NovaLabUser"
@@ -1046,26 +1249,6 @@
           "customCssStyling": {
             "maxLength": 255,
             "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "TwitchFollowerGoalApiResult": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "$ref": "#/components/schemas/HttpStatusCode"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TwitchFollowerGoal"
-            },
             "nullable": true
           }
         },
@@ -1107,7 +1290,37 @@
         },
         "additionalProperties": false
       },
-      "TwitchManagedRewardApiResult": {
+      "TwitchManagedRewardDto": {
+        "type": "object",
+        "properties": {
+          "managedRewardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitchBroadcasterId": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitchRewardId": {
+            "type": "string",
+            "nullable": true
+          },
+          "outputTemplatePerRedemption": {
+            "type": "string",
+            "nullable": true
+          },
+          "outputTemplatePerReward": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TwitchManagedRewardDtoApiResult": {
         "type": "object",
         "properties": {
           "status": {
@@ -1120,7 +1333,7 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TwitchManagedReward"
+              "$ref": "#/components/schemas/TwitchManagedRewardDto"
             },
             "nullable": true
           }

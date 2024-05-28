@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 namespace NovaLab.Hosted.Twitch;
 
-using EventCallbacks;
-using EventRegistering;
+using Events.CustomRewardRedemption;
+using Events.TwitchFollow;
 using Microsoft.Extensions.DependencyInjection;
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -16,7 +16,9 @@ public static class ServiceExtensions {
         serviceCollection.AddHostedService<TwitchEventSubWebsocket>();
         
         serviceCollection.AddScoped<CatchTwitchManagedReward>();
+        serviceCollection.AddScoped<CatchTwitchFollow>();
         serviceCollection.AddScoped<RegisterCustomRewardRedemption>();
+        serviceCollection.AddScoped<RegisterTwitchFollow>();
         
         return serviceCollection;
     } 

@@ -1,10 +1,10 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Hosted.Twitch.EventCallbacks;
+namespace NovaLab.Hosted.Twitch.Events.CustomRewardRedemption;
 
-using ApiClient.Api;
-using ApiClient.Model;
+using NovaLab.ApiClient.Api;
+using NovaLab.ApiClient.Model;
 using Serilog;
 using TwitchLib.Api.Core.Exceptions;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;

@@ -4,6 +4,7 @@
 @using NovaLab.RazorLib.BlazoriseExtensions
 @using Serilog
 @using  NovaLab.ApiClient.Model
+@using NovaLab.RazorLib.Lib
 @using ApplicationUser = NovaLab.Data.NovaLabUser
 
 @attribute [StreamRendering]
@@ -14,6 +15,7 @@
 @inject IMessageService MessageService
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserAccessor UserAccessor
 
 <Row>
     <Column>
@@ -66,7 +68,8 @@
     Validations ValidationsRefRequest { get; set; } = null!;
     Validations ValidationsRefMessageTemplates { get; set; } = null!;
 
-    PostManagedRewardDto CreateNewRewardModel { get; } = new(new CreateCustomRewardsRequest());
+    // temporarily set the userId field to string.Empty, set to correct Id later on.
+    PostManagedRewardDto CreateNewRewardModel { get; } = new(string.Empty, new CreateCustomRewardsRequest());
     
     private bool ValidationFailed { get; set; }
 
@@ -91,16 +94,16 @@
             logger.Warning("Some fields were not validated correctly");
             return;
         }
+        
         if (!await ValidationsRefMessageTemplates.ValidateAll()) {
             logger.Warning("Templates couldn't be validated");
+            return;
         }
-        
-        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        string userName = authState.User.Identity!.Name!;
-        ApplicationUser? user = await UserManager.FindByNameAsync(userName);
-        string userId = user!.Id;
 
-        ApiResult response = await RewardApi.PostManagedRewardAsync(userId, CreateNewRewardModel);
+        ApplicationUser? user = await UserAccessor.GetUserAsync();
+        CreateNewRewardModel.UserId = user!.Id; // Update this correctly
+
+        TwitchManagedRewardDtoApiResult response = await RewardApi.PostManagedRewardAsync(CreateNewRewardModel);
         
         
         if (response.Status == HttpStatusCode.NUMBER_200) {

@@ -1,22 +1,22 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Net;
+namespace NovaLab.Api.Twitch.ManagedRewards.ManagedReward;
+
+using Extensions;
+using ManagedRewardRedemption;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
+using NovaLab.Services.Twitch.Hubs;
 using NovaLab.Services.Twitch.TwitchTokens;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
-using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
-
-namespace NovaLab.Api.Twitch.ManagedRewards;
-
-using Extensions;
-using Microsoft.AspNetCore.SignalR;
-using Services.Twitch.Hubs;
+using System.Net;
 using TwitchLib.Api;
+using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public class TwitchManagedRewardController(
     // GET Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpGet]
-    [ProducesResponseType<ApiResult<TwitchManagedReward>>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult<TwitchManagedRewardDto>>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = "GetManagedRewards")]
     public async Task<IActionResult> GetManagedRewards(
@@ -77,12 +77,12 @@ public class TwitchManagedRewardController(
                 .SelectMany(rewardId => rewardId)
                 .Where(rewardId => responseIds.Contains(rewardId))
                 .ToHashSet();
+
+            TwitchManagedReward[] data = await query
+                .Where(reward => validIds.Contains(reward.RewardId))
+                .ToArrayAsync();
             
-            return Success(
-                await query
-                    .Where(reward => validIds.Contains(reward.RewardId))
-                    .ToArrayAsync()
-            );
+            return Success(data.Select(TwitchManagedRewardDto.FromDbObject).ToArray());
         }
 
         catch (Exception ex) {
@@ -96,7 +96,7 @@ public class TwitchManagedRewardController(
     // POST Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpPost]
-    [ProducesResponseType<ApiResult>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult<TwitchManagedRewardDto>>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = "PostManagedReward")]
     public async Task<IActionResult> PostManagedReward(
@@ -114,18 +114,16 @@ public class TwitchManagedRewardController(
                 postManagedRewardDto.TwitchApiRequest,
                 await twitchTokensService.GetAccessTokenOrRefreshAsync(user.Id)
             );
-            
-            await dbContext.TwitchManagedRewards.AddAsync(
-                new TwitchManagedReward {
-                    User = user,
-                    RewardId = result.Data.First().Id,
-                    OutputTemplatePerRedemption = postManagedRewardDto.OutputTemplatePerRedemption,
-                    OutputTemplatePerReward = postManagedRewardDto.OutputTemplatePerReward
-                }
-            );
-            
+            var reward = new TwitchManagedReward {
+                User = user,
+                RewardId = result.Data.First().Id,
+                OutputTemplatePerRedemption = postManagedRewardDto.OutputTemplatePerRedemption,
+                OutputTemplatePerReward = postManagedRewardDto.OutputTemplatePerReward
+            };
+            await dbContext.TwitchManagedRewards.AddAsync(reward);
             await dbContext.SaveChangesAsync();
-            return Success();
+            
+            return Success(TwitchManagedRewardDto.FromDbObject(reward));
         }
         catch (Exception e) {
             logger.Warning(e, "Reward could not be created");

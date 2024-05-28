@@ -1,25 +1,27 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Api.Twitch.Followers;
+namespace NovaLab.Api.Twitch.Followers.FollowerGoal;
 
-using Data.Data.Twitch.Followers;
+using NovaLab.Data.Data.Twitch.Followers;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public record TwitchFollowerGoalDto(
+public record FollowerGoalDto(
     string UserId,
+    string? TwitchBroadcasterId,
     Guid GoalId,
     int DailyGoalAmount,
     string Divider,
     string CustomCssStyling
 ) {
 
-    public static TwitchFollowerGoalDto FromDbObject(TwitchFollowerGoal twitchFollowerGoal) {
-        return new TwitchFollowerGoalDto(
+    public static FollowerGoalDto FromDbObject(TwitchFollowerGoal twitchFollowerGoal) {
+        return new FollowerGoalDto(
             UserId: twitchFollowerGoal.User.Id,
+            TwitchBroadcasterId: twitchFollowerGoal.User.TwitchBroadcasterId,
             GoalId: twitchFollowerGoal.Id,
             DailyGoalAmount: twitchFollowerGoal.DailyGoal,
             Divider: twitchFollowerGoal.Divider,

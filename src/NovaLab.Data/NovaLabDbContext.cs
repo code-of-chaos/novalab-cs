@@ -24,4 +24,20 @@ public class NovaLabDbContext : IdentityDbContext<NovaLabUser> {
     // -----------------------------------------------------------------------------------------------------------------
     public NovaLabDbContext() {}
     public NovaLabDbContext(DbContextOptions<NovaLabDbContext> options) : base(options) {}
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Model Creating
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<NovaLabUser>()
+            .HasIndex(u => u.TwitchBroadcasterId)
+            .IsUnique();
+        
+        modelBuilder.Entity<NovaLabUser>()
+            .HasOne(r => r.TwitchFollowerGoal)
+            .WithOne(fg => fg.User)
+            .HasForeignKey<TwitchFollowerGoal>(fg => fg.UserId);
+    }
 }

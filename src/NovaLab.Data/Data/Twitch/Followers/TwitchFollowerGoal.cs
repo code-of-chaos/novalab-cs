@@ -13,7 +13,11 @@ using System.ComponentModel.DataAnnotations;
 public class TwitchFollowerGoal {
     [Key]
     public Guid Id { get; init; }
-    public virtual NovaLabUser User { get; init; } = null!; // virtual is being used here by EFC
+    
+    // Foreign key property
+    [MaxLength(255)] public string UserId { get; set; } = null!;
+    // Navigation property for the one-to-one relationship
+    public virtual NovaLabUser User { get; init; } = null!;
     
     public int DailyGoal { get; set; } = 1;
     [MaxLength(5)] public string Divider = "/";

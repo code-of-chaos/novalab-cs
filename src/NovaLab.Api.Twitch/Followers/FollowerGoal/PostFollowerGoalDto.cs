@@ -1,18 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Api.Twitch.ManagedRewards;
-
-using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
+namespace NovaLab.Api.Twitch.Followers.FollowerGoal;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public record PostManagedRewardDto(
+public record PostFollowerGoalDto(
     string UserId,
-    CreateCustomRewardsRequest TwitchApiRequest,
-    string OutputTemplatePerReward,
-    string OutputTemplatePerRedemption
-    
+    int DailyGoal = 1,
+    string Divider = "/",
+    string? CustomCssStyling = null
 );

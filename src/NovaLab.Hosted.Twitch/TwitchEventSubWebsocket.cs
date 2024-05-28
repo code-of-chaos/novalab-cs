@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 namespace NovaLab.Hosted.Twitch;
 
-using EventCallbacks;
-using EventRegistering;
+using Events.CustomRewardRedemption;
+using Events.TwitchFollow;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -41,6 +41,7 @@ public class TwitchEventSubWebsocket(
         eventSubWebsocketClient.ErrorOccurred += OnErrorOccurred;
 
         eventSubWebsocketClient.ChannelPointsCustomRewardRedemptionAdd += _scope.ServiceProvider.GetRequiredService<CatchTwitchManagedReward>().Callback;
+        eventSubWebsocketClient.ChannelFollow += _scope.ServiceProvider.GetRequiredService<CatchTwitchFollow>().Callback;
         
         await eventSubWebsocketClient.ConnectAsync();
     }
@@ -57,6 +58,7 @@ public class TwitchEventSubWebsocket(
 
         using IServiceScope scope = scopeFactory.CreateScope();
         await scope.ServiceProvider.GetRequiredService<RegisterCustomRewardRedemption>().RegisterAtWebSocket(eventSubWebsocketClient);
+        await scope.ServiceProvider.GetRequiredService<RegisterTwitchFollow>().RegisterAtWebSocket(eventSubWebsocketClient);
     }
     
     private async Task OnWebsocketDisconnected(object sender, EventArgs e) {

@@ -12,20 +12,20 @@
 <Button Color="Color.Primary" Clicked="@OnButtonClicked">Clear Current Selection</Button>
 
 @code {
-    private TwitchManagedReward? CurrentSelectedReward { get; set; }
+    private TwitchManagedRewardDto? CurrentSelectedReward { get; set; }
     
     private TwitchManagedRewardApi? _rewardApiCache;
     private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi(NavigationManager.BaseUri);
 
     
-    private void SelectedListItemUpdate(TwitchManagedReward reward) {
+    private void SelectedListItemUpdate(TwitchManagedRewardDto reward) {
         CurrentSelectedReward = reward;
         logger.Warning("TRIGGERED");
         _ = InvokeAsync(StateHasChanged);
     }
 
     private async Task OnButtonClicked() {
-        await RewardApi.PostNewLastClearedAsync(CurrentSelectedReward?.RewardId);
+        await RewardApi.PostNewLastClearedAsync(CurrentSelectedReward?.TwitchRewardId);
     }
 
 }

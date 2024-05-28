@@ -25,13 +25,13 @@
 <MemoEdit AutoSize @bind-Text="@_textOutput"/>
 
 @code {
-    private TwitchManagedReward? _managedReward;
+    private TwitchManagedRewardDto? _managedReward;
 
     [Parameter, EditorRequired]
-    public TwitchManagedReward? ManagedReward {
+    public TwitchManagedRewardDto? ManagedReward {
         get => _managedReward;
         set {
-            if (_managedReward?.Id != value?.Id) {
+            if (_managedReward?.ManagedRewardId != value?.ManagedRewardId) {
                 Items.Clear();  // RewardId changed, clear the items
                 InvokeAsync(PopulateItems);
                 logger.Information("ManagedReward changed, clearing items");
@@ -67,7 +67,7 @@
         
         // Setup hub connection
         TwitchHubClient.OnNewManagedRewardRedemption(newRecord => {
-            if (newRecord.TwitchManagedReward.RewardId != ManagedReward?.RewardId) return;
+            if (newRecord.TwitchManagedReward.RewardId != ManagedReward?.TwitchRewardId) return;
 
             Items.Add(newRecord);
             _textOutput = ParseTemplate() ?? string.Empty;
@@ -77,7 +77,7 @@
         });
         
         TwitchHubClient.OnClearedManagedReward(clearedRewardId => {
-            if (clearedRewardId.ToString() != ManagedReward?.RewardId) return;
+            if (clearedRewardId.ToString() != ManagedReward?.TwitchRewardId) return;
             Items.Clear();
             _textOutput = ParseTemplate() ?? string.Empty;
                 
@@ -87,7 +87,7 @@
 
         await TwitchHubClient.StartAsync(userId:_user.Id);
         
-        TwitchManagedRewardRedemptionApiResult result = await RedemptionApi.GetRedemptionsAsync(_user.Id, rewardId:ManagedReward?.Id);
+        TwitchManagedRewardRedemptionApiResult result = await RedemptionApi.GetRedemptionsAsync(_user.Id, rewardId:ManagedReward?.ManagedRewardId);
         Items = result.Data;
         _textOutput = ParseTemplate() ?? string.Empty;
     }
