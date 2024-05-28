@@ -18,15 +18,13 @@
         justify-content: center;
         align-items: center;
     }
-    .test {
+    .counter {
         font-size: @(FontSize)rem;
-        color:#f7931e; 
-        font-family: 'Cooper Black', sans-serif;
     }
 </style>
 
 <div class="box">
-    <p class="test">@CurrentCount@Divider@Goal</p>
+    <p class="counter" style="@CustomStyling">@CurrentCount@Divider@Goal</p>
 </div>
 
 @code {
@@ -42,6 +40,7 @@
     private int CurrentCount { get; set; }
     private string Divider { get; set; } = "";
     private int Goal { get; set; }
+    private string CustomStyling = "";
 
     private int FontSize { get; set; } = 10;
     
@@ -58,6 +57,7 @@
         CurrentCount = newFollows.Count;
         Divider = followerGoal.Divider;
         Goal = followerGoal.DailyGoalAmount;
+        CustomStyling = followerGoal.CustomCssStyling;
         
         TwitchHubClient.OnNewTwitchFollower(() => {
             CurrentCount += 1;
