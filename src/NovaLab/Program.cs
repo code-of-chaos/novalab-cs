@@ -176,6 +176,8 @@ public class Program {
         app.MapControllers();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
+        // app.MapRazorComponents<FollowerGoal>()
+        // .AddInteractiveServerRenderMode();
         app.MapAdditionalIdentityEndpoints();
         
         // - Hubs -

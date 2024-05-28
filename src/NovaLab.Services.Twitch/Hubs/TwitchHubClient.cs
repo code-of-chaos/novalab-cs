@@ -51,4 +51,8 @@ public class TwitchHubClient(NavigationManager navigationManager) {
     public void OnClearedManagedReward(Action<Guid> action) {
         _disposables.Add(Hub.On(TwitchHubMethods.ClearedManagedReward, action)); 
     }
+    
+    public void OnNewTwitchFollower(Action action) {
+        _disposables.Add(Hub.On(TwitchHubMethods.NewTwitchFollower, action)); 
+    }
 }
