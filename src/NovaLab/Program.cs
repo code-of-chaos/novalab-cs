@@ -112,7 +112,6 @@ public class Program {
         });
         builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
         
-        builder.Services.AddSingleton<IUserConnectionManager, UserConnectionManager>();
         builder.Services.AddHostedTwitchServices();
 
         builder.Services.AddScoped<TwitchTokensManager>();

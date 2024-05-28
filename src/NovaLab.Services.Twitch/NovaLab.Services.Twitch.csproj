@@ -18,7 +18,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\0005-01-cs-novalab-api_client\src\NovaLab.ApiClient\NovaLab.ApiClient.csproj" />
       <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
-      <ProjectReference Include="..\NovaLab.Hosted\NovaLab.Hosted.csproj" />
     </ItemGroup>
 
 </Project>

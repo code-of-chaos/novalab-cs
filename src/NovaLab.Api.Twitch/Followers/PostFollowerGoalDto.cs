@@ -1,20 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-
-using System.Diagnostics.CodeAnalysis;
-
-namespace NovaLab.Hosted;
-
-using System.Collections.Concurrent;
+namespace NovaLab.Api.Twitch.Followers;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IUserConnectionManager {
-    bool TryStoreUserConnection(string userId, string connectionId);
-    bool TryRemoveUserConnection(string userId);
-    bool TryGetConnectionId(string userId, [NotNullWhen(true)] out string? connectionId);
-    
-    ConcurrentDictionary<string, string> Map { get; }
-}
+
+public record PostFollowerGoalDto(
+    string UserId,
+    int DailyGoal = 1,
+    string Divider = "/",
+    string? CustomCssStyling = null
+);

@@ -9,12 +9,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NovaLab.Data;
 using NovaLab.Data.Data.Twitch.Redemptions;
-using NovaLab.Hosted;
 using NovaLab.Services.Twitch.Hubs;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace NovaLab.Api.Twitch.ManagedRewards;
+
+using Extensions;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -24,8 +25,7 @@ namespace NovaLab.Api.Twitch.ManagedRewards;
 public class TwitchManagedRewardRedemptionController(
     IDbContextFactory<NovaLabDbContext> contextFactory,
     ILogger logger,
-    IHubContext<TwitchHub> hubContext,
-    IUserConnectionManager userConnectionManager
+    IHubContext<TwitchHub> hubContext
     
     ) : AbstractBaseController(contextFactory){
     
@@ -40,7 +40,7 @@ public class TwitchManagedRewardRedemptionController(
         [FromQuery(Name = "user-id")] string userId, 
         [FromQuery(Name = "reward-id")] Guid? rewardId = null,
         [FromQuery(Name = "after")] DateTime? after = null,
-        [FromQuery(Name = "limit")] uint? limit = null ) {
+        [FromQuery(Name = "limit")] int? limit = null ) {
 
         await using NovaLabDbContext dbContext = await NovalabDb;
         
@@ -49,11 +49,10 @@ public class TwitchManagedRewardRedemptionController(
             .Include(redemption => redemption.TwitchManagedReward)
             .Where(redemption => redemption.TwitchManagedReward.User.Id == userId)
             .Where(redemption => redemption.TimeStamp >= redemption.TwitchManagedReward.LastCleared)
+            .ConditionalWhere(rewardId is not null, redemption => redemption.TwitchManagedReward.Id == rewardId)
+            .ConditionalWhere(after is not null, redemption => redemption.TimeStamp >= after)
+            .ConditionalTake(limit is not null, limit ?? 0)
             .AsQueryable();
-
-        if (rewardId is not null) query = query.Where(redemption => redemption.TwitchManagedReward.Id == rewardId);
-        if (after is not null) query = query.Where(redemption => redemption.TimeStamp >= after);
-        if (limit is not null) query = query.Take((int)limit);
 
         TwitchManagedRewardRedemption[] result = await query.ToArrayAsync();
         return !result.IsNullOrEmpty()
@@ -71,7 +70,7 @@ public class TwitchManagedRewardRedemptionController(
     [SwaggerOperation(OperationId = "PostRedemption")]
     public async Task<IActionResult> PostRedemption(
         [FromBody] TwitchManagedRewardRedemptionDto rewardRedemption
-        ) {
+    ) {
         await using NovaLabDbContext dbContext = await NovalabDb;
         
         try {
@@ -92,8 +91,6 @@ public class TwitchManagedRewardRedemptionController(
 
             await dbContext.TwitchManagedRewardRedemptions.AddAsync(redemption);
             await dbContext.SaveChangesAsync();
-            
-            logger.Error("{@e}", userConnectionManager.Map);
             
             // send the client that this is to be updated
             await hubContext.SendNewManagedRewardRedemption(reward.User.Id, redemption);

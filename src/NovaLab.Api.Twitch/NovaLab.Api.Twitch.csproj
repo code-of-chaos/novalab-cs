@@ -28,6 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Extensions\Extensions.csproj" />
         <ProjectReference Include="..\NovaLab.Api\NovaLab.Api.csproj" />
         <ProjectReference Include="..\NovaLab.Data\NovaLab.Data.csproj" />
         <ProjectReference Include="..\NovaLab.Services.Twitch\NovaLab.Services.Twitch.csproj" />

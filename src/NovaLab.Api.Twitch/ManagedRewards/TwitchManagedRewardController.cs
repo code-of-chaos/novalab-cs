@@ -13,6 +13,7 @@ using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
 namespace NovaLab.Api.Twitch.ManagedRewards;
 
+using Extensions;
 using Microsoft.AspNetCore.SignalR;
 using Services.Twitch.Hubs;
 using TwitchLib.Api;
@@ -39,17 +40,17 @@ public class TwitchManagedRewardController(
     [SwaggerOperation(OperationId = "GetManagedRewards")]
     public async Task<IActionResult> GetManagedRewards(
         [FromQuery(Name = "userId")] string? userId = null, 
-        [FromQuery(Name = "limit")] uint? limit = null ) {
+        [FromQuery(Name = "limit")] int? limit = null ) {
         await using NovaLabDbContext dbContext = await NovalabDb;
 
         try {
             IQueryable<TwitchManagedReward> query = dbContext.TwitchManagedRewards
                 .AsNoTracking()
                 .Include(reward => reward.User)
+                .ConditionalWhere(userId is not null, reward => reward.User.Id == userId)
+                .ConditionalTake(limit is not null, limit ?? 0)
                 .AsQueryable();
 
-            if (userId is not null) query = query.Where(reward => reward.User.Id == userId);
-            if (limit is not null) query = query.Take((int)limit);
             Dictionary<NovaLabUser, string[]> rewards = await query
                 .GroupBy(reward => reward.User)
                 .ToDictionaryAsync(
@@ -99,11 +100,11 @@ public class TwitchManagedRewardController(
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = "PostManagedReward")]
     public async Task<IActionResult> PostManagedReward(
-        [FromQuery] string? userId, 
         [FromBody] PostManagedRewardDto postManagedRewardDto) {
         
         await using NovaLabDbContext dbContext = await NovalabDb;
         postManagedRewardDto.TwitchApiRequest.IsEnabled = true;
+        string userId = postManagedRewardDto.UserId;
         
         try {
             NovaLabUser user = await dbContext.Users.FirstAsync(u => u.Id == userId);
