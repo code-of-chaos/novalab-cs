@@ -32,7 +32,7 @@ public class TwitchManagedRewardRedemptionController(
     // GET Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpGet]
-    [ProducesResponseType<ApiResult<TwitchManagedRewardRedemption>>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult<TwitchManagedRewardRedemptionDto>>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
     [SwaggerOperation(OperationId = "GetRedemptions")]
     public async Task<IActionResult> GetRedemptions(
@@ -58,7 +58,7 @@ public class TwitchManagedRewardRedemptionController(
 
         TwitchManagedRewardRedemption[] result = await query.ToArrayAsync();
         return !result.IsNullOrEmpty()
-            ? Success(result)
+            ? Success(result.Select(TwitchManagedRewardRedemptionDto.FromDbObject).ToArray())
             : FailureClient(msg:"No rewards could be redeemed");
     }
     
@@ -71,23 +71,23 @@ public class TwitchManagedRewardRedemptionController(
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = "PostRedemption")]
     public async Task<IActionResult> PostRedemption(
-        [FromBody] TwitchManagedRewardRedemptionDto rewardRedemption
+        [FromBody] PostTwitchManagedRewardRedemptionDto redemptionDto
     ) {
         await using NovaLabDbContext dbContext = await NovalabDb;
         
         try {
             TwitchManagedReward? reward = await dbContext.TwitchManagedRewards
                 .Include(twitchManagedReward => twitchManagedReward.User)
-                .FirstOrDefaultAsync(reward => reward.RewardId == rewardRedemption.RewardId);
+                .FirstOrDefaultAsync(reward => reward.RewardId == redemptionDto.TwitchRewardId);
             if (reward is null) {
-                logger.Warning("Could not map reward to rewardId {i}", rewardRedemption.RewardId);
+                logger.Warning("Could not map reward to rewardId {i}", redemptionDto.TwitchRewardId);
                 return FailureClient();
             }
             
             var redemption = new TwitchManagedRewardRedemption {
                 TwitchManagedReward = reward,
-                Username = rewardRedemption.Username,
-                Message = rewardRedemption.Message,
+                Username = redemptionDto.UserName,
+                Message = redemptionDto.Message,
                 TimeStamp = DateTime.Now
             };
 
@@ -95,7 +95,7 @@ public class TwitchManagedRewardRedemptionController(
             await dbContext.SaveChangesAsync();
             
             // send the client that this is to be updated
-            await hubContext.SendNewManagedRewardRedemption(reward.User.Id, redemption);
+            await hubContext.SendNewManagedRewardRedemption(reward.User.Id, TwitchManagedRewardRedemptionDto.FromDbObject(redemption));
             logger.Information("Sent to client");
             return Success();
         }

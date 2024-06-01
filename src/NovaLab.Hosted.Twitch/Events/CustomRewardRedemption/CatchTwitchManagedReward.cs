@@ -27,9 +27,9 @@ public class CatchTwitchManagedReward(ILogger logger, IHttpClientFactory clientF
     //      JUST SEND ALL DATA TO THE API, fire and forget, maybe pool data together if the callbacks happen in quick succession?
     public async Task Callback(object sender, ChannelPointsCustomRewardRedemptionArgs pointsCustomRewardRedemptionArgs) {
         ChannelPointsCustomRewardRedemption redemption = pointsCustomRewardRedemptionArgs.Notification.Payload.Event;
-        var redemptionDto = new TwitchManagedRewardRedemptionDto(
-            rewardId: redemption.Reward.Id,
-            username: redemption.UserName,
+        var redemptionDto = new PostTwitchManagedRewardRedemptionDto(
+            twitchRewardId: redemption.Reward.Id,
+            userName: redemption.UserName,
             message: redemption.UserInput
         );
 

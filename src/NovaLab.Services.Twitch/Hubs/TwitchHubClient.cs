@@ -44,7 +44,7 @@ public class TwitchHubClient(NavigationManager navigationManager) {
     // -----------------------------------------------------------------------------------------------------------------
     // Callback Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void OnNewManagedRewardRedemption(Action<TwitchManagedRewardRedemption> action) {
+    public void OnNewManagedRewardRedemption(Action<TwitchManagedRewardRedemptionDto> action) {
         _disposables.Add(Hub.On(TwitchHubMethods.NewManagedRewardRedemption, action)); 
     }
     

@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.SignalR;
-using NovaLab.Data.Data.Twitch.Redemptions;
+
 
 namespace NovaLab.Services.Twitch.Hubs;
 
@@ -14,7 +14,7 @@ public static class TwitchHubExtensions {
     // -----------------------------------------------------------------------------------------------------------------
     // Custom events
     // -----------------------------------------------------------------------------------------------------------------
-    public async static Task SendNewManagedRewardRedemption(this IHubContext<TwitchHub> context, string userId, TwitchManagedRewardRedemption newRecord) {
+    public async static Task SendNewManagedRewardRedemption<T>(this IHubContext<TwitchHub> context, string userId, T newRecord) {
         await context.Clients
             .Groups($"user_{userId}")
             .SendAsync(TwitchHubMethods.NewManagedRewardRedemption, newRecord)

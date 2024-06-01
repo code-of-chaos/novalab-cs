@@ -7,7 +7,6 @@
 @using NovaLab.RazorLib.Lib
 @using NovaLab.Services.Twitch.Hubs
 @using System.Globalization
-@using System.Text
 @using ApplicationUser = NovaLab.Data.NovaLabUser
 
 @attribute [StreamRendering, Authorize]
@@ -40,7 +39,7 @@
         }
     }
     
-    private List<TwitchManagedRewardRedemption> Items { get; set; } = [];
+    private List<TwitchManagedRewardRedemptionDto> Items { get; set; } = [];
 
     private ApplicationUser? _user;
 
@@ -63,11 +62,11 @@
     }
 
     private async Task PopulateItems() {
-        if (_user is null) return;
+        if (_user is null || ManagedReward is null) return;
         
         // Setup hub connection
         TwitchHubClient.OnNewManagedRewardRedemption(newRecord => {
-            if (newRecord.TwitchManagedReward.RewardId != ManagedReward?.TwitchRewardId) return;
+            if (newRecord.ManagedRewardId != ManagedReward?.ManagedRewardId) return;
 
             Items.Add(newRecord);
             _textOutput = ParseTemplate() ?? string.Empty;
@@ -87,8 +86,8 @@
 
         await TwitchHubClient.StartAsync(userId:_user.Id);
         
-        TwitchManagedRewardRedemptionApiResult result = await RedemptionApi.GetRedemptionsAsync(_user.Id, rewardId:ManagedReward?.ManagedRewardId);
-        Items = result.Data;
+        TwitchManagedRewardRedemptionDtoApiResult? result = await RedemptionApi.GetRedemptionsAsync(_user.Id, rewardId:ManagedReward?.ManagedRewardId);
+        Items = result.Data ?? [];
         _textOutput = ParseTemplate() ?? string.Empty;
     }
 
@@ -103,10 +102,10 @@
         ;
     }
 
-    private string? ParseTemplateRedemption(TwitchManagedRewardRedemption rewardRedemption) {
+    private string? ParseTemplateRedemption(TwitchManagedRewardRedemptionDto rewardRedemption) {
         return ManagedReward?.OutputTemplatePerRedemption
             .Replace("{time}", rewardRedemption.TimeStamp.ToString(CultureInfo.InvariantCulture))
-            .Replace("{user}", rewardRedemption.Username)
+            .Replace("{user}", rewardRedemption.UserName)
             .Replace("{msg}", rewardRedemption.Message)
             .Replace("{message}", rewardRedemption.Message)
         ;
