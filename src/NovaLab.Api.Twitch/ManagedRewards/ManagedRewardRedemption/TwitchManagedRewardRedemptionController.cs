@@ -44,13 +44,16 @@ public class TwitchManagedRewardRedemptionController(
         await using NovaLabDbContext dbContext = await NovalabDb;
         
         IQueryable<TwitchManagedRewardRedemption> query = dbContext
-            .TwitchManagedRewardRedemptions
+            // Through the rewards, select the redemptions
+            .TwitchManagedRewards
+            .Where(reward => reward.User.Id == userId)
+            .ConditionalWhere(rewardId is not null, reward => reward.Id == rewardId)
+            // Actually get all the redemptions from the reward
+            .SelectMany(reward => reward.TwitchManagedRewardRedemptions)
             .Include(redemption => redemption.TwitchManagedReward)
-            .Where(redemption => redemption.TwitchManagedReward.User.Id == userId)
             .Where(redemption => redemption.TimeStamp >= redemption.TwitchManagedReward.LastCleared)
-            .ConditionalWhere(rewardId is not null, redemption => redemption.TwitchManagedReward.Id == rewardId)
             .ConditionalWhere(after is not null, redemption => redemption.TimeStamp >= after)
-            .ConditionalTake(limit is not null, limit ?? 0)
+            .ConditionalTake(limit > 0, limit ?? 0)
             .AsQueryable();
 
         TwitchManagedRewardRedemption[] result = await query.ToArrayAsync();

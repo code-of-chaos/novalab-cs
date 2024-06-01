@@ -31,6 +31,8 @@ public class TwitchManagedReward {
     public bool IsValidOnTwitch { get; set; } = true;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Methods
+    // Navigation Properties
     // -----------------------------------------------------------------------------------------------------------------
+    // Navigation Property
+    public virtual ICollection<TwitchManagedRewardRedemption> TwitchManagedRewardRedemptions { get; set; } = [];
 }

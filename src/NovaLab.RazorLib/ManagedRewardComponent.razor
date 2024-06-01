@@ -20,7 +20,6 @@
     
     private void SelectedListItemUpdate(TwitchManagedRewardDto reward) {
         CurrentSelectedReward = reward;
-        logger.Warning("TRIGGERED");
         _ = InvokeAsync(StateHasChanged);
     }
 

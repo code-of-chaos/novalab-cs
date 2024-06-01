@@ -1377,6 +1377,13 @@
           },
           "isValidOnTwitch": {
             "type": "boolean"
+          },
+          "twitchManagedRewardRedemptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TwitchManagedRewardRedemption"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
