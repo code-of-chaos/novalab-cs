@@ -1,10 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
+
 namespace NovaLab.Api.Twitch.ManagedRewards.ManagedReward;
 
 using Extensions;
-using ManagedRewardRedemption;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -40,13 +41,15 @@ public class TwitchManagedRewardController(
     [SwaggerOperation(OperationId = "GetManagedRewards")]
     public async Task<IActionResult> GetManagedRewards(
         [FromQuery(Name = "userId")] string? userId = null, 
-        [FromQuery(Name = "limit")] int? limit = null ) {
+        [FromQuery(Name = "limit")] int? limit = null,
+        [FromQuery(Name = "include-invalid")] bool? includeInvalid = null ) {
         await using NovaLabDbContext dbContext = await NovalabDb;
 
         try {
             IQueryable<TwitchManagedReward> query = dbContext.TwitchManagedRewards
                 .AsNoTracking()
                 .Include(reward => reward.User)
+                .ConditionalWhere(includeInvalid is null or false ,reward => reward.IsValidOnTwitch)
                 .ConditionalWhere(userId is not null, reward => reward.User.Id == userId)
                 .ConditionalTake(limit is not null, limit ?? 0)
                 .AsQueryable();
@@ -77,12 +80,32 @@ public class TwitchManagedRewardController(
                 .SelectMany(rewardId => rewardId)
                 .Where(rewardId => responseIds.Contains(rewardId))
                 .ToHashSet();
-
+            
             TwitchManagedReward[] data = await query
                 .Where(reward => validIds.Contains(reward.RewardId))
                 .ToArrayAsync();
+
+            string? msg = null; 
+            // ReSharper disable once InvertIf
+            if (includeInvalid is null or false) {
+                List<TwitchManagedReward> invalidRewards = await query
+                    .Where(reward => !validIds.Contains(reward.RewardId))
+                    .ToListAsync();
+                foreach (TwitchManagedReward reward in invalidRewards) {
+                    reward.IsValidOnTwitch = false;
+                }
+                // ReSharper disable once InvertIf
+                if (invalidRewards.Count > 0) {
+                    dbContext.TwitchManagedRewards.UpdateRange(invalidRewards);
+                    await dbContext.SaveChangesAsync();
+                    msg = "Some of the users rewards were made invalid";
+                }
+            }
             
-            return Success(data.Select(TwitchManagedRewardDto.FromDbObject).ToArray());
+            return Success(
+                msg:msg,
+                data.Select(TwitchManagedRewardDto.FromDbObject).ToArray()
+            );
         }
 
         catch (Exception ex) {

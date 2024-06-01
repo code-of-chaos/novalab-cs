@@ -433,6 +433,13 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "include-invalid",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1367,6 +1374,9 @@
           "lastCleared": {
             "type": "string",
             "format": "date-time"
+          },
+          "isValidOnTwitch": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

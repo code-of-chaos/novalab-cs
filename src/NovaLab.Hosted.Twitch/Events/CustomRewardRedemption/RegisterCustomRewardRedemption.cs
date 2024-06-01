@@ -41,8 +41,8 @@ public class RegisterCustomRewardRedemption(
                 await RegisterSubscription(client, reward);
             }
         }
-        catch (Exception ex){
-            logger.Warning(ex, "");
+        catch (Exception ex) {
+            logger.Warning(ex, "Register Custom Reward Redemption exception");
         }
     }
 
@@ -50,24 +50,33 @@ public class RegisterCustomRewardRedemption(
     // Support Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task RegisterSubscription(EventSubWebsocketClient client, TwitchManagedRewardDto twitchManagedReward) {
-        // subscribe to topics
-        // see : https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd
-        await twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync(
-            "channel.channel_points_custom_reward_redemption.add",
-            "1",
-            new Dictionary<string, string> {
-                // see : https://dev.twitch.tv/docs/eventsub/eventsub-reference/#channel-points-custom-reward-redemption-add-condition
-                { "broadcaster_user_id", twitchManagedReward.TwitchBroadcasterId },
-                // { "reward_id", "..." } // Technically not needed as we want to listen to all rewards and then filter
-            },
-            // see: https://dev.twitch.tv/docs/eventsub/eventsub-reference/#transport
-            EventSubTransportMethod.Websocket,
-            client.SessionId,
-            null, // Don't set because we are using websocket
-            null, // Don't set because we are using websocket
-            twitchApi.Settings.ClientId, 
-            await twitchAccessToken.GetAccessTokenOrRefreshAsync(twitchManagedReward.UserId)
-        );
+        try {
+            // stored as a var to make stacktrace a bit clearer
+            string accessToken = await twitchAccessToken.GetAccessTokenOrRefreshAsync(twitchManagedReward.UserId);
+            
+            // subscribe to topics
+            // see : https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd
+            await twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync(
+                "channel.channel_points_custom_reward_redemption.add",
+                "1",
+                new Dictionary<string, string> {
+                    // see : https://dev.twitch.tv/docs/eventsub/eventsub-reference/#channel-points-custom-reward-redemption-add-condition
+                    { "broadcaster_user_id", twitchManagedReward.TwitchBroadcasterId },
+                    // { "reward_id", "..." } // Technically not needed as we want to listen to all rewards and then filter
+                },
+                // see: https://dev.twitch.tv/docs/eventsub/eventsub-reference/#transport
+                EventSubTransportMethod.Websocket,
+                client.SessionId,
+                null, // Don't set because we are using websocket
+                null, // Don't set because we are using websocket
+                twitchApi.Settings.ClientId, 
+                accessToken
+            );
+        }
+        catch (Exception ex){
+            logger.Warning(ex, "Inner RegisterSubscription Exceptions, {@dto}",twitchManagedReward);
+        }
+
     }
     
 }

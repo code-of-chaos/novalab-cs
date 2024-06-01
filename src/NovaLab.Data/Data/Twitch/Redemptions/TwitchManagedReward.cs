@@ -28,6 +28,8 @@ public class TwitchManagedReward {
 
     public DateTime LastCleared { get; set; } = DateTime.MinValue;
 
+    public bool IsValidOnTwitch { get; set; } = true;
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

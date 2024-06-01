@@ -22,6 +22,9 @@ public abstract class AbstractBaseController(IDbContextFactory<NovaLabDbContext>
     protected static IActionResult Success<T>(params T[] objects) {
         return new JsonResult(ApiResult<T>.Success(objects));
     }
+    protected static IActionResult Success<T>(string? msg = null, params T[] objects) {
+        return new JsonResult(ApiResult<T>.Success(null, msg, objects));
+    }
     protected static IActionResult Success<T>(HttpStatusCode? status =null, string? msg = null, params T[] objects) {
         return new JsonResult(ApiResult<T>.Success(status, msg, objects));
     }
@@ -30,7 +33,9 @@ public abstract class AbstractBaseController(IDbContextFactory<NovaLabDbContext>
     protected static IActionResult Success() {
         return new JsonResult(ApiResult.Success([]));
     }
-    
+    protected static IActionResult Success(string msg) {
+        return new JsonResult(ApiResult.Success(null, msg, []));
+    }
     protected static IActionResult Success(HttpStatusCode status, string? msg = null) {
         return new JsonResult(ApiResult.Success(status, msg, []));
     }
