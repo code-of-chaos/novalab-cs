@@ -23,10 +23,6 @@ public class CatchTwitchFollow(ILogger logger, IHttpClientFactory clientFactory)
     
     public async Task Callback(object sender, ChannelFollowArgs args) {
         // see : https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelfollow
-        
-        logger.Warning("{@a}", args);
-        
-        
         await NewFollowerApi.PostNewFollowerAsync(
             new PostNewFollowerDto(
                 twitchBoardcasterId: args.Notification.Payload.Event.BroadcasterUserId,

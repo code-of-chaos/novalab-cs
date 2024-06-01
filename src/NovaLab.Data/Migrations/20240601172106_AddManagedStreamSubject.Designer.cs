@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NovaLab.Data;
 
@@ -11,9 +12,11 @@ using NovaLab.Data;
 namespace NovaLab.Data.Migrations
 {
     [DbContext(typeof(NovaLabDbContext))]
-    partial class NovaLabDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240601172106_AddManagedStreamSubject")]
+    partial class AddManagedStreamSubject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,7 +272,7 @@ namespace NovaLab.Data.Migrations
                     b.ToTable("TwitchManagedRewardRedemptions");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Streams.TwitchManagedStreamSubject", b =>
+            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Streams.ManagedStreamSubject", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -279,6 +282,9 @@ namespace NovaLab.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("varchar(128)");
+
+                    b.Property<bool>("Selected")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("SelectionName")
                         .IsRequired()
@@ -292,7 +298,7 @@ namespace NovaLab.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TwitchManagedStreamSubjects");
+                    b.ToTable("ManagedStreamSubjects");
                 });
 
             modelBuilder.Entity("NovaLab.Data.NovaLabUser", b =>
@@ -467,7 +473,7 @@ namespace NovaLab.Data.Migrations
 
             modelBuilder.Entity("NovaLab.Data.NovaLabUser", b =>
                 {
-                    b.HasOne("NovaLab.Data.Data.Twitch.Streams.TwitchManagedStreamSubject", "SelectedManagedStreamSubject")
+                    b.HasOne("NovaLab.Data.Data.Twitch.Streams.ManagedStreamSubject", "SelectedManagedStreamSubject")
                         .WithOne("User")
                         .HasForeignKey("NovaLab.Data.NovaLabUser", "SelectedManagedStreamSubjectId");
 
@@ -479,7 +485,7 @@ namespace NovaLab.Data.Migrations
                     b.Navigation("TwitchManagedRewardRedemptions");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Streams.TwitchManagedStreamSubject", b =>
+            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Streams.ManagedStreamSubject", b =>
                 {
                     b.Navigation("User")
                         .IsRequired();

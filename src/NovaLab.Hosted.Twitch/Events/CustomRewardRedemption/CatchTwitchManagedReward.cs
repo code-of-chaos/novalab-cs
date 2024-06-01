@@ -19,12 +19,10 @@ public class CatchTwitchManagedReward(ILogger logger, IHttpClientFactory clientF
 
     private TwitchManagedRewardRedemptionApi? _redemptionApiCache;
     private TwitchManagedRewardRedemptionApi RedemptionApi => _redemptionApiCache ??= new TwitchManagedRewardRedemptionApi(Client.BaseAddress!.ToString());
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    
-    // WARN THIS THING HAS TO BE REMADE
-    //      JUST SEND ALL DATA TO THE API, fire and forget, maybe pool data together if the callbacks happen in quick succession?
     public async Task Callback(object sender, ChannelPointsCustomRewardRedemptionArgs pointsCustomRewardRedemptionArgs) {
         ChannelPointsCustomRewardRedemption redemption = pointsCustomRewardRedemptionArgs.Notification.Payload.Event;
         var redemptionDto = new PostTwitchManagedRewardRedemptionDto(

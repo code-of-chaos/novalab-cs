@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Data.Data.Twitch.Redemptions;
+using NovaLab.Data.Data.Twitch.Streams;
 
 namespace NovaLab.Data;
 
@@ -13,11 +14,13 @@ using Data.Twitch.Followers;
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 public class NovaLabDbContext : IdentityDbContext<NovaLabUser> {
-    public DbSet<TwitchManagedReward> TwitchManagedRewards { get; set; }
-    public DbSet<TwitchManagedRewardRedemption> TwitchManagedRewardRedemptions { get; set; }
+    public DbSet<TwitchManagedReward> TwitchManagedRewards { get; init; }
+    public DbSet<TwitchManagedRewardRedemption> TwitchManagedRewardRedemptions { get; init; }
     
-    public DbSet<TwitchFollowerGoal> TwitchFollowerGoals { get; set; }
-    public DbSet<TwitchNewFollower> TwitchNewFollowers { get; set; }
+    public DbSet<TwitchFollowerGoal> TwitchFollowerGoals { get; init; }
+    public DbSet<TwitchNewFollower> TwitchNewFollowers { get; init; }
+    
+    public DbSet<TwitchManagedStreamSubject> TwitchManagedStreamSubjects { get; init; }
     
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors

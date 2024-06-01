@@ -55,4 +55,8 @@ public class TwitchHubClient(NavigationManager navigationManager) {
     public void OnNewTwitchFollower(Action action) {
         _disposables.Add(Hub.On(TwitchHubMethods.NewTwitchFollower, action)); 
     }
+
+    public void OnSelectedTwitchManagedSubject(Action<TwitchManagedStreamSubjectDto> action) {
+        _disposables.Add(Hub.On(TwitchHubMethods.SelectedTwitchManagedSubject, action)); 
+    }
 }

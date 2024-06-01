@@ -1,17 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-
-namespace NovaLab.Services.Twitch.Hubs;
+namespace NovaLab.Api.Twitch.Streams.ManagedStreamSubject;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
-public static class TwitchHubMethods {
-    public const string NewManagedRewardRedemption = nameof(NewManagedRewardRedemption);
-    public const string ClearedManagedReward = nameof(ClearedManagedReward);
-    public const string NewTwitchFollower = nameof(NewTwitchFollower);
-    public const string NewTwitchManagedSubject = nameof(NewTwitchManagedSubject);
-    public const string SelectedTwitchManagedSubject = nameof(SelectedTwitchManagedSubject);
-}
+public record PostTwitchManagedStreamSubjectDto(
+    string UserId,
+    string SelectionName,
+    string ObsSubjectTitle,
+    string TwitchSubjectTitle,
+    
+    bool AutoSelect = false
+);

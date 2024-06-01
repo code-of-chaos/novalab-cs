@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Identity;
+using NovaLab.Data.Data.Twitch.Streams;
 
 namespace NovaLab.Data;
 
@@ -17,4 +18,8 @@ public class NovaLabUser : IdentityUser {
     
     // Navigation property for the one-to-one relationship
     public virtual TwitchFollowerGoal? TwitchFollowerGoal { get; set; }
+    
+    
+    public Guid? SelectedManagedStreamSubjectId { get; set; }
+    public virtual TwitchManagedStreamSubject? SelectedManagedStreamSubject { get; set; }
 }
