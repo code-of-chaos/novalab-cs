@@ -1,6 +1,9 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using System.Collections.Concurrent;
+using TwitchLib.Api.Helix.Models.EventSub;
+
 namespace NovaLab.Hosted.Twitch.Events.CustomRewardRedemption;
 
 using NovaLab.ApiClient.Api;
@@ -26,23 +29,21 @@ public class RegisterCustomRewardRedemption(
     private TwitchManagedRewardApi? _rewardApiCache;
     private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi(Client.BaseAddress!.ToString());
     
+    private ConcurrentBag<string> SubscribedBroadcasters { get; } = [];
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task RegisterAtWebSocket(EventSubWebsocketClient client) {
-        try {
-            // Thanks to Noyainrain for helping me!
-            TwitchManagedRewardDtoApiResult? result = await RewardApi.GetManagedRewardsAsync();
-            if (result is { Data: null } or null) {
-                logger.Warning("API endpoint of GetManagedRewards yielded no result");
-                return;
-            }
-            foreach (TwitchManagedRewardDto reward in result.Data) {
-                await RegisterSubscription(client, reward);
-            }
+        // Thanks to Noyainrain for helping me!
+        TwitchManagedRewardDtoApiResult? result = await RewardApi.GetManagedRewardsAsync();
+        if (result is { Data: null } or null) {
+            logger.Warning("API endpoint of GetManagedRewards yielded no result");
+            return;
         }
-        catch (Exception ex) {
-            logger.Warning(ex, "Register Custom Reward Redemption exception");
+        
+        foreach (TwitchManagedRewardDto reward in result.Data) {
+            await RegisterSubscription(client, reward);
         }
     }
 
@@ -50,13 +51,19 @@ public class RegisterCustomRewardRedemption(
     // Support Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task RegisterSubscription(EventSubWebsocketClient client, TwitchManagedRewardDto twitchManagedReward) {
+        // Can't subscribe to the same broadcaster multiple times 
+        if (SubscribedBroadcasters.Contains(twitchManagedReward.UserId)) {
+            logger.Information("Skipping {goal} because the broadcaster is already subscribed to", twitchManagedReward.ManagedRewardId);
+            return;
+        }
+        
         try {
             // stored as a var to make stacktrace a bit clearer
             string accessToken = await twitchAccessToken.GetAccessTokenOrRefreshAsync(twitchManagedReward.UserId);
             
             // subscribe to topics
             // see : https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd
-            await twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync(
+            CreateEventSubSubscriptionResponse? result = await twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync(
                 "channel.channel_points_custom_reward_redemption.add",
                 "1",
                 new Dictionary<string, string> {
@@ -72,10 +79,15 @@ public class RegisterCustomRewardRedemption(
                 twitchApi.Settings.ClientId, 
                 accessToken
             );
+                    
+            if (result is not null && result.Subscriptions.Length != 0) {
+                SubscribedBroadcasters.Add(twitchManagedReward.UserId);
+            }
         }
         catch (Exception ex){
-            logger.Warning(ex, "Inner RegisterSubscription Exceptions, {@dto}",twitchManagedReward);
+            logger.Error(ex, "Inner RegisterSubscription Exceptions, {@dto}",twitchManagedReward);
         }
+        
 
     }
     

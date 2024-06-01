@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="8.0.0" />
+        <PackageReference Include="Blazorise" Version="1.5.2" />
         <PackageReference Include="Blazorise.Bootstrap5" Version="1.5.2" />
         <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.5.2" />
         <PackageReference Include="Blazorise.SpinKit" Version="1.5.2" />
@@ -50,6 +51,12 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
       <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Pages\Error.cshtml" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Pages\_Host.cshtml" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Pages\_Layout.cshtml" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Pages\Dashboard.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Pages\SimpleFormPage.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Pages\TodoAppPage.razor" />
     </ItemGroup>
 
     

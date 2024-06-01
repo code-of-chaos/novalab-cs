@@ -1,0 +1,34 @@
+﻿@using Blazorise
+
+@rendermode InteractiveServer
+
+@attribute [StreamRendering]
+
+<Bar Breakpoint="Breakpoint.Desktop" 
+     NavigationBreakpoint="Breakpoint.Tablet" 
+     ThemeContrast="ThemeContrast.Dark"
+     Mode="BarMode.VerticalInline"
+     CollapseMode="BarCollapseMode.Small">
+    <BarToggler />
+    <BarBrand>
+        <BarItem>
+            <BarLink To="">
+                <BarIcon IconName="_customIcon" />
+                NovaLab
+            </BarLink>
+        </BarItem>
+    </BarBrand>
+    <BarMenu>
+        <BarStart>
+            <BarItem>
+                <BarLink To="/auth">
+                    Auth
+                </BarLink>
+            </BarItem>
+        </BarStart>
+    </BarMenu>
+</Bar>
+
+@code {
+    private RenderFragment _customIcon =@<img src="assets/novalab-logo_inverse.svg" style="width:32px; height: 32px ; margin-right: .25rem" alt="Novalab Icon"/>;
+}

@@ -1,21 +1,12 @@
 ﻿@page "/auth"
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Identity
-@using NovaLab.Data
-@using TwitchLib.Api
 @using NovaLab.RazorLib
 @using NovaLab.RazorLib.Forms
-
-@inject TwitchAPI TwitchApi
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject UserManager<NovaLabUser> UserManager
 
 @rendermode InteractiveServer
 @attribute [Authorize, StreamRendering]
 
-<PageTitle>Auth</PageTitle>
-
-<h1>You are authenticated</h1>
+@* <PageTitle>Auth</PageTitle> *@
 
 <AuthorizeView>
     <BtnTwitchAccessTokenRefresh/>
