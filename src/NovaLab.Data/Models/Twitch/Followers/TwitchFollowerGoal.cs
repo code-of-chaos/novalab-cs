@@ -3,25 +3,23 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using System.ComponentModel.DataAnnotations;
 
-namespace NovaLab.Data.Data.Twitch.Streams;
+namespace NovaLab.Data.Models.Twitch.Followers;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-public class TwitchManagedStreamSubject {
+public class TwitchFollowerGoal {
     [Key]
     public Guid Id { get; init; }
-    public virtual NovaLabUser User { get; init; } = null!; // virtual is being used here by EFC
     
-    [MaxLength(32)]
-    public string SelectionName { get; set; } = "Undefined";
+    // Foreign key property
+    [MaxLength(255)] public string UserId { get; set; } = null!;
+    // Navigation property for the one-to-one relationship
+    public virtual NovaLabUser User { get; init; } = null!;
     
-    [MaxLength(128)]
-    public string ObsSubjectTitle { get; set; } = "UNDEFINED";
-    
-    [MaxLength(140)]
-    public string TwitchSubjectTitle { get; set; } = "UNDEFINED";
-    
+    public int DailyGoal { get; set; } = 1;
+    [MaxLength(5)] public string Divider = "/";
+    [MaxLength(255)] public string? CustomCssStyling { get; set; }
 }

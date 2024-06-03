@@ -1,13 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using NovaLab.Data.Models.Twitch.Followers;
+
 namespace NovaLab.Api.Twitch.Followers.FollowerGoal;
 
 using Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Data;
-using NovaLab.Data.Data.Twitch.Followers;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;

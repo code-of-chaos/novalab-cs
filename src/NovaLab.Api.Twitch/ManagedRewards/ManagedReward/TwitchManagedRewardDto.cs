@@ -1,9 +1,9 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Api.Twitch.ManagedRewards.ManagedReward;
+using NovaLab.Data.Models.Twitch.Redemptions;
 
-using NovaLab.Data.Data.Twitch.Redemptions;
+namespace NovaLab.Api.Twitch.ManagedRewards.ManagedReward;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

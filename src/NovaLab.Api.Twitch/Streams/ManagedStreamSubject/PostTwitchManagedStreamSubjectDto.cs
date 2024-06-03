@@ -12,6 +12,5 @@ public record PostTwitchManagedStreamSubjectDto(
     string SelectionName,
     string ObsSubjectTitle,
     string TwitchSubjectTitle,
-    
     bool AutoSelect = false
 );

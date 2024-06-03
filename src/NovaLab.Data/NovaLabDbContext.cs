@@ -3,12 +3,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NovaLab.Data.Data.Twitch.Redemptions;
-using NovaLab.Data.Data.Twitch.Streams;
+using NovaLab.Data.Models.Twitch.Followers;
+using NovaLab.Data.Models.Twitch.Redemptions;
+using NovaLab.Data.Models.Twitch.Streams;
 
 namespace NovaLab.Data;
-
-using Data.Twitch.Followers;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports

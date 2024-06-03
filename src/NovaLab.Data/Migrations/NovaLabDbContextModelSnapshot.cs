@@ -154,7 +154,7 @@ namespace NovaLab.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Followers.TwitchFollowerGoal", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Followers.TwitchFollowerGoal", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -180,7 +180,7 @@ namespace NovaLab.Data.Migrations
                     b.ToTable("TwitchFollowerGoals");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Followers.TwitchNewFollower", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Followers.TwitchNewFollower", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -204,7 +204,7 @@ namespace NovaLab.Data.Migrations
                     b.ToTable("TwitchNewFollowers");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Redemptions.TwitchManagedReward", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -241,7 +241,7 @@ namespace NovaLab.Data.Migrations
                     b.ToTable("TwitchManagedRewards");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedRewardRedemption", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Redemptions.TwitchManagedRewardRedemption", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -269,7 +269,7 @@ namespace NovaLab.Data.Migrations
                     b.ToTable("TwitchManagedRewardRedemptions");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Streams.TwitchManagedStreamSubject", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Streams.TwitchManagedStreamSubject", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -295,7 +295,7 @@ namespace NovaLab.Data.Migrations
                     b.ToTable("TwitchManagedStreamSubjects");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.NovaLabUser", b =>
+            modelBuilder.Entity("NovaLab.Models.NovaLabUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -383,7 +383,7 @@ namespace NovaLab.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("NovaLab.Data.NovaLabUser", null)
+                    b.HasOne("NovaLab.Models.NovaLabUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -392,7 +392,7 @@ namespace NovaLab.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("NovaLab.Data.NovaLabUser", null)
+                    b.HasOne("NovaLab.Models.NovaLabUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -407,7 +407,7 @@ namespace NovaLab.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NovaLab.Data.NovaLabUser", null)
+                    b.HasOne("NovaLab.Models.NovaLabUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -416,27 +416,27 @@ namespace NovaLab.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("NovaLab.Data.NovaLabUser", null)
+                    b.HasOne("NovaLab.Models.NovaLabUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Followers.TwitchFollowerGoal", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Followers.TwitchFollowerGoal", b =>
                 {
-                    b.HasOne("NovaLab.Data.NovaLabUser", "User")
+                    b.HasOne("NovaLab.Models.NovaLabUser", "User")
                         .WithOne("TwitchFollowerGoal")
-                        .HasForeignKey("NovaLab.Data.Data.Twitch.Followers.TwitchFollowerGoal", "UserId")
+                        .HasForeignKey("NovaLab.Models.Models.Twitch.Followers.TwitchFollowerGoal", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Followers.TwitchNewFollower", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Followers.TwitchNewFollower", b =>
                 {
-                    b.HasOne("NovaLab.Data.Data.Twitch.Followers.TwitchFollowerGoal", "Goal")
+                    b.HasOne("NovaLab.Models.Models.Twitch.Followers.TwitchFollowerGoal", "Goal")
                         .WithMany()
                         .HasForeignKey("GoalId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -445,18 +445,18 @@ namespace NovaLab.Data.Migrations
                     b.Navigation("Goal");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Redemptions.TwitchManagedReward", b =>
                 {
-                    b.HasOne("NovaLab.Data.NovaLabUser", "User")
+                    b.HasOne("NovaLab.Models.NovaLabUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedRewardRedemption", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Redemptions.TwitchManagedRewardRedemption", b =>
                 {
-                    b.HasOne("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", "TwitchManagedReward")
+                    b.HasOne("NovaLab.Models.Models.Twitch.Redemptions.TwitchManagedReward", "TwitchManagedReward")
                         .WithMany("TwitchManagedRewardRedemptions")
                         .HasForeignKey("TwitchManagedRewardId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -465,27 +465,27 @@ namespace NovaLab.Data.Migrations
                     b.Navigation("TwitchManagedReward");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.NovaLabUser", b =>
+            modelBuilder.Entity("NovaLab.Models.NovaLabUser", b =>
                 {
-                    b.HasOne("NovaLab.Data.Data.Twitch.Streams.TwitchManagedStreamSubject", "SelectedManagedStreamSubject")
+                    b.HasOne("NovaLab.Models.Models.Twitch.Streams.TwitchManagedStreamSubject", "SelectedManagedStreamSubject")
                         .WithOne("User")
-                        .HasForeignKey("NovaLab.Data.NovaLabUser", "SelectedManagedStreamSubjectId");
+                        .HasForeignKey("NovaLab.Models.NovaLabUser", "SelectedManagedStreamSubjectId");
 
                     b.Navigation("SelectedManagedStreamSubject");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Redemptions.TwitchManagedReward", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Redemptions.TwitchManagedReward", b =>
                 {
                     b.Navigation("TwitchManagedRewardRedemptions");
                 });
 
-            modelBuilder.Entity("NovaLab.Data.Data.Twitch.Streams.TwitchManagedStreamSubject", b =>
+            modelBuilder.Entity("NovaLab.Models.Models.Twitch.Streams.TwitchManagedStreamSubject", b =>
                 {
                     b.Navigation("User")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NovaLab.Data.NovaLabUser", b =>
+            modelBuilder.Entity("NovaLab.Models.NovaLabUser", b =>
                 {
                     b.Navigation("TwitchFollowerGoal");
                 });

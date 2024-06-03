@@ -951,10 +951,11 @@
             }
           },
           {
-            "name": "subject-name",
+            "name": "subject-id",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1606,6 +1607,10 @@
       "TwitchManagedStreamSubjectDto": {
         "type": "object",
         "properties": {
+          "subjectId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "selectionName": {
             "type": "string",
             "nullable": true

@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NovaLab.Data;
-using NovaLab.Data.Data.Twitch.Streams;
+using NovaLab.Data.Models.Twitch.Streams;
 using NovaLab.Services.Twitch.Hubs;
+using NovaLab.Services.Twitch.TwitchTokens;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using TwitchLib.Api;
+using TwitchLib.Api.Helix.Models.Channels.ModifyChannelInformation;
 
 namespace NovaLab.Api.Twitch.Streams.ManagedStreamSubject;
 
@@ -23,9 +26,11 @@ namespace NovaLab.Api.Twitch.Streams.ManagedStreamSubject;
 public class TwitchManagedStreamSubjectController(
     IDbContextFactory<NovaLabDbContext> contextFactory,
     ILogger logger,
-    IHubContext<TwitchHub> hubContext
-    
-    ) : AbstractBaseController(contextFactory){
+    IHubContext<TwitchHub> hubContext,
+    TwitchAPI twitchApi,
+    TwitchTokensManager twitchTokensService
+
+) : AbstractBaseController(contextFactory) {
     
     // -----------------------------------------------------------------------------------------------------------------
     // GET Methods
@@ -109,7 +114,7 @@ public class TwitchManagedStreamSubjectController(
     [SwaggerOperation(OperationId = "PostSelectManagedStreamSubject")]
     public async Task<IActionResult> PostSelectManagedStreamSubject(
         [FromQuery(Name="user-id")] string userId,
-        [FromQuery(Name="subject-name")] string subjectName
+        [FromQuery(Name="subject-id")] Guid subjectId
     ) {
         await using NovaLabDbContext dbContext = await NovalabDb;
         try {
@@ -119,12 +124,19 @@ public class TwitchManagedStreamSubjectController(
             if (user is null) return FailureClient();
 
             TwitchManagedStreamSubject? subject = await dbContext.TwitchManagedStreamSubjects
-                .FirstOrDefaultAsync(subject => subject.User == user && subject.SelectionName == subjectName);
+                .FirstOrDefaultAsync(subject => subject.User == user && subject.Id == subjectId);
             if (subject is null) return FailureClient();
 
             user.SelectedManagedStreamSubject = subject;
             
             // TODO Send update to twitch and receive the update at the client's side Page of the subject renderer
+            await twitchApi.Helix.Channels.ModifyChannelInformationAsync(
+                user.TwitchBroadcasterId,
+                new ModifyChannelInformationRequest {
+                    Title = subject.TwitchSubjectTitle,
+                },
+                await twitchTokensService.GetAccessTokenOrRefreshAsync(user.Id)
+            );
             
             await dbContext.SaveChangesAsync();
         

@@ -1,20 +1,27 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Data.Data.Twitch.Followers;
-
 using System.ComponentModel.DataAnnotations;
+
+namespace NovaLab.Data.Models.Twitch.Streams;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-public class TwitchNewFollower {
+public class TwitchManagedStreamSubject {
     [Key]
     public Guid Id { get; init; }
-    public virtual TwitchFollowerGoal Goal { get; init; } = null!; // virtual is being used here by EFC
-      
-    public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
-    [MaxLength(128)] public required string FollowerTwitchUserId { get; set; }
+    public virtual NovaLabUser User { get; init; } = null!; // virtual is being used here by EFC
+    
+    [MaxLength(32)]
+    public string SelectionName { get; set; } = "Undefined";
+    
+    [MaxLength(128)]
+    public string ObsSubjectTitle { get; set; } = "UNDEFINED";
+    
+    [MaxLength(140)]
+    public string TwitchSubjectTitle { get; set; } = "UNDEFINED";
+    
 }

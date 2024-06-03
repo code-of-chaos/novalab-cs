@@ -4,7 +4,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace NovaLab.Data.Data.Twitch.Redemptions;
+namespace NovaLab.Data.Models.Twitch.Redemptions;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

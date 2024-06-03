@@ -2,11 +2,11 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Identity;
-using NovaLab.Data.Data.Twitch.Streams;
+using NovaLab.Data.Models.Twitch.Followers;
+using NovaLab.Data.Models.Twitch.Streams;
 
 namespace NovaLab.Data;
 
-using Data.Twitch.Followers;
 using System.ComponentModel.DataAnnotations;
 
 // ---------------------------------------------------------------------------------------------------------------------

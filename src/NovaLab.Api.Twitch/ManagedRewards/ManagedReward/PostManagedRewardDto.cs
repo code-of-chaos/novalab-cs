@@ -14,5 +14,4 @@ public record PostManagedRewardDto(
     CreateCustomRewardsRequest TwitchApiRequest,
     string OutputTemplatePerReward,
     string OutputTemplatePerRedemption
-    
 );

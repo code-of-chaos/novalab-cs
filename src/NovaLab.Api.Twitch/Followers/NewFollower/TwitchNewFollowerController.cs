@@ -1,6 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using NovaLab.Data.Models.Twitch.Followers;
+
 namespace NovaLab.Api.Twitch.Followers.NewFollower;
 
 using Extensions;
@@ -8,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Microsoft.AspNetCore.SignalR;
-using NovaLab.Data.Data.Twitch.Followers;
 using Serilog;
 using Services.Twitch.Hubs;
 using Swashbuckle.AspNetCore.Annotations;

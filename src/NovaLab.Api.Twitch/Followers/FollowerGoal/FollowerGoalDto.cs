@@ -1,9 +1,9 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Api.Twitch.Followers.FollowerGoal;
+using NovaLab.Data.Models.Twitch.Followers;
 
-using NovaLab.Data.Data.Twitch.Followers;
+namespace NovaLab.Api.Twitch.Followers.FollowerGoal;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
