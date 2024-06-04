@@ -152,6 +152,7 @@ public class Program {
                 //      This is needed to make that work
                 twitchOptions.SaveTokens = true;
             })
+            .AddCookie()
             .AddBearerToken()
             .AddIdentityCookies();
         

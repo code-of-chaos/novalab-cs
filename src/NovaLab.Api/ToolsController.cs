@@ -28,6 +28,7 @@ public class ToolsController(
         
         await using NovaLabDbContext dbContext = await NovalabDb;
         await dbContext.Database.MigrateAsync();
+        await dbContext.SaveChangesAsync();
 
         return Success();
     }
