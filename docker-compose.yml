@@ -1,0 +1,33 @@
+services:
+  novalab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7122:443" # HTTPS
+    depends_on:
+      - mariadbserver
+        
+    environment:
+      - ASPNETCORE_URLS=https://+
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Authentication_Twitch_ClientId=${Authentication_Twitch_ClientId}
+      - Authentication_Twitch_ClientSecret=${Authentication_Twitch_ClientSecret}
+      - ConnectionStrings__DefaultConnection=Server=mariadbserver;Database=novalabdb;User=root;Password=${MARIADB_ROOT_PASSWORD};
+        
+    volumes:
+      - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
+      - "${USERPROFILE}/.aspnet/https/NovaLab.pfx:/root/.aspnet/https/NovaLab.pfx:ro"
+  
+  mariadbserver:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    ports:
+      - "17171:3306"
+    volumes:
+      - MariaDBServer:/var/opt/mariadb
+    
+volumes:
+  MariaDBServer:

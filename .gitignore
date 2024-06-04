@@ -556,3 +556,5 @@ src/NovaLab/Data/app.db
 src/NovaLab/Data/app.db-shm
 src/NovaLab/Data/app.db-wal
 src/OpenAPIGen/
+
+.env

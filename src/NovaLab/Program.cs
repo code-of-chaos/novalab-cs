@@ -1,6 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using System.Security.Cryptography.X509Certificates;
+
 namespace NovaLab;
 
 using Blazorise;
@@ -31,7 +33,13 @@ using static TwitchLib.Api.Core.Common.Helpers;
 // ---------------------------------------------------------------------------------------------------------------------
 public class Program {
     public static void Main(string[] args) {
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions {
+            // ApplicationName = typeof(Program).Assembly.FullName,
+            // ContentRootPath = Path.GetFullPath(Directory.GetCurrentDirectory()),
+            // Set up the content root to match Docker container structure
+            WebRootPath = "NovaLab/wwwroot",
+            Args = args
+        });
 
         // -------------------------------------------------------------------------------------------------------------
         // Services
@@ -61,8 +69,8 @@ public class Program {
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
             .AddTwitch(twitchOptions => {
-                twitchOptions.ClientId = builder.Configuration["Authentication:Twitch:ClientId"]!;
-                twitchOptions.ClientSecret = builder.Configuration["Authentication:Twitch:ClientSecret"]!;
+                twitchOptions.ClientId = builder.Configuration["Authentication_Twitch_ClientId"]!;
+                twitchOptions.ClientSecret = builder.Configuration["Authentication_Twitch_ClientSecret"]!;
                 // Update scopes as needed
                 //      This might look weird, but the idea is te that we don't reuse this at all anywhere, just create the list and move on
                 ((AuthScopes[])[
@@ -144,11 +152,13 @@ public class Program {
                 //      This is needed to make that work
                 twitchOptions.SaveTokens = true;
             })
+            .AddCookie()
             .AddBearerToken()
             .AddIdentityCookies();
         
         // - DB -
-        string connectionString = builder.Configuration["Database:MariaDb:ConnectionString"]!;
+        string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                                   ?? builder.Configuration["ConnectionStrings__DefaultConnection"];
         builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             // options.EnableDetailedErrors();
@@ -176,8 +186,8 @@ public class Program {
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
         builder.Services.AddSingleton(new TwitchAPI {
             Settings = {
-                ClientId = builder.Configuration["Authentication:Twitch:ClientId"],
-                Secret = builder.Configuration["Authentication:Twitch:ClientSecret"]
+                ClientId = builder.Configuration["Authentication_Twitch_ClientId"],
+                Secret = builder.Configuration["Authentication_Twitch_ClientSecret"]
             }
         });
         builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
@@ -221,12 +231,18 @@ public class Program {
             } )
             .AddBootstrap5Providers()
             .AddFontAwesomeIcons();
-        
+
+        builder.WebHost.ConfigureKestrel(options => {
+            options.ConfigureHttpsDefaults(opt => {
+                opt.ServerCertificate = new X509Certificate2("/root/.aspnet/https/NovaLab.pfx", "pa55w0rd!");
+            });
+        });
         
         // -------------------------------------------------------------------------------------------------------------
         // App
         // -------------------------------------------------------------------------------------------------------------
         WebApplication app = builder.Build();
+        
         if (app.Environment.IsDevelopment()) {
             app.UseMigrationsEndPoint();
             app.UseSwagger();
@@ -244,6 +260,7 @@ public class Program {
         app.UseAuthentication();
         app.UseAuthorization(); 
         app.UseAntiforgery();
+        
         app.MapControllers();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();

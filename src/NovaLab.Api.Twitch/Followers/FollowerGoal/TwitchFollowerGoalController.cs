@@ -20,7 +20,8 @@ using System.Net;
 [Route("api/twitch/followers/follower-goal")]
 public class TwitchFollowerGoalController(
     IDbContextFactory<NovaLabDbContext> contextFactory,
-    ILogger logger) : AbstractBaseController(contextFactory){
+    ILogger logger
+) : AbstractBaseController(contextFactory) {
    
     // -----------------------------------------------------------------------------------------------------------------
     // GET Methods

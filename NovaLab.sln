@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{28
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Api.Twitch", "src\NovaLab.Api.Twitch\NovaLab.Api.Twitch.csproj", "{0E68A554-CBE4-4C4A-880E-FF405D19EA0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.ApiClient", "..\0005-01-cs-novalab-api_client\src\NovaLab.ApiClient\NovaLab.ApiClient.csproj", "{14F7957A-0794-4D64-810F-FDECC1468DCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.ApiClient", "src\NovaLab.ApiClient\NovaLab.ApiClient.csproj", "{14F7957A-0794-4D64-810F-FDECC1468DCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{3B3F8C70-F6DF-45EE-B7BE-4A98C30B1D74}"
 EndProject
@@ -27,6 +27,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Hosted.Twitch", "src\NovaLab.Hosted.Twitch\NovaLab.Hosted.Twitch.csproj", "{8027A870-615A-4EBE-BD1B-BCFB8E6A963B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "src\Extensions\Extensions.csproj", "{EED2311E-E28A-48F7-BC45-28D7BC5A898C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".SolutionItems", ".SolutionItems", "{7BCCF189-18A4-4AFB-8898-83EAE3141ECB}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+		entrypoint.sh = entrypoint.sh
+		tools.sh = tools.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

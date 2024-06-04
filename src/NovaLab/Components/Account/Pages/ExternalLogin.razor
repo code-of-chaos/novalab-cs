@@ -8,8 +8,6 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using NovaLab.Services.Twitch.TwitchTokens
 @using NovaLab.Data
-@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Components.Web
 
 @inject SignInManager<NovaLabUser> SignInManager
 @inject UserManager<NovaLabUser> UserManager
@@ -67,13 +65,24 @@
     private string? ProviderDisplayName => externalLoginInfo.ProviderDisplayName;
 
     protected override async Task OnInitializedAsync() {
+        // Variable to hold the redirect path and status message
+        string? redirectPath = null;
+        string? statusMessage = null;
+
         if (RemoteError is not null) {
-            RedirectManager.RedirectToWithStatus("Account/Login", $"Error from external provider: {RemoteError}", HttpContext);
+            redirectPath = "Account/Login";
+            statusMessage = $"Error from external provider: {RemoteError}";
         }
 
         ExternalLoginInfo? info = await SignInManager.GetExternalLoginInfoAsync();
         if (info is null) {
-            RedirectManager.RedirectToWithStatus("Account/Login", "Error loading external login information.", HttpContext);
+            redirectPath = "Account/Login";
+            statusMessage = "Error loading external login information.";
+        }
+
+        if (redirectPath != null && statusMessage != null) {
+            RedirectManager.RedirectToWithStatus(redirectPath, statusMessage, HttpContext);
+            return;
         }
 
         externalLoginInfo = info;
@@ -91,35 +100,42 @@
     }
 
     private async Task OnLoginCallbackAsync() {
+        // Variable to hold the redirect path
+        string? redirectPath = null;
+
         // Sign in the user with this external login provider if the user already has a login.
         SignInResult result = await SignInManager.ExternalLoginSignInAsync(
             externalLoginInfo.LoginProvider,
             externalLoginInfo.ProviderKey,
             isPersistent: false,
-            bypassTwoFactor: true);
+            bypassTwoFactor: true
+        );
 
         if (result.Succeeded) {
             Logger.LogInformation(
-                "{Name} logged in with {LoginProvider} provider.",
-                externalLoginInfo.Principal.Identity?.Name,
-                externalLoginInfo.LoginProvider);
-            
+            "{Name} logged in with {LoginProvider} provider.",
+            externalLoginInfo.Principal.Identity?.Name,
+            externalLoginInfo.LoginProvider);
+    
             // Fetch the user
             NovaLabUser? user = await UserManager.FindByLoginAsync(externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey);
-            
+    
             // Update user tokens on each successful login
             if (user != null && externalLoginInfo.AuthenticationTokens != null)
                 await TwitchTokensManager.IngestTokensWithUserManager(user.Id, externalLoginInfo.AuthenticationTokens);
-            
-            RedirectManager.RedirectTo(ReturnUrl);;
+
+            // Assign correct redirectPath instead of redirecting immediately
+            redirectPath = ReturnUrl;
         }
-        else if (result.IsLockedOut) {
-            RedirectManager.RedirectTo("Account/Lockout");
+    
+        if (result.IsLockedOut) {
+            // Assign correct redirectPath instead of redirecting immediately
+            redirectPath = "Account/Lockout";
         }
 
-        // If the user does not have an account, then ask the user to create an account.
-        if (externalLoginInfo.Principal.HasClaim(c => c.Type == ClaimTypes.Email)) {
-            Input.Email = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email) ?? "";
+        // Only here at the end, perform the redirect        
+        if (redirectPath != null) {
+            RedirectManager.RedirectTo(redirectPath);
         }
     }
 
