@@ -1,10 +1,14 @@
 ﻿@page "/followergoal/{FollowerGoalId:guid}"
 @layout NullLayout
 
+@using NovaLab.Api.Twitch.Followers.FollowerGoal
+@using NovaLab.Api.Twitch.Followers.NewFollower
 @using NovaLab.ApiClient.Api
 @using NovaLab.ApiClient.Model
 @using NovaLab.Components.Layout
 @using NovaLab.Services.Twitch.Hubs
+@using FollowerGoalDto=NovaLab.ApiClient.Model.FollowerGoalDto
+@using NewFollowerDto=NovaLab.ApiClient.Model.NewFollowerDto
 
 @rendermode InteractiveServer
 @attribute [StreamRendering]
