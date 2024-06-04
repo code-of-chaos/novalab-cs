@@ -267,6 +267,56 @@
         }
       }
     },
+    "/api/tools": {
+      "post": {
+        "tags": [
+          "Tools"
+        ],
+        "operationId": "PostMigrate",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/twitch/followers/follower-goal": {
       "get": {
         "tags": [
@@ -1357,6 +1407,10 @@
           }
         },
         "additionalProperties": false
+      }
+    }
+  }
+}    "additionalProperties": false
       }
     }
   }

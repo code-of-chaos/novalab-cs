@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\0005-01-cs-novalab-api_client\src\NovaLab.ApiClient\NovaLab.ApiClient.csproj" />
+      <ProjectReference Include="..\NovaLab.ApiClient\NovaLab.ApiClient.csproj" />
       <ProjectReference Include="..\NovaLab.Services.Twitch\NovaLab.Services.Twitch.csproj" />
     </ItemGroup>
 
