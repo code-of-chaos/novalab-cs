@@ -34,7 +34,7 @@
     private IEnumerable<ManagedRewardModel> _indexedRewardData  = [];
     private int SelectedListValue { get; set; } = -1;
     private TwitchManagedRewardApi? _rewardApiCache;
-    private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi(NavigationManager.BaseUri);
+    private TwitchManagedRewardApi RewardApi => _rewardApiCache ??= new TwitchManagedRewardApi("https://novalab:443");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

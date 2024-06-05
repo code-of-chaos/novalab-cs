@@ -203,7 +203,9 @@ public class Program {
             string[]? urls = builder.Configuration["ASPNETCORE_URLS"]?.Split(';', StringSplitOptions.RemoveEmptyEntries);
             string? applicationUrl = urls!.FirstOrDefault();
             c.BaseAddress = new Uri(applicationUrl!); // This fixes some issues, it is janky, but it works
-        });
+        }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        });;
         
         builder.Services.AddControllers().AddJsonOptions(options => {
             options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
