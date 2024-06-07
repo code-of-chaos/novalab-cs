@@ -1,0 +1,34 @@
+ARG DOTNET_RUNTIME=mcr.microsoft.com/dotnet/aspnet:8.0
+ARG DOTNET_SDK=mcr.microsoft.com/dotnet/sdk:8.0
+
+# Stage 1: Build the Blazor application
+FROM ${DOTNET_SDK} AS build
+ARG BUILD_CONFIGURATION=Release
+
+COPY . .
+
+WORKDIR ./src/NovaLab.API
+RUN dotnet restore
+RUN dotnet build -c $BUILD_CONFIGURATION --no-restore -o /app/build
+
+WORKDIR ../NovaLab.API.Tools
+RUN dotnet restore
+RUN dotnet build -c $BUILD_CONFIGURATION --no-restore -o /app/build
+
+# Stage 2: Publish the application
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "../NovaLab.API/NovaLab.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.API /p:UseAppHost=false
+RUN dotnet publish "NovaLab.API.Tools.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.API.Tools /p:UseAppHost=false 
+
+# Stage 3: Create the runtime image
+FROM ${DOTNET_SDK} AS base
+WORKDIR /app
+COPY --from=publish /app/publish .
+COPY tools-api.sh .
+
+RUN chmod +x ./tools-api.sh
+
+EXPOSE 443
+
+ENTRYPOINT ["dotnet", "/app/NovaLab.API/NovaLab.API.dll"]

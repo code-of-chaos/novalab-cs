@@ -1,37 +1,69 @@
 services:
-  novalab:
+  novalab-server:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-Server
     ports:
-      - "7122:443" # HTTPS
+      - "9051:443" # HTTPS
     depends_on:
-      - mariadbserver
+      - sqlserver
+      - novalab-api
     environment:
       - ASPNETCORE_URLS=https://+:443
       - ASPNETCORE_ENVIRONMENT=Development
+      - RunningInDocker=true
+
       - Authentication_Twitch_ClientId=${Authentication_Twitch_ClientId}
       - Authentication_Twitch_ClientSecret=${Authentication_Twitch_ClientSecret}
-      - ConnectionStrings__DefaultConnection=Server=mariadbserver;Database=novalabdb;User=root;Password=${MARIADB_ROOT_PASSWORD};
+      - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
+      - SslCertLocation=/root/.aspnet/https/NovaLab.Server.pfx
+      - SslCertPassword=pa55w0rd!
     volumes:
+      - ./keys:/root/.aspnet/DataProtection-Keys
       - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
-      - "${USERPROFILE}/.aspnet/https/NovaLab.pfx:/root/.aspnet/https/NovaLab.pfx:ro"
+      - "${USERPROFILE}/.aspnet/https/NovaLab.Server.pfx:/root/.aspnet/https/NovaLab.Server.pfx:ro"
     networks:
-      - novanet
-        
-  mariadbserver:
-    image: mariadb
-    environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      - novalab-net
+      
+  novalab-api:
+    build:
+      context: .
+      dockerfile: Dockerfile-API
     ports:
-      - "17171:3306"
+      - "9052:443"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RunningInDocker=true
+
+      - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
+      - SslCertLocation=/root/.aspnet/https/NovaLab.API.pfx
+      - SslCertPassword=pa55w0rd!
     volumes:
-      - MariaDBServer:/var/opt/mariadb
+      - ./keys:/root/.aspnet/DataProtection-Keys
+      - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
+      - "${USERPROFILE}/.aspnet/https/NovaLab.API.pfx:/root/.aspnet/https/NovaLab.API.pfx:ro"
+      - "/var/opt/mssql/backups:/backups" # bind to same backup location as the sqlserver
     networks:
-      - novanet
+      - novalab-net
+      
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: ${SQLSERVER_SA_PASSWORD}
+      ACCEPT_EULA: "Y"
+    ports:
+      - "9050:1433"
+    volumes:
+      - NovaLabSQLServerVolume:/var/opt/mssql
+      - ./backups:/var/opt/mssql/backups
+    networks:
+      - novalab-net
 
 volumes:
-  MariaDBServer:
+  NovaLabSQLServerVolume:
 
 networks:
-  novanet:
+  novalab-net:
