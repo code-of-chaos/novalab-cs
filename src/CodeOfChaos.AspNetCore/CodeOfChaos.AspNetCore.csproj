@@ -19,4 +19,8 @@
       <ProjectReference Include="..\CodeOfChaos.Extensions.SeriLog\CodeOfChaos.Extensions.SeriLog.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="API\Tools\" />
+    </ItemGroup>
+
 </Project>

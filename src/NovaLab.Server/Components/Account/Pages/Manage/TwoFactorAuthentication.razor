@@ -71,7 +71,7 @@ else {
     private HttpContext HttpContext { get; set; } = default!;
 
     protected override async Task OnInitializedAsync() {
-        NovaLabUser? user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        NovaLabUser user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         _canTrack = HttpContext.Features.Get<ITrackingConsentFeature>()?.CanTrack ?? true;
         _hasAuthenticator = await UserManager.GetAuthenticatorKeyAsync(user) is not null;
         _is2FaEnabled = await UserManager.GetTwoFactorEnabledAsync(user);

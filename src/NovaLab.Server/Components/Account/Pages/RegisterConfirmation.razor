@@ -50,8 +50,8 @@ else {
         }
         else if (EmailSender is IdentityNoOpEmailSender) {
             // Once you add a real email sender, you should remove this code that lets you confirm the account
-            string? userId = await UserManager.GetUserIdAsync(user);
-            string? code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+            string userId = await UserManager.GetUserIdAsync(user);
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             _emailConfirmationLink = NavigationManager.GetUriWithQueryParameters(
             NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,

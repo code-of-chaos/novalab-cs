@@ -14,6 +14,7 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<ExternalLogin> Logger
+@inject TwitchTokensManager TwitchTokensManager
 
 <PageTitle>Register</PageTitle>
 
@@ -83,7 +84,7 @@
                 await OnLoginCallbackAsync();
                 return;
             }
-
+            
             // We should only reach this page via the login callback, so redirect back to
             // the login page if we get here some other way.
             RedirectManager.RedirectTo("Account/Login");
@@ -92,7 +93,7 @@
 
     private async Task OnLoginCallbackAsync() {
         // Sign in the user with this external login provider if the user already has a login.
-        SignInResult? result = await SignInManager.ExternalLoginSignInAsync(
+        SignInResult result = await SignInManager.ExternalLoginSignInAsync(
         _externalLoginInfo.LoginProvider,
         _externalLoginInfo.ProviderKey,
         isPersistent: false,
@@ -103,6 +104,14 @@
             "{Name} logged in with {LoginProvider} provider.",
             _externalLoginInfo.Principal.Identity?.Name,
             _externalLoginInfo.LoginProvider);
+            
+            // Fetch the user
+            NovaLabUser? user = await UserManager.FindByLoginAsync(_externalLoginInfo.LoginProvider, _externalLoginInfo.ProviderKey);
+    
+            // Update user tokens on each successful login
+            if (user != null && _externalLoginInfo.AuthenticationTokens != null)
+                await TwitchTokensManager.IngestTokensWithUserManager(user.Id, _externalLoginInfo.AuthenticationTokens);
+            
             RedirectManager.RedirectTo(ReturnUrl);
         }
         else if (result.IsLockedOut) {
@@ -116,23 +125,23 @@
     }
 
     private async Task OnValidSubmitAsync() {
-        IUserEmailStore<NovaLabUser>? emailStore = GetEmailStore();
-        NovaLabUser? user = CreateUser();
+        IUserEmailStore<NovaLabUser> emailStore = GetEmailStore();
+        NovaLabUser user = CreateUser();
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-        IdentityResult? result = await UserManager.CreateAsync(user);
+        IdentityResult result = await UserManager.CreateAsync(user);
         if (result.Succeeded) {
             result = await UserManager.AddLoginAsync(user, _externalLoginInfo);
             if (result.Succeeded) {
                 Logger.LogInformation("User created an account using {Name} provider.", _externalLoginInfo.LoginProvider);
 
-                string? userId = await UserManager.GetUserIdAsync(user);
-                string? code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                string userId = await UserManager.GetUserIdAsync(user);
+                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-                string? callbackUrl = NavigationManager.GetUriWithQueryParameters(
+                string callbackUrl = NavigationManager.GetUriWithQueryParameters(
                 NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
                 new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
                 await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));

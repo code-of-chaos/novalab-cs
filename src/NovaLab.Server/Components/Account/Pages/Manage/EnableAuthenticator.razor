@@ -86,7 +86,7 @@ else {
 
     private async Task OnValidSubmitAsync() {
         // Strip spaces and hyphens
-        string? verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+        string verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
 
         bool is2FaTokenValid = await UserManager.VerifyTwoFactorTokenAsync(
         _user, UserManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
@@ -97,7 +97,7 @@ else {
         }
 
         await UserManager.SetTwoFactorEnabledAsync(_user, true);
-        string? userId = await UserManager.GetUserIdAsync(_user);
+        string userId = await UserManager.GetUserIdAsync(_user);
         Logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
         _message = "Your authenticator app has been verified.";
