@@ -96,7 +96,7 @@
     }
 
     private async Task OnSubmitAsync() {
-        IdentityResult? result = await UserManager.RemoveLoginAsync(_user, LoginProvider!, ProviderKey!);
+        IdentityResult result = await UserManager.RemoveLoginAsync(_user, LoginProvider!, ProviderKey!);
         if (!result.Succeeded) {
             RedirectManager.RedirectToCurrentPageWithStatus("Error: The external login was not removed.", HttpContext);
         }
@@ -106,13 +106,13 @@
     }
 
     private async Task OnGetLinkLoginCallbackAsync() {
-        string? userId = await UserManager.GetUserIdAsync(_user);
+        string userId = await UserManager.GetUserIdAsync(_user);
         ExternalLoginInfo? info = await SignInManager.GetExternalLoginInfoAsync(userId);
         if (info is null) {
             RedirectManager.RedirectToCurrentPageWithStatus("Error: Could not load external login info.", HttpContext);
         }
 
-        IdentityResult? result = await UserManager.AddLoginAsync(_user, info);
+        IdentityResult result = await UserManager.AddLoginAsync(_user, info);
         if (!result.Succeeded) {
             RedirectManager.RedirectToCurrentPageWithStatus("Error: The external login was not added. External logins can only be associated with one account.", HttpContext);
         }

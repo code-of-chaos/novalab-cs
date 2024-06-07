@@ -65,12 +65,12 @@
     private string? Message => _identityErrors is null ? null : $"Error: {string.Join(", ", _identityErrors.Select(error => error.Description))}";
 
     public async Task RegisterUser(EditContext editContext) {
-        NovaLabUser? user = CreateUser();
+        NovaLabUser user = CreateUser();
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-        IUserEmailStore<NovaLabUser>? emailStore = GetEmailStore();
+        IUserEmailStore<NovaLabUser> emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-        IdentityResult? result = await UserManager.CreateAsync(user, Input.Password);
+        IdentityResult result = await UserManager.CreateAsync(user, Input.Password);
 
         if (!result.Succeeded) {
             _identityErrors = result.Errors;
@@ -79,10 +79,10 @@
 
         Logger.LogInformation("User created a new account with password.");
 
-        string? userId = await UserManager.GetUserIdAsync(user);
-        string? code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+        string userId = await UserManager.GetUserIdAsync(user);
+        string code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        string? callbackUrl = NavigationManager.GetUriWithQueryParameters(
+        string callbackUrl = NavigationManager.GetUriWithQueryParameters(
         NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
         new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
 

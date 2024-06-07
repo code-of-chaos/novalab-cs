@@ -5,7 +5,6 @@ using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Server.Data;
-using NovaLab.Server.Data.Models.Account;
 using Serilog;
 using System.Security.Cryptography.X509Certificates;
 
@@ -37,6 +36,8 @@ public static class Program {
         builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
             options.UseSqlServer(connectionString);
         });
+        builder.Services.AddScoped(options => 
+            options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
         
         // - Kestrel SLL - 
         builder.WebHost.ConfigureKestrel(options => {

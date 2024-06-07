@@ -29,7 +29,13 @@ public class EnvironmentVariables(IConfigurationManager configuration) {
     public string SslCertPassword => GetRequiredEnvVar(nameof(SslCertPassword));
     public bool TryGetSslCertPassword([NotNullWhen(true)] out string? value) => TryGetEnvVar(nameof(SslCertPassword), out value);
 
+    public string TwitchClientId => GetRequiredEnvVar(nameof(TwitchClientId));
+    public bool TryGetTwitchClientId([NotNullWhen(true)] out string? value) => TryGetEnvVar(nameof(TwitchClientId), out value);
 
+    public string TwitchClientSecret => GetRequiredEnvVar(nameof(TwitchClientSecret));
+    public bool TryGetTwitchClientSecret([NotNullWhen(true)] out string? value) => TryGetEnvVar(nameof(TwitchClientSecret), out value);
+
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

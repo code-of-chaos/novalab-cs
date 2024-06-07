@@ -35,5 +35,8 @@ public class EnvironmentSwitcher(ILogger logger, WebApplicationBuilder builder) 
     }
 
     public string GetSslCertLocation() => _variables.SslCertLocation; // currently only set through the same ENV variable whether in Docker or dev
-    public string GetSslCertPassword() => _variables.SslCertPassword; 
+    public string GetSslCertPassword() => _variables.SslCertPassword;
+
+    public string GetTwitchClientId() => _variables.TwitchClientId;
+    public string GetTwitchClientSecret() => _variables.TwitchClientSecret;
 }

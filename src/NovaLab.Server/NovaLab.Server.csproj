@@ -12,6 +12,11 @@
         <ProjectReference Include="..\CodeOfChaos.Extensions.AspNetCore\CodeOfChaos.Extensions.AspNetCore.csproj" />
         <ProjectReference Include="..\NovaLab.Server.Data\NovaLab.Server.Data.csproj" />
         <ProjectReference Include="..\NovaLab.Client\NovaLab.Client.csproj" />
+        <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="8.0.0" />
+        <PackageReference Include="TwitchLib" Version="3.5.3" />
+        <PackageReference Include="TwitchLib.Api.Core" Version="3.9.0" />
+        <PackageReference Include="TwitchLib.EventSub.Webhooks" Version="2.3.0" />
+        <PackageReference Include="TwitchLib.EventSub.Websockets" Version="0.5.0" />
         <PackageReference Include="Blazorise" Version="1.5.3" />
         <PackageReference Include="Blazorise.Bootstrap5" Version="1.5.3" />
         <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.5.3" />

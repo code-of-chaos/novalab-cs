@@ -53,7 +53,7 @@
 
     private async Task OnValidSubmitAsync() {
         if (Input.PhoneNumber != _phoneNumber) {
-            IdentityResult? setPhoneResult = await UserManager.SetPhoneNumberAsync(_user, Input.PhoneNumber);
+            IdentityResult setPhoneResult = await UserManager.SetPhoneNumberAsync(_user, Input.PhoneNumber);
             if (!setPhoneResult.Succeeded) {
                 RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
             }

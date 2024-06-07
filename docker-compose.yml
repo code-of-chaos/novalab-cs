@@ -18,6 +18,8 @@ services:
       - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
       - SslCertLocation=/root/.aspnet/https/NovaLab.Server.pfx
       - SslCertPassword=pa55w0rd!
+      - TwitchClientId=${TwitchClientId}
+      - TwitchClientSecret=${TwitchClientSecret}
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
       - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
@@ -41,6 +43,8 @@ services:
       - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
       - SslCertLocation=/root/.aspnet/https/NovaLab.API.pfx
       - SslCertPassword=pa55w0rd!
+      - TwitchClientId=${TwitchClientId}
+      - TwitchClientSecret=${TwitchClientSecret}
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
       - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
