@@ -1,0 +1,24 @@
+﻿@page "/Auth"
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+
+@attribute [Authorize, StreamRendering]
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Auth</h3>
+
+<AuthorizeView>
+    <p>Welcome, @(Claims?.Identity?.Name ?? "")</p>
+</AuthorizeView>
+
+@code {
+    private ClaimsPrincipal? Claims { get; set; }
+    
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+        
+        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        Claims = authState.User;
+    }
+}
