@@ -1,0 +1,24 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:37437",
+      "sslPort": 44304
+    }
+  },
+  "profiles": {
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7190",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SslCertLocation": "%USERPROFILE%/.aspnet/https/NovaLab.API.pfx",
+        "sslCertPassword": "pa55w0rd!"
+      }
+    }
+  }
+}
