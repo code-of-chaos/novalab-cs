@@ -1,6 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Blazorise;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -157,6 +160,14 @@ public static class Program {
         // builder.Services.AddHostedTwitchServices();
 
         builder.Services.AddScoped<TwitchTokensManager>();
+        
+        // - Blazorise -
+        builder.Services
+            .AddBlazorise( options => {
+                options.Immediate = true;
+            })
+            .AddBootstrap5Providers()
+            .AddFontAwesomeIcons();
 
         // -------------------------------------------------------------------------------------------------------------
         // NovaLabApp

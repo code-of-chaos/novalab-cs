@@ -1,0 +1,49 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using System.Security.Claims
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Desciptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@attribute [Authorize, StreamRendering]
+
+@inject AuthenticationStateProvider authenticationStateProvider
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<Bar Breakpoint="Breakpoint.Desktop"
+     Background="Background.Light"
+     ThemeContrast="ThemeContrast.Light">
+    <BarToggler />
+    <BarMenu>
+        <BarEnd>
+            
+            @if (Claims is {Identity : {IsAuthenticated : true, Name: {} name }}) {
+                <BarItem>
+                    <BarLink Color="Color.Secondary" To="/account/manage">@name</BarLink>
+                </BarItem>
+            }
+            else {
+                <BarItem>
+                    <BarLink Color="Color.Secondary" To="/account/login">Log in</BarLink>
+                </BarItem>
+            }
+        </BarEnd>
+    </BarMenu>
+</Bar>
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    private ClaimsPrincipal? Claims { get; set; }
+    
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+        
+        AuthenticationState authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        Claims = authState.User;
+    }
+}

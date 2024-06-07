@@ -1,9 +1,19 @@
-﻿@inherits LayoutComponentBase
+﻿@using NovaLab.Client.Components.NavBars
 
-@Body
+@inherits NullLayout
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+<Layout Sider>
+    <LayoutSider>
+        <LayoutSiderContent>
+            <NavBarSide/>
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutHeader Fixed>
+            <NavBarTop/>
+        </LayoutHeader>
+        <LayoutContent>
+            @Body
+        </LayoutContent>
+    </Layout>
+</Layout>

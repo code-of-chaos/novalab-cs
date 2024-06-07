@@ -26,7 +26,7 @@ internal class PersistentAuthenticationStateProvider : AuthenticationStateProvid
         Claim[] claims = [
             new Claim(ClaimTypes.NameIdentifier, userInfo.UserId),
             new Claim(ClaimTypes.Name, userInfo.UserId),
-            new Claim(ClaimTypes.Email, userInfo.Email)
+            new Claim(ClaimTypes.Email, userInfo.UserId)
         ];
 
         _authenticationStateTask = Task.FromResult(

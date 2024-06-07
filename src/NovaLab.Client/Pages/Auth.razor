@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.Authorization
 @using System.Security.Claims
 
+@layout MainLayout
+
 @attribute [Authorize, StreamRendering]
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
