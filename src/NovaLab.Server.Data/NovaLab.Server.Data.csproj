@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\CodeOfChaos.AspNetCore\CodeOfChaos.AspNetCore.csproj" />
+      <ProjectReference Include="..\CodeOfChaos.AspNetCore\CodeOfChaos.AspNetCore.csproj" />
     </ItemGroup>
 
 </Project>
