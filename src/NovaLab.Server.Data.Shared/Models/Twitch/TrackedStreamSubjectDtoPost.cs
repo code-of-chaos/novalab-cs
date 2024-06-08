@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-    
 namespace NovaLab.Server.Data.Shared.Models.Twitch;
 
 // -----------------------------------------------------------------------------------------------------------------
@@ -9,8 +8,8 @@ namespace NovaLab.Server.Data.Shared.Models.Twitch;
 // -----------------------------------------------------------------------------------------------------------------
 public record TrackedStreamSubjectDtoPost(
     Guid NovaLabUserId,
-    string? TwitchGameId,
-    string TwitchBroadcastLanguage,
     string TwitchTitle,
-    string[]? TwitchTags
+    string? TwitchBroadcastLanguage = null,
+    string[]? TwitchTags = null,
+    string? TwitchGameId = null
 );

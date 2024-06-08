@@ -1,6 +1,7 @@
 ﻿@page "/Auth"
 @using Microsoft.AspNetCore.Authorization
 @using System.Security.Claims
+@using NovaLab.Client.Lib.Components.NovaLabApi
 
 @layout MainLayout
 
@@ -12,6 +13,7 @@
 
 <AuthorizeView>
     <p>Welcome, @(Claims?.Identity?.Name ?? "")</p>
+    <FormTrackedStreamSubjectNew/>
 </AuthorizeView>
 
 @code {

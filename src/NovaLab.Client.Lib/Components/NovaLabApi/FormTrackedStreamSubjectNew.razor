@@ -1,0 +1,78 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using ISOLib
+@using NovaLab.ApiClient.Api
+@using NovaLab.ApiClient.Model
+@using Serilog
+@using System.Security.Claims
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@attribute [Authorize, StreamRendering]
+
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject ILogger logger
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<Validations @ref="@(ValidationsRefRequest)" Mode="ValidationMode.Auto" Model="@TrackedStreamSubjectDtoPostModel">
+    <Validation Validator="ValidationRule.IsNotEmpty">
+        <TextEdit Placeholder="Twitch Stream Title" @bind-Text="@TrackedStreamSubjectDtoPostModel.TwitchTitle">
+            <Feedback>
+                <ValidationNone>Please enter a stream title.</ValidationNone>
+                <ValidationError>Invalid stream title!</ValidationError>
+            </Feedback>
+        </TextEdit>
+    </Validation>   
+</Validations>
+
+<Button Clicked="@OnSubmitClickedAsync">Submit</Button>
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    Validations ValidationsRefRequest { get; set; } = null!;
+    
+    TrackedStreamSubjectDtoPost TrackedStreamSubjectDtoPostModel { get; set; } = new(
+        novaLabUserId:Guid.Empty,
+        twitchGameId:string.Empty,
+        twitchBroadcastLanguage:Languages.EN.Alpha2,
+        twitchTitle:string.Empty,
+        twitchTags:[]
+    );
+
+    private async Task OnSubmitClickedAsync() {
+        AuthenticationState authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal claims = authState.User;
+        
+        if (!await ValidationsRefRequest.ValidateAll() ) {
+            logger.Warning("Some fields were not validated correctly");
+            return;
+        }
+        
+
+        // Get the user id claim
+        string? userIdClaim = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim is null) {
+            logger.Warning("User Id claim is null");
+            return;
+        }
+        if (!Guid.TryParse(userIdClaim, out Guid userId))
+        {
+            logger.Warning("User Id claim is not a valid GUID");
+            return;
+        }
+
+
+        TrackedStreamSubjectDtoPostModel.NovaLabUserId = userId;
+        
+        var api = new TrackedStreamSubjectApi("https://localhost:9052");
+        await api.PostTrackedStreamSubjectAsync(TrackedStreamSubjectDtoPostModel);
+    }
+    
+}

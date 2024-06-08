@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.API.Tools", "src\No
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{0F4E42D3-57AC-4812-B5D8-F42AE1D67466}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Client.Components", "src\NovaLab.Client.Components\NovaLab.Client.Components.csproj", "{26984A61-C2FC-470E-9B81-03FE3703D6F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Client.Lib", "src\NovaLab.Client.Lib\NovaLab.Client.Lib.csproj", "{26984A61-C2FC-470E-9B81-03FE3703D6F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{2BDC0275-6858-4CE0-95AB-4238F77E001D}"
 EndProject
@@ -42,6 +42,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Tools", "src\NovaLab.Server.Tools\NovaLab.Server.Tools.csproj", "{FB212441-CC33-4242-8498-C0A81B8C5D50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Data.Shared", "src\NovaLab.Server.Data.Shared\NovaLab.Server.Data.Shared.csproj", "{96BFDC90-C43A-4E51-BA9B-EBC8AC34830F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{F6E0A6C1-00DE-494F-887E-90AE8F57A2C1}"
+	ProjectSection(SolutionItems) = preProject
+		generate-certs.ps1 = generate-certs.ps1
+		generate-novalab_apiclient.ps1 = generate-novalab_apiclient.ps1
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.ApiClient", "src\NovaLab.ApiClient\NovaLab.ApiClient.csproj", "{91090ADF-1658-4860-8457-47A934BAAD46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +89,10 @@ Global
 		{96BFDC90-C43A-4E51-BA9B-EBC8AC34830F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96BFDC90-C43A-4E51-BA9B-EBC8AC34830F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96BFDC90-C43A-4E51-BA9B-EBC8AC34830F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91090ADF-1658-4860-8457-47A934BAAD46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91090ADF-1658-4860-8457-47A934BAAD46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91090ADF-1658-4860-8457-47A934BAAD46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91090ADF-1658-4860-8457-47A934BAAD46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{678CB555-C56F-4110-A459-E20D583C6D42} = {DA6483C2-D3D2-4F86-9C80-5CE42920D101}
@@ -96,5 +108,6 @@ Global
 		{EADD5C14-1AFE-4CE9-B3F2-27E1165DEA19} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
 		{FB212441-CC33-4242-8498-C0A81B8C5D50} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
 		{96BFDC90-C43A-4E51-BA9B-EBC8AC34830F} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
+		{91090ADF-1658-4860-8457-47A934BAAD46} = {678CB555-C56F-4110-A459-E20D583C6D42}
 	EndGlobalSection
 EndGlobal

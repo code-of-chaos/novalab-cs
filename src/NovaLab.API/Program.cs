@@ -4,6 +4,7 @@
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using NovaLab.Server.Data;
 using Serilog;
 using System.Security.Cryptography.X509Certificates;
@@ -28,8 +29,17 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         // - Endpoints -
         builder.Services.AddControllers();
+        
+        // - Swagger -
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options => {
+            options.SwaggerDoc("v1", new OpenApiInfo {
+                Version = "v1",
+                Title = "NovaLab API",
+                Description = "An ASP.NET Core Web API for managing your streams",
+            });
+            options.EnableAnnotations();
+        });
         
         // - Db -
         string connectionString = environmentSwitcher.GetDatabaseConnectionString();
@@ -46,6 +56,16 @@ public static class Program {
             });
         });
         
+        // - Cors -
+        builder.Services.AddCors(options => {
+            options.AddPolicy("AllowLocalHosts", policyBuilder => {
+                policyBuilder.WithOrigins("http://localhost:9051", "https://localhost:9051")
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .AllowAnyMethod();
+            });
+        });
+        
         // -------------------------------------------------------------------------------------------------------------
         // App
         // -------------------------------------------------------------------------------------------------------------
@@ -54,6 +74,9 @@ public static class Program {
         // - Configure the HTTP request pipeline -
         app.UseHttpsRedirection();
         app.UseAuthorization();
+        
+        // - Cors -
+        app.UseCors("AllowLocalHosts");
         
         // - Swagger -
         app.UseSwagger();

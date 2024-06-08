@@ -169,6 +169,16 @@ public static class Program {
             })
             .AddBootstrap5Providers()
             .AddFontAwesomeIcons();
+        
+        // - Cors -
+        builder.Services.AddCors(options => {
+            options.AddPolicy("AllowLocalHosts", policyBuilder => {
+                policyBuilder.WithOrigins("http://localhost:9052", "https://localhost:9052")
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .AllowAnyMethod();
+            });
+        });
 
         // -------------------------------------------------------------------------------------------------------------
         // NovaLabApp
@@ -187,6 +197,10 @@ public static class Program {
         }
 
         app.UseHttpsRedirection();
+        
+        
+        // - Cors -
+        app.UseCors("AllowLocalHosts");
 
         app.UseAuthentication();
         app.UseAuthorization(); 

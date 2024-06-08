@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using ISOLib;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NovaLab.Server.Data.Models.Account;
 using NovaLab.Server.Data.Shared;
 using NovaLab.Server.Data.Shared.Models.Twitch;
@@ -48,8 +49,8 @@ public class TrackedStreamSubject {
         return CreateFromDtoResponse<TrackedStreamSubject>.Success(new TrackedStreamSubject {
             Id = default,
             User = user,
-            TwitchGameId = dto.TwitchGameId,
-            TwitchBroadcastLanguage = dto.TwitchBroadcastLanguage,
+            TwitchGameId = dto.TwitchGameId.IsNullOrEmpty() ? null : dto.TwitchGameId,
+            TwitchBroadcastLanguage = dto.TwitchBroadcastLanguage ?? Languages.EN.Alpha2,
             TwitchTitle = dto.TwitchTitle,
             TwitchTags = dto.TwitchTags,
             TrackedStreamSubjectComponent = null

@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>7138c37f-c2de-4b49-9321-243a68cb6424</UserSecretsId>
     </PropertyGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.1.0" />
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.2.0" />
@@ -30,4 +30,10 @@
       <ProjectReference Include="..\NovaLab.Server.Data\NovaLab.Server.Data.csproj" />
     </ItemGroup>
 
+    <!-- Create the Swagger.JSON file for the OpenAPI Generator to use-->
+    <Target Name="OpenAPI" AfterTargets="Build" Condition="$(Configuration)=='Debug'">
+        <Delete Files="$(TargetDir)swagger.json" />
+        <Exec Command="dotnet tool run swagger tofile &#45;&#45;output swagger.json bin\$(Configuration)\net8.0\NovaLab.API.dll v1" ContinueOnError="true" />
+    </Target>
+    
 </Project>
