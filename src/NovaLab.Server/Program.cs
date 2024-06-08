@@ -15,6 +15,7 @@ using NovaLab.Server.Data;
 using NovaLab.Server.Data.Models.Account;
 using Serilog;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using static TwitchLib.Api.Core.Common.Helpers;
