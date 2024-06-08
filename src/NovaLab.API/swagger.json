@@ -301,7 +301,7 @@
             },
             "nullable": true
           },
-          "twitchGameId": {
+          "twitchGameTitleName": {
             "type": "string",
             "nullable": true
           }

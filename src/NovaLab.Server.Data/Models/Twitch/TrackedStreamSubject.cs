@@ -41,19 +41,4 @@ public class TrackedStreamSubject {
             TrackedStreamSubjectComponentId:TrackedStreamSubjectComponent?.Id
         );
     }
-
-    public async static Task<CreateFromDtoResponse<TrackedStreamSubject>> TryCreateFromDtoAsync(NovaLabDbContext dbContext, TrackedStreamSubjectDtoPost dto) {
-        if (await dbContext.Users.FirstOrDefaultAsync(novaLabUser => novaLabUser.Id == dto.NovaLabUserId) is not {} user) {
-            return CreateFromDtoResponse<TrackedStreamSubject>.Failure();
-        }
-        return CreateFromDtoResponse<TrackedStreamSubject>.Success(new TrackedStreamSubject {
-            Id = default,
-            User = user,
-            TwitchGameId = dto.TwitchGameId.IsNullOrEmpty() ? null : dto.TwitchGameId,
-            TwitchBroadcastLanguage = dto.TwitchBroadcastLanguage ?? Languages.EN.Alpha2,
-            TwitchTitle = dto.TwitchTitle,
-            TwitchTags = dto.TwitchTags,
-            TrackedStreamSubjectComponent = null
-        });
-    }
 }

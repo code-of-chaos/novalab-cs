@@ -3,14 +3,18 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.AspNetCore.API;
 using CodeOfChaos.AspNetCore.Contracts;
+using ISOLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Server.Data;
 using NovaLab.Server.Data.Models.Twitch;
+using NovaLab.Server.Data.Models.Twitch.HelixApi;
 using NovaLab.Server.Data.Shared;
 using NovaLab.Server.Data.Shared.Models.Twitch;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using TwitchLib.Api;
+using TwitchLib.Api.Helix.Models.Games;
 
 namespace NovaLab.API.Controllers.Twitch;
 
@@ -21,8 +25,50 @@ namespace NovaLab.API.Controllers.Twitch;
 [Route("api/twitch/tracked-stream-subject")]
 public class TrackedStreamSubjectController(
     IDbContextFactory<NovaLabDbContext> contextFactory,
-    ILogger logger
+    ILogger logger,
+    TwitchAPI twitchApi
     ) : BaseController(contextFactory) {
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Helper Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    private async Task<TrackedStreamSubject?> CreateNewTrackedStreamSubjectAsync(NovaLabDbContext dbContext, TrackedStreamSubjectDtoPost dtoPost) {
+        if (await dbContext.Users.FirstOrDefaultAsync(novaLabUser => novaLabUser.Id == dtoPost.NovaLabUserId) is not {} user) {
+            return null;
+        }
+        
+        // TODO add logging
+        string? twitchTitleId = null;
+        if (dtoPost.TwitchGameTitleName.IsNotNullOrEmpty()) {
+            TwitchGameTitleToIdCache? cacheHit = await dbContext.TwitchGameTitleToIdCache.FirstOrDefaultAsync(cache => cache.NovaLabName == dtoPost.TwitchGameTitleName);
+            if (cacheHit is not null) {
+                twitchTitleId = cacheHit.TwitchTitleId;
+            } else {
+                GetGamesResponse? response = await twitchApi.Helix.Games.GetGamesAsync(gameNames: [dtoPost.TwitchGameTitleName]);
+                Game? game = response?.Games.FirstOrDefault();
+                if (game != null) {
+                    await dbContext.TwitchGameTitleToIdCache.AddAsync(new TwitchGameTitleToIdCache {
+                        NovaLabName = dtoPost.TwitchGameTitleName!,
+                        TwitchTitleId = game.Id,
+                        TwitchTitleName = game.Name,
+                        TwitchTitleBoxArtUrl = game.BoxArtUrl,
+                        TwitchTitleIgdbId = null
+                    });
+                    twitchTitleId = game.Id;
+                }
+            }
+        }
+        
+        return new TrackedStreamSubject {
+            Id = default,
+            User = user,
+            TwitchGameId = twitchTitleId,
+            TwitchBroadcastLanguage = dtoPost.TwitchBroadcastLanguage ?? Languages.EN.Alpha2,
+            TwitchTitle = dtoPost.TwitchTitle,
+            TwitchTags = dtoPost.TwitchTags,
+            TrackedStreamSubjectComponent = null
+        };
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // GET Methods
@@ -61,14 +107,13 @@ public class TrackedStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            CreateFromDtoResponse<TrackedStreamSubject> result = await TrackedStreamSubject.TryCreateFromDtoAsync(dbContext, dto);
-            if (result.IsFailure) return FailureClient();
-            
-            TrackedStreamSubject createdSubject = result.Subject!;
-            dbContext.TrackedStreamSubjects.Add(createdSubject);
+            TrackedStreamSubject? result = await CreateNewTrackedStreamSubjectAsync(dbContext, dto);
+            if (result is null) return FailureClient();
+
+            dbContext.TrackedStreamSubjects.Add(result);
             await dbContext.SaveChangesAsync();
             
-            return Success(createdSubject.ToDto());
+            return Success(result.ToDto());
         }
         catch (Exception ex) {
             logger.Warning(ex, "ERROR");

@@ -38,14 +38,14 @@ namespace NovaLab.ApiClient.Model
         /// <param name="twitchTitle">twitchTitle.</param>
         /// <param name="twitchBroadcastLanguage">twitchBroadcastLanguage.</param>
         /// <param name="twitchTags">twitchTags.</param>
-        /// <param name="twitchGameId">twitchGameId.</param>
-        public TrackedStreamSubjectDtoPost(Guid novaLabUserId = default(Guid), string twitchTitle = default(string), string twitchBroadcastLanguage = default(string), List<string> twitchTags = default(List<string>), string twitchGameId = default(string))
+        /// <param name="twitchGameTitleName">twitchGameTitleName.</param>
+        public TrackedStreamSubjectDtoPost(Guid novaLabUserId = default(Guid), string twitchTitle = default(string), string twitchBroadcastLanguage = default(string), List<string> twitchTags = default(List<string>), string twitchGameTitleName = default(string))
         {
             this.NovaLabUserId = novaLabUserId;
             this.TwitchTitle = twitchTitle;
             this.TwitchBroadcastLanguage = twitchBroadcastLanguage;
             this.TwitchTags = twitchTags;
-            this.TwitchGameId = twitchGameId;
+            this.TwitchGameTitleName = twitchGameTitleName;
         }
 
         /// <summary>
@@ -73,10 +73,10 @@ namespace NovaLab.ApiClient.Model
         public List<string> TwitchTags { get; set; }
 
         /// <summary>
-        /// Gets or Sets TwitchGameId
+        /// Gets or Sets TwitchGameTitleName
         /// </summary>
-        [DataMember(Name = "twitchGameId", EmitDefaultValue = true)]
-        public string TwitchGameId { get; set; }
+        [DataMember(Name = "twitchGameTitleName", EmitDefaultValue = true)]
+        public string TwitchGameTitleName { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -90,7 +90,7 @@ namespace NovaLab.ApiClient.Model
             sb.Append("  TwitchTitle: ").Append(TwitchTitle).Append("\n");
             sb.Append("  TwitchBroadcastLanguage: ").Append(TwitchBroadcastLanguage).Append("\n");
             sb.Append("  TwitchTags: ").Append(TwitchTags).Append("\n");
-            sb.Append("  TwitchGameId: ").Append(TwitchGameId).Append("\n");
+            sb.Append("  TwitchGameTitleName: ").Append(TwitchGameTitleName).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

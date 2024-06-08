@@ -13,8 +13,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - RunningInDocker=true
 
-      - Authentication_Twitch_ClientId=${Authentication_Twitch_ClientId}
-      - Authentication_Twitch_ClientSecret=${Authentication_Twitch_ClientSecret}
+      - Authentication_Twitch_ClientId=${TwitchClientId}
+      - Authentication_Twitch_ClientSecret=${TwitchClientSecret}
       - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
       - SslCertLocation=/root/.aspnet/https/NovaLab.Server.pfx
       - SslCertPassword=pa55w0rd!
@@ -40,6 +40,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - RunningInDocker=true
 
+      - Authentication_Twitch_ClientId=${TwitchClientId}
+      - Authentication_Twitch_ClientSecret=${TwitchClientSecret}
       - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
       - SslCertLocation=/root/.aspnet/https/NovaLab.API.pfx
       - SslCertPassword=pa55w0rd!

@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using NovaLab.Server.Data;
 using Serilog;
 using System.Security.Cryptography.X509Certificates;
+using TwitchLib.Api;
 
 namespace NovaLab.API;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -64,6 +65,16 @@ public static class Program {
                     .AllowCredentials()
                     .AllowAnyMethod();
             });
+        });
+        
+        // - Twitch Services -
+        // TwitchApi is a singleton because they don't use injection
+        //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
+        builder.Services.AddSingleton(new TwitchAPI {
+            Settings = {
+                ClientId = builder.Configuration["Authentication_Twitch_ClientId"],
+                Secret = builder.Configuration["Authentication_Twitch_ClientSecret"]
+            }
         });
         
         // -------------------------------------------------------------------------------------------------------------

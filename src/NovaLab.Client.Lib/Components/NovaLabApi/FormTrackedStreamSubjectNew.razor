@@ -19,7 +19,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<Validations @ref="@(ValidationsRefRequest)" Mode="ValidationMode.Auto" Model="@TrackedStreamSubjectDtoPostModel">
+<Validations @ref="@(ValidationsRefRequest)" Mode="ValidationMode.Manual" Model="@TrackedStreamSubjectDtoPostModel">
     <Validation Validator="ValidationRule.IsNotEmpty">
         <TextEdit Placeholder="Twitch Stream Title" @bind-Text="@TrackedStreamSubjectDtoPostModel.TwitchTitle">
             <Feedback>
@@ -27,10 +27,19 @@
                 <ValidationError>Invalid stream title!</ValidationError>
             </Feedback>
         </TextEdit>
-    </Validation>   
+    </Validation>
+    
+    <Validation Validator="ValidationRule.IsNotEmpty">
+        <TextEdit Placeholder="Twitch Game Title" @bind-Text="@TrackedStreamSubjectDtoPostModel.TwitchGameTitleName">
+            <Feedback>
+                <ValidationNone>Please enter a stream title.</ValidationNone>
+                <ValidationError>Invalid stream title!</ValidationError>
+            </Feedback>
+        </TextEdit>
+    </Validation>
 </Validations>
 
-<Button Clicked="@OnSubmitClickedAsync">Submit</Button>
+<Button Color="Color.Primary" Clicked="@OnSubmitClickedAsync">Submit</Button>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
@@ -40,7 +49,7 @@
     
     TrackedStreamSubjectDtoPost TrackedStreamSubjectDtoPostModel { get; set; } = new(
         novaLabUserId:Guid.Empty,
-        twitchGameId:string.Empty,
+        twitchGameTitleName:string.Empty,
         twitchBroadcastLanguage:Languages.EN.Alpha2,
         twitchTitle:string.Empty,
         twitchTags:[]
@@ -54,7 +63,6 @@
             logger.Warning("Some fields were not validated correctly");
             return;
         }
-        
 
         // Get the user id claim
         string? userIdClaim = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;

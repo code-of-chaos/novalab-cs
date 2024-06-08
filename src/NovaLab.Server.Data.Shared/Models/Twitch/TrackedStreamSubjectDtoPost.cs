@@ -11,5 +11,5 @@ public record TrackedStreamSubjectDtoPost(
     string TwitchTitle,
     string? TwitchBroadcastLanguage = null,
     string[]? TwitchTags = null,
-    string? TwitchGameId = null
+    string? TwitchGameTitleName = null
 );
