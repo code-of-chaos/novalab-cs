@@ -12,7 +12,7 @@ namespace NovaLab.Client;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
-    static async Task Main(string[] args) {
+    public async static Task Main(string[] args) {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.ControlledBy(new LoggingLevelSwitch())

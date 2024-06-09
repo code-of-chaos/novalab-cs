@@ -64,7 +64,7 @@ public static class Program {
             options.AddPolicy("AllowLocalHosts", policyBuilder => { policyBuilder
                 .WithOrigins(
                     // Local Development 
-                    "https://localhost:7145;http://localhost:5117", 
+                    "https://localhost:7145","http://localhost:5117", 
                     // Docker 
                     "http://localhost:9052", "https://localhost:9052"
                 )

@@ -204,7 +204,6 @@ public static class Program {
 
         app.UseHttpsRedirection();
         
-        
         // - Cors -
         app.UseCors("AllowLocalHosts");
 

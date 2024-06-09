@@ -31,8 +31,7 @@ function main {
   # Copy files
   echo "Copying to original folder ..."
   Copy-Item -Path "$sourceFolder\*" -Destination $destinationFolder -Recurse -Force
-
-
+  
   echo "Finished"
 }
 

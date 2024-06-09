@@ -21,8 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{2BDC02
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Data", "src\NovaLab.Server.Data\NovaLab.Server.Data.csproj", "{B187DAA8-391A-41F8-9779-2E15F52409D7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{53C350A2-FD6F-4E4F-86E8-9545289E15FE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{67926B6C-9021-4E67-9F5F-A8B8A2A9D2F0}"
 	ProjectSection(SolutionItems) = preProject
 		tools-api.sh = tools-api.sh
@@ -46,7 +44,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{F6E0A6C1-00DE-494F-887E-90AE8F57A2C1}"
 	ProjectSection(SolutionItems) = preProject
 		generate-certs.ps1 = generate-certs.ps1
-		generate-novalab_apiclient.ps1 = generate-novalab_apiclient.ps1
+		generate-apiclient.ps1 = generate-apiclient.ps1
+		generate-dotenv.ps1 = generate-dotenv.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.ApiClient", "src\NovaLab.ApiClient\NovaLab.ApiClient.csproj", "{91090ADF-1658-4860-8457-47A934BAAD46}"

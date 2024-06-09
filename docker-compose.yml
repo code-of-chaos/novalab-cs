@@ -17,10 +17,8 @@ services:
       - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True
       - SslCertLocation=/root/.aspnet/https/NovaLab.Server.pfx
       - SslCertPassword=${SllCertsPassword}
-        
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
-#      - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
       - "${USERPROFILE}/.aspnet/https/NovaLab.Server.pfx:/root/.aspnet/https/NovaLab.Server.pfx:ro"
     networks:
       - novalab-net
@@ -44,7 +42,6 @@ services:
       - SslCertPassword=${SllCertsPassword}
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
-#      - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
       - "${USERPROFILE}/.aspnet/https/NovaLab.API.pfx:/root/.aspnet/https/NovaLab.API.pfx:ro"
       - "/var/opt/mssql/backups:/backups" # bind to same backup location as the sqlserver
     networks:
