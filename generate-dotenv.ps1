@@ -3,10 +3,6 @@
 $envVariables = @{
     "SqlServerSAPassword"             = "pa55w0rd!"
     "SslCertPassword"                 = "pa55w0rd!" # If you change this one, then you have to change it in generate-certs.ps1 as well
-    
-    # Twitch OAuth stuff
-    "TwitchClientId"                  = $null
-    "TwitchClientSecret"              = $null
 }
 
 # -----------------------------------------------------------------------------------------------------------------
