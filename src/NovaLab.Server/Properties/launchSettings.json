@@ -17,8 +17,7 @@
         "applicationUrl": "https://localhost:7145;http://localhost:5117",
         "environmentVariables": {
           "ASPNETCORE_ENVIRONMENT": "Development",
-          "SslCertLocation": "%USERPROFILE%/.aspnet/https/NovaLab.API.pfx",
-          "sslCertPassword": "pa55w0rd!"
+          "SslCertLocation": "%USERPROFILE%/.aspnet/https/NovaLab.API.pfx"
         }
       }
     }

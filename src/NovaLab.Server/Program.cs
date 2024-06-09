@@ -6,6 +6,7 @@ using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
+using dotenv.net;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -153,8 +154,8 @@ public static class Program {
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
         builder.Services.AddSingleton(new TwitchAPI {
             Settings = {
-                ClientId = builder.Configuration["Authentication_Twitch_ClientId"],
-                Secret = builder.Configuration["Authentication_Twitch_ClientSecret"]
+                ClientId = environmentSwitcher.GetTwitchClientId(),
+                Secret = environmentSwitcher.GetTwitchClientSecret()
             }
         });
         // builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
@@ -172,11 +173,16 @@ public static class Program {
         
         // - Cors -
         builder.Services.AddCors(options => {
-            options.AddPolicy("AllowLocalHosts", policyBuilder => {
-                policyBuilder.WithOrigins("http://localhost:9052", "https://localhost:9052")
-                    .AllowAnyHeader()
-                    .AllowCredentials()
-                    .AllowAnyMethod();
+            options.AddPolicy("AllowLocalHosts", policyBuilder => { policyBuilder
+                .WithOrigins(
+                    // Local Development 
+                    "https://localhost:7190", 
+                    // Docker 
+                    "http://localhost:9052", "https://localhost:9052"
+                )
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .AllowAnyMethod();
             });
         });
 

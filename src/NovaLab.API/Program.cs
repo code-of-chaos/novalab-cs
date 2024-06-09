@@ -53,17 +53,24 @@ public static class Program {
         // - Kestrel SLL - 
         builder.WebHost.ConfigureKestrel(options => {
             options.ConfigureHttpsDefaults(opt => {
-                opt.ServerCertificate = new X509Certificate2( environmentSwitcher.GetSslCertLocation(), environmentSwitcher.GetSslCertPassword());
+                opt.ServerCertificate = new X509Certificate2( 
+                environmentSwitcher.GetSslCertLocation(), 
+                environmentSwitcher.GetSslCertPassword());
             });
         });
         
         // - Cors -
         builder.Services.AddCors(options => {
-            options.AddPolicy("AllowLocalHosts", policyBuilder => {
-                policyBuilder.WithOrigins("http://localhost:9051", "https://localhost:9051")
-                    .AllowAnyHeader()
-                    .AllowCredentials()
-                    .AllowAnyMethod();
+            options.AddPolicy("AllowLocalHosts", policyBuilder => { policyBuilder
+                .WithOrigins(
+                    // Local Development 
+                    "https://localhost:7145;http://localhost:5117", 
+                    // Docker 
+                    "http://localhost:9052", "https://localhost:9052"
+                )
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .AllowAnyMethod();
             });
         });
         
@@ -72,8 +79,8 @@ public static class Program {
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
         builder.Services.AddSingleton(new TwitchAPI {
             Settings = {
-                ClientId = builder.Configuration["Authentication_Twitch_ClientId"],
-                Secret = builder.Configuration["Authentication_Twitch_ClientSecret"]
+                ClientId = environmentSwitcher.GetTwitchClientId(),
+                Secret = environmentSwitcher.GetTwitchClientSecret()
             }
         });
         

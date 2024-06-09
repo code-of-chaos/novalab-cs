@@ -12,17 +12,15 @@ services:
       - ASPNETCORE_URLS=https://+:443
       - ASPNETCORE_ENVIRONMENT=Development
       - RunningInDocker=true
-
-      - Authentication_Twitch_ClientId=${TwitchClientId}
-      - Authentication_Twitch_ClientSecret=${TwitchClientSecret}
-      - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
-      - SslCertLocation=/root/.aspnet/https/NovaLab.Server.pfx
-      - SslCertPassword=pa55w0rd!
       - TwitchClientId=${TwitchClientId}
       - TwitchClientSecret=${TwitchClientSecret}
+      - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True
+      - SslCertLocation=/root/.aspnet/https/NovaLab.Server.pfx
+      - SslCertPassword=${SllCertsPassword}
+        
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
-      - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
+#      - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
       - "${USERPROFILE}/.aspnet/https/NovaLab.Server.pfx:/root/.aspnet/https/NovaLab.Server.pfx:ro"
     networks:
       - novalab-net
@@ -39,17 +37,14 @@ services:
       - ASPNETCORE_URLS=https://+:443
       - ASPNETCORE_ENVIRONMENT=Development
       - RunningInDocker=true
-
-      - Authentication_Twitch_ClientId=${TwitchClientId}
-      - Authentication_Twitch_ClientSecret=${TwitchClientSecret}
-      - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
-      - SslCertLocation=/root/.aspnet/https/NovaLab.API.pfx
-      - SslCertPassword=pa55w0rd!
       - TwitchClientId=${TwitchClientId}
       - TwitchClientSecret=${TwitchClientSecret}
+      - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True
+      - SslCertLocation=/root/.aspnet/https/NovaLab.API.pfx
+      - SslCertPassword=${SllCertsPassword}
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
-      - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
+#      - "${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro"
       - "${USERPROFILE}/.aspnet/https/NovaLab.API.pfx:/root/.aspnet/https/NovaLab.API.pfx:ro"
       - "/var/opt/mssql/backups:/backups" # bind to same backup location as the sqlserver
     networks:
@@ -58,7 +53,7 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: ${SQLSERVER_SA_PASSWORD}
+      SA_PASSWORD: ${SqlServerSAPassword}
       ACCEPT_EULA: "Y"
     ports:
       - "9050:1433"
