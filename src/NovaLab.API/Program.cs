@@ -2,11 +2,14 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.AspNetCore.Environment;
+using CodeOfChaos.AspNetCore.Swagger;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using NovaLab.Server.Data;
 using Serilog;
+using Swashbuckle.AspNetCore.Swagger;
 using System.Security.Cryptography.X509Certificates;
 using TwitchLib.Api;
 
@@ -43,12 +46,18 @@ public static class Program {
         });
         
         // - Db -
-        string connectionString = environmentSwitcher.GetDatabaseConnectionString();
-        builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
-            options.UseSqlServer(connectionString);
-        });
-        builder.Services.AddScoped(options => 
-            options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
+        try {
+            string connectionString = environmentSwitcher.GetDatabaseConnectionString();
+            builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
+                options.UseSqlServer(connectionString);
+            });
+            builder.Services.AddScoped(options => 
+                options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
+        } 
+        catch (Exception ex) {
+            Log.Logger.Warning(ex, "swagger.json could not be generated.");
+            if (environmentSwitcher.IsRunningInDocker()) throw;
+        }
         
         // - Kestrel SLL - 
         builder.WebHost.ConfigureKestrel(options => {
@@ -77,12 +86,19 @@ public static class Program {
         // - Twitch Services -
         // TwitchApi is a singleton because they don't use injection
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
-        builder.Services.AddSingleton(new TwitchAPI {
-            Settings = {
-                ClientId = environmentSwitcher.GetTwitchClientId(),
-                Secret = environmentSwitcher.GetTwitchClientSecret()
-            }
-        });
+        try {
+            builder.Services.AddSingleton(new TwitchAPI {
+                Settings = {
+                    ClientId = environmentSwitcher.GetTwitchClientId(),
+                    Secret = environmentSwitcher.GetTwitchClientSecret()
+                }
+            });
+        } 
+        catch (Exception ex) {
+            Log.Logger.Warning(ex, "Twitch could not be added to the API");
+            if (environmentSwitcher.IsRunningInDocker()) throw;
+        }
+
         
         // -------------------------------------------------------------------------------------------------------------
         // App
