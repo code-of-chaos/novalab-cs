@@ -45,6 +45,7 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, IServiceSc
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    public Task<string> GetAccessTokenOrRefreshAsync(Guid userId) => GetAccessTokenOrRefreshAsync(userId.ToString());
     public async Task<string> GetAccessTokenOrRefreshAsync(string userId) {
         await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
         
@@ -66,7 +67,7 @@ public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, IServiceSc
             throw;
         }
     }
-   
+    public Task<bool> RefreshAccessTokenAsync(Guid userId) => RefreshAccessTokenAsync(userId.ToString());
     public async Task<bool> RefreshAccessTokenAsync(string userId) {
         await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
 

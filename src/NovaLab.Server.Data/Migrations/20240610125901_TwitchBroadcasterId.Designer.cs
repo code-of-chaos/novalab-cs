@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NovaLab.Server.Data;
 
@@ -11,9 +12,11 @@ using NovaLab.Server.Data;
 namespace NovaLab.Server.Data.Migrations
 {
     [DbContext(typeof(NovaLabDbContext))]
-    partial class NovaLabDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610125901_TwitchBroadcasterId")]
+    partial class TwitchBroadcasterId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

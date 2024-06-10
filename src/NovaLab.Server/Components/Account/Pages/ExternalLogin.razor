@@ -108,10 +108,17 @@
             
             // Fetch the user
             NovaLabUser? user = await UserManager.FindByLoginAsync(_externalLoginInfo.LoginProvider, _externalLoginInfo.ProviderKey);
-    
+            
             // Update user tokens on each successful login
-            if (user != null && _externalLoginInfo.AuthenticationTokens != null)
+            if (user != null && _externalLoginInfo.AuthenticationTokens != null) {
                 await TwitchTokensManager.IngestTokensWithUserManager(user.Id, _externalLoginInfo.AuthenticationTokens);
+                
+                // Add extra information about the user from claims
+                user.TwitchBroadcasterId = _externalLoginInfo.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? null;
+                await UserManager.UpdateAsync(user);
+            }
+                
+            
             
             RedirectManager.RedirectTo(ReturnUrl);
         }

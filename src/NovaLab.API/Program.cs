@@ -6,6 +6,7 @@ using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using NovaLab.API.Services.Twitch;
 using NovaLab.Lib.Twitch;
 using NovaLab.Server.Data;
 using NovaLab.Server.Data.Models.Account;
@@ -96,6 +97,7 @@ public static class Program {
                 }
             });
             builder.Services.AddScoped<TwitchTokensManager>();
+            builder.Services.AddSingleton<TwitchGameTitleToIdCacheService>();
         } 
         catch (Exception ex) {
             Log.Logger.Warning(ex, "Twitch could not be added to the API");
