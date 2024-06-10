@@ -76,7 +76,7 @@ public class TrackedStreamSubjectController(
     [HttpGet]
     [ProducesResponseType<IApiResult<TrackedStreamSubjectDto>>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
-    [SwaggerOperation(OperationId = "GetTrackedStreamSubjects")]
+    [SwaggerOperation(OperationId = nameof(GetTrackedStreamSubjects))]
     public async Task<IActionResult> GetTrackedStreamSubjects(
         [FromQuery(Name = "user-id")] Guid? userId = null
     ) {
@@ -100,7 +100,7 @@ public class TrackedStreamSubjectController(
     [HttpPost]
     [ProducesResponseType<IApiResult<TrackedStreamSubjectDto>>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
-    [SwaggerOperation(OperationId = "PostTrackedStreamSubject")]
+    [SwaggerOperation(OperationId = nameof(PostTrackedStreamSubject))]
     public async Task<IActionResult> PostTrackedStreamSubject(
         [FromBody] TrackedStreamSubjectDtoPost dto
     ) {
@@ -112,6 +112,34 @@ public class TrackedStreamSubjectController(
 
             dbContext.TrackedStreamSubjects.Add(result);
             await dbContext.SaveChangesAsync();
+            
+            return Success(result.ToDto());
+        }
+        catch (Exception ex) {
+            logger.Warning(ex, "ERROR");
+            return FailureServer();
+        }
+    }
+    
+    [HttpPost("/select")]
+    [ProducesResponseType<IApiResult<bool>>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
+    [SwaggerOperation(OperationId = nameof(SelectTrackedStreamSubject))]
+    public async Task<IActionResult> SelectTrackedStreamSubject(
+        [FromQuery(Name="user-id")] Guid userId,
+        [FromQuery(Name="subject-id")] Guid subjectId
+    ) {
+        await using NovaLabDbContext dbContext = await DbContext;
+
+        try {
+            TrackedStreamSubject? result = await dbContext.TrackedStreamSubjects.FirstOrDefaultAsync(
+                subject => subject.Id == subjectId
+                           && subject.User.Id == userId
+            );
+            if (result is null) return FailureClient();
+            
+            
+            
             
             return Success(result.ToDto());
         }

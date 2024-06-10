@@ -1,4 +1,7 @@
-﻿<Bar Mode="BarMode.VerticalInline"
+﻿@using NovaLab.Client.Lib.Components.Account
+
+
+<Bar Mode="BarMode.VerticalInline"
      CollapseMode="BarCollapseMode.Small"
      Breakpoint="Breakpoint.Desktop"
      NavigationBreakpoint="Breakpoint.Tablet"
@@ -23,6 +26,9 @@
         <BarEnd>
             <BarItem>
                 <BarLink To="https://localhost:9052">Swagger API</BarLink>
+            </BarItem>
+            <BarItem>
+                <LogoutButton/>
             </BarItem>
         </BarEnd>
     </BarMenu>

@@ -10,6 +10,7 @@ using dotenv.net;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NovaLab.Lib.Twitch;
 using NovaLab.Server.Components;
 using NovaLab.Server.Components.Account;
 using NovaLab.Server.Data;
@@ -158,11 +159,10 @@ public static class Program {
                 Secret = environmentSwitcher.GetTwitchClientSecret()
             }
         });
+        builder.Services.AddScoped<TwitchTokensManager>();
         // builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
         // builder.Services.AddHostedTwitchServices();
 
-        builder.Services.AddScoped<TwitchTokensManager>();
-        
         // - Blazorise -
         builder.Services
             .AddBlazorise( options => {
@@ -173,10 +173,11 @@ public static class Program {
         
         // - Cors -
         builder.Services.AddCors(options => {
-            options.AddPolicy("AllowLocalHosts", policyBuilder => { policyBuilder
-                .WithOrigins(
+            options.AddPolicy("AllowLocalHosts", policyBuilder => {
+                policyBuilder
+                    .WithOrigins(
                     // Local Development 
-                    "https://localhost:7190", 
+                    "https://localhost:7190", "https://localhost:7145", 
                     // Docker 
                     "http://localhost:9052", "https://localhost:9052"
                 )

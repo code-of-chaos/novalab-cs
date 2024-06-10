@@ -2,14 +2,14 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.AspNetCore.Environment;
-using CodeOfChaos.AspNetCore.Swagger;
 using CodeOfChaos.Extensions.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
+using NovaLab.Lib.Twitch;
 using NovaLab.Server.Data;
+using NovaLab.Server.Data.Models.Account;
 using Serilog;
-using Swashbuckle.AspNetCore.Swagger;
 using System.Security.Cryptography.X509Certificates;
 using TwitchLib.Api;
 
@@ -53,6 +53,8 @@ public static class Program {
             });
             builder.Services.AddScoped(options => 
                 options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
+            builder.Services.AddIdentity<NovaLabUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<NovaLabDbContext>();
         } 
         catch (Exception ex) {
             Log.Logger.Warning(ex, "swagger.json could not be generated.");
@@ -93,6 +95,7 @@ public static class Program {
                     Secret = environmentSwitcher.GetTwitchClientSecret()
                 }
             });
+            builder.Services.AddScoped<TwitchTokensManager>();
         } 
         catch (Exception ex) {
             Log.Logger.Warning(ex, "Twitch could not be added to the API");

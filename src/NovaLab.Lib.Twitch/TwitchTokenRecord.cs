@@ -4,7 +4,7 @@
 using System.Globalization;
 using TwitchLib.Api.Auth;
 
-namespace NovaLab.Server;
+namespace NovaLab.Lib.Twitch;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

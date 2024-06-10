@@ -29,7 +29,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NovaLab.Lib.Twitch\NovaLab.Lib.Twitch.csproj" />
       <ProjectReference Include="..\NovaLab.Server.Data\NovaLab.Server.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\Account\" />
     </ItemGroup>
 
     <!-- Create the Swagger.JSON file for the OpenAPI Generator to use-->
