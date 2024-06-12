@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using NovaLab.ApiClient.Client;
 using Serilog;
 using Serilog.Core;
 
@@ -18,6 +19,7 @@ public static class Program {
             .MinimumLevel.ControlledBy(new LoggingLevelSwitch())
             .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))
             .WriteTo.Async(lsc => lsc.Console())
+            .WriteTo.BrowserConsole()
             .CreateLogger();
 
         builder.Logging.ClearProviders();// Removes the old Microsoft Logging
@@ -35,6 +37,19 @@ public static class Program {
             .AddBootstrap5Providers()
             .AddFontAwesomeIcons();
 
+        GlobalConfiguration.Instance = Configuration.MergeConfigurations(
+            GlobalConfiguration.Instance,
+            #if DEBUG
+                new Configuration {
+                    BasePath = "https://localhost:7190"
+                }
+            #else
+                new Configuration {
+                    BasePath = "https://localhost:9052"
+                }            
+            #endif
+        );
+        
         await builder.Build().RunAsync();
     }
 }

@@ -12,8 +12,9 @@
 <h3>Auth</h3>
 
 <AuthorizeView>
-    <p>Welcome, @(Claims?.Identity?.Name ?? "")</p>
+    @* <p>Welcome, @(Claims?.Identity?.Name ?? "")</p> *@
     <FormTrackedStreamSubjectNew/>
+    <TrackedStreamSubjectSelector/>
 </AuthorizeView>
 
 @code {

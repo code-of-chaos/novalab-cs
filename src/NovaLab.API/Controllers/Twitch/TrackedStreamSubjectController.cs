@@ -147,4 +147,33 @@ public class TrackedStreamSubjectController(
             return FailureServer();
         }
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // DELETE Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    [HttpDelete]
+    [ProducesResponseType<IApiResult<bool>>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
+    [SwaggerOperation(OperationId = nameof(DeleteTrackedStreamSubject))]
+    public async Task<IActionResult> DeleteTrackedStreamSubject(
+        [FromQuery(Name = "subject-id")] Guid subjectId
+    ) {
+        await using NovaLabDbContext dbContext = await DbContext;
+
+        try {
+            TrackedStreamSubject? result = await dbContext.TrackedStreamSubjects
+                .FirstOrDefaultAsync(subject => subject.Id == subjectId);
+
+            if (result is null) return FailureClient(msg:"No Tracked Subject found");
+            
+            dbContext.TrackedStreamSubjects.Remove(result);
+            await dbContext.SaveChangesAsync();
+            return Success(true);
+        }
+        catch (Exception ex) {
+            logger.Warning(ex, "ERROR");
+            return FailureServer();
+        }
+    }
 }

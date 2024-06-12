@@ -56,12 +56,15 @@ public static class Program {
                 options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
             builder.Services.AddIdentity<NovaLabUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<NovaLabDbContext>();
-        } 
-        catch (Exception ex) {
-            Log.Logger.Warning(ex, "swagger.json could not be generated.");
-            if (environmentSwitcher.IsRunningInDocker()) throw;
         }
-        
+        catch (Exception ex) {
+            // ignored
+            #if !DEBUG
+            if (environmentSwitcher.IsRunningInDocker()) throw;
+            #endif
+            Log.Logger.Warning(ex, "Database connection could not be established");
+        }
+
         // - Kestrel SLL - 
         builder.WebHost.ConfigureKestrel(options => {
             options.ConfigureHttpsDefaults(opt => {
@@ -78,7 +81,9 @@ public static class Program {
                     // Local Development 
                     "https://localhost:7145","http://localhost:5117", 
                     // Docker 
-                    "http://localhost:9052", "https://localhost:9052"
+                    "http://localhost:9052", "https://localhost:9052", // API
+                    "http://localhost:9051", "https://localhost:9051",  // Server
+                    "https://localhost:80"
                 )
                 .AllowAnyHeader()
                 .AllowCredentials()
@@ -103,7 +108,6 @@ public static class Program {
             Log.Logger.Warning(ex, "Twitch could not be added to the API");
             if (environmentSwitcher.IsRunningInDocker()) throw;
         }
-
         
         // -------------------------------------------------------------------------------------------------------------
         // App

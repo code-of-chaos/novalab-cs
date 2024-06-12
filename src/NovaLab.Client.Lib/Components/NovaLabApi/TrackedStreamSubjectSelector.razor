@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using NovaLab.ApiClient.Api
+@using NovaLab.ApiClient.Model
+@using Serilog
+@using System.Security.Claims
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@attribute [Authorize, StreamRendering]
+
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject ILogger logger
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="SelectedItemGuidString">
+    @if (Data is not null) {
+        @foreach (TrackedStreamSubjectDto item in Data) {
+            <ListGroupItem Name="@item.Id.ToString()">@item.TwitchTitle</ListGroupItem>
+        }
+    }
+</ListGroup>
+
+<Button Color="Color.Primary" Type="@ButtonType.Submit" Clicked="@OnSubmitClickedAsync">Save</Button>
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    private string? SelectedItemGuidString { get; set; } = null;
+    private List<TrackedStreamSubjectDto>? Data { get; set; } = null;
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        AuthenticationState authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal claims = authState.User;
+        
+        // Get the user id claim
+        string? userIdClaim = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim is null) {
+            logger.Warning("User Id claim is null");
+            return;
+        }
+        if (!Guid.TryParse(userIdClaim, out Guid userId))
+        {
+            logger.Warning("User Id claim is not a valid GUID");
+            return;
+        }
+        
+        var api = new TrackedStreamSubjectApi();
+        TrackedStreamSubjectDtoIApiResult a = await api.GetTrackedStreamSubjectsAsync(userId:userId);
+        Data = a.Data;
+    }
+
+    private async Task OnSubmitClickedAsync() {
+        AuthenticationState authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal claims = authState.User;
+        // Get the user id claim
+        string? userIdClaim = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim is null) {
+            logger.Warning("User Id claim is null");
+            return;
+        }
+        if (!Guid.TryParse(userIdClaim, out Guid userId))
+        {
+            logger.Warning("User Id claim is not a valid GUID");
+            return;
+        }
+
+        if (SelectedItemGuidString is not null) {
+            var api = new TrackedStreamSubjectApi();
+            await api.SelectTrackedStreamSubjectAsync(
+            userId,
+            Guid.Parse(SelectedItemGuidString)
+            ); 
+        }
+    }
+}

@@ -179,7 +179,9 @@ public static class Program {
                     // Local Development 
                     "https://localhost:7190", "https://localhost:7145", 
                     // Docker 
-                    "http://localhost:9052", "https://localhost:9052"
+                    "http://localhost:9052", "https://localhost:9052", // API
+                    "http://localhost:9051", "https://localhost:9051", // Server
+                    "https://localhost:80"
                 )
                 .AllowAnyHeader()
                 .AllowCredentials()
@@ -216,7 +218,7 @@ public static class Program {
         app.MapRazorComponents<NovaLabApp>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            .AddAdditionalAssemblies(typeof(Client.Program).Assembly);
 
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();

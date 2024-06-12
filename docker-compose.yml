@@ -10,7 +10,7 @@ services:
       - novalab-api
     environment:
       - ASPNETCORE_URLS=https://+:443
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Release
       - RunningInDocker=true
       - TwitchClientId=${TwitchClientId}
       - TwitchClientSecret=${TwitchClientSecret}
@@ -33,7 +33,7 @@ services:
       - sqlserver
     environment:
       - ASPNETCORE_URLS=https://+:443
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Release
       - RunningInDocker=true
       - TwitchClientId=${TwitchClientId}
       - TwitchClientSecret=${TwitchClientSecret}

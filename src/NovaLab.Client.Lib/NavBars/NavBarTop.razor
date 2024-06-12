@@ -19,17 +19,14 @@
     <BarToggler />
     <BarMenu>
         <BarEnd>
-            
-            @if (Claims is {Identity : {IsAuthenticated : true, Name: {} name }}) {
-                <BarItem>
-                    <BarLink Color="Color.Secondary" To="/account/manage">@name</BarLink>
-                </BarItem>
-            }
-            else {
-                <BarItem>
+            <BarItem>
+                @if (Claims is { Identity : { IsAuthenticated : true, Name: not null } }) {
+                    <BarLink Color="Color.Secondary" To="/account/manage">User</BarLink>
+                }
+                else {
                     <BarLink Color="Color.Secondary" To="/account/login">Log in</BarLink>
-                </BarItem>
-            }
+                }
+            </BarItem>
         </BarEnd>
     </BarMenu>
 </Bar>
