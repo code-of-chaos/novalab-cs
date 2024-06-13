@@ -8,9 +8,9 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.6.0" />
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.2.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.1.0" />
+        <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.7.2" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.4.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.1.1" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.1.0" />
         <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.2.0" />
         <PackageReference Include="dotenv.net" Version="3.1.3" />
@@ -21,7 +21,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Serilog" Version="4.0.0" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.6.2" />
@@ -29,6 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NovaLab.EnvironmentSwitcher\NovaLab.EnvironmentSwitcher.csproj" />
       <ProjectReference Include="..\NovaLab.Lib.Twitch\NovaLab.Lib.Twitch.csproj" />
       <ProjectReference Include="..\NovaLab.Server.Data\NovaLab.Server.Data.csproj" />
     </ItemGroup>
@@ -39,8 +40,10 @@
 
     <!-- Create the Swagger.JSON file for the OpenAPI Generator to use-->
     <Target Name="OpenAPI" AfterTargets="Build" Condition="$(Configuration)=='Debug'">
+        <!-- Delete the existing swagger.json file -->
         <Delete Files="$(TargetDir)swagger.json" />
-        <Exec Command="dotnet tool run swagger tofile &#45;&#45;output swagger.json bin\$(Configuration)\net8.0\NovaLab.API.dll v1" ContinueOnError="true" />
+        <!-- Generate a new swagger.json file -->
+        <Exec Command="dotnet tool run swagger tofile --output swagger.json bin\$(Configuration)\net8.0\NovaLab.API.dll v1" ContinueOnError="true" />
     </Target>
     
 </Project>

@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using NovaLab.Server.Data.Shared.Models.Twitch;
 using System.ComponentModel.DataAnnotations;
 
 namespace NovaLab.Server.Data.Models.Twitch;
@@ -19,18 +18,6 @@ public class TrackedStreamSubjectComponent {
 
     [MaxLength(255)] public string ComponentText { get; set; } = string.Empty;
     [MaxLength(255)] public string ComponentStyling { get; set; } = string.Empty;
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // Methods
-    // -----------------------------------------------------------------------------------------------------------------
-    public TrackedStreamSubjectComponentDto ToDto() {
-        return new TrackedStreamSubjectComponentDto(
-            Id:Id,
-            TrackedStreamSubjectId:TrackedStreamSubjectId,
-            ComponentText:ComponentText,
-            ComponentStyling:ComponentStyling
-        );
-    }
 }
 
 

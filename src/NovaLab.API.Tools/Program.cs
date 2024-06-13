@@ -8,10 +8,9 @@ using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NovaLab.EnvironmentSwitcher;
 using NovaLab.Server.Data;
-using Serilog;
 
 namespace NovaLab.API.Tools;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -24,17 +23,22 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.OverrideLoggingAsSeriLog();
-        builder.Configuration.AddEnvironmentVariables(); // Else they won't be loaded
 
-        var environmentSwitcher = new EnvironmentSwitcher(Log.Logger, builder);
+        var environmentSwitcher = builder.CreateEnvironmentSwitcher<NovaLabEnvironmentSwitcher>(
+            options => {
+                options.DefinePreMadeVariables();
+                options.Variables.TryRegister<string>("DevelopmentDb");
+                options.Variables.TryRegister<string>("TwitchClientId");
+                options.Variables.TryRegister<string>("TwitchClientSecret");
+            }
+        );
 
         // -------------------------------------------------------------------------------------------------------------
         // Services
         // -------------------------------------------------------------------------------------------------------------
         // - Db -
-        string connectionString = environmentSwitcher.GetDatabaseConnectionString();
         builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(environmentSwitcher.DatabaseConnectionString);
         });
         builder.Services.AddScoped(options => 
             options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());

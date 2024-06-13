@@ -8,7 +8,6 @@
  */
 
 
-using System;
 using System.Threading.Tasks;
 
 namespace NovaLab.ApiClient.Client

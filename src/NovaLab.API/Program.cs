@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NovaLab.API.Services.Twitch;
+using NovaLab.EnvironmentSwitcher;
 using NovaLab.Lib.Twitch;
 using NovaLab.Server.Data;
 using NovaLab.Server.Data.Models.Account;
@@ -25,9 +26,15 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.OverrideLoggingAsSeriLog();
-        builder.Configuration.AddEnvironmentVariables(); // Else they won't be loaded
 
-        var environmentSwitcher = new EnvironmentSwitcher(Log.Logger, builder);
+        var environmentSwitcher = builder.CreateEnvironmentSwitcher<NovaLabEnvironmentSwitcher>(
+            options => {
+                options.DefinePreMadeVariables();
+                options.Variables.TryRegister<string>("DevelopmentDb");
+                options.Variables.TryRegister<string>("TwitchClientId");
+                options.Variables.TryRegister<string>("TwitchClientSecret");
+            }
+        );
 
         // -------------------------------------------------------------------------------------------------------------
         // Services
@@ -48,9 +55,8 @@ public static class Program {
         
         // - Db -
         try {
-            string connectionString = environmentSwitcher.GetDatabaseConnectionString();
             builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(environmentSwitcher.DatabaseConnectionString);
             });
             builder.Services.AddScoped(options => 
                 options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
@@ -60,17 +66,17 @@ public static class Program {
         catch (Exception ex) {
             // ignored
             #if !DEBUG
-            if (environmentSwitcher.IsRunningInDocker()) throw;
+            if (environmentSwitcher.IsRunningInDocker) throw;
             #endif
             Log.Logger.Warning(ex, "Database connection could not be established");
         }
-
+        
         // - Kestrel SLL - 
         builder.WebHost.ConfigureKestrel(options => {
             options.ConfigureHttpsDefaults(opt => {
                 opt.ServerCertificate = new X509Certificate2( 
-                environmentSwitcher.GetSslCertLocation(), 
-                environmentSwitcher.GetSslCertPassword());
+                environmentSwitcher.SslCertLocation, 
+                environmentSwitcher.SslCertPassword);
             });
         });
         
@@ -97,16 +103,19 @@ public static class Program {
         try {
             builder.Services.AddSingleton(new TwitchAPI {
                 Settings = {
-                    ClientId = environmentSwitcher.GetTwitchClientId(),
-                    Secret = environmentSwitcher.GetTwitchClientSecret()
+                    ClientId = environmentSwitcher.TwitchClientId,
+                    Secret = environmentSwitcher.TwitchClientSecret
                 }
             });
             builder.Services.AddScoped<TwitchTokensManager>();
             builder.Services.AddSingleton<TwitchGameTitleToIdCacheService>();
         } 
         catch (Exception ex) {
+            // ignored
+            #if !DEBUG
+            if (environmentSwitcher.IsRunningInDocker) throw;
+            #endif
             Log.Logger.Warning(ex, "Twitch could not be added to the API");
-            if (environmentSwitcher.IsRunningInDocker()) throw;
         }
         
         // -------------------------------------------------------------------------------------------------------------
@@ -136,6 +145,5 @@ public static class Program {
         
         app.MapControllers();
         await app.RunAsync().ConfigureAwait(false);
-        
     }
 }

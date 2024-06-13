@@ -2,11 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using ISOLib;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using NovaLab.Server.Data.Models.Account;
-using NovaLab.Server.Data.Shared;
-using NovaLab.Server.Data.Shared.Models.Twitch;
 using System.ComponentModel.DataAnnotations;
 
 namespace NovaLab.Server.Data.Models.Twitch;
@@ -26,19 +22,4 @@ public class TrackedStreamSubject {
     public string[]? TwitchTags { get; set; } = [];
     
     public TrackedStreamSubjectComponent? TrackedStreamSubjectComponent { get; set; }
-    
-    // -----------------------------------------------------------------------------------------------------------------
-    // Methods
-    // -----------------------------------------------------------------------------------------------------------------
-    public TrackedStreamSubjectDto ToDto() {
-        return new TrackedStreamSubjectDto(
-            Id:Id,
-            NovaLabUserId: User.Id,
-            TwitchGameId:TwitchGameId,
-            TwitchBroadcastLanguage:TwitchBroadcastLanguage,
-            TwitchTitle:TwitchTitle,
-            TwitchTags:TwitchTags,
-            TrackedStreamSubjectComponentId:TrackedStreamSubjectComponent?.Id
-        );
-    }
 }

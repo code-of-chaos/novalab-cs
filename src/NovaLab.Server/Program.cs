@@ -6,18 +6,16 @@ using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
-using dotenv.net;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NovaLab.EnvironmentSwitcher;
 using NovaLab.Lib.Twitch;
 using NovaLab.Server.Components;
 using NovaLab.Server.Components.Account;
 using NovaLab.Server.Data;
 using NovaLab.Server.Data.Models.Account;
-using Serilog;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using static TwitchLib.Api.Core.Common.Helpers;
@@ -34,9 +32,15 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.OverrideLoggingAsSeriLog();
-        builder.Configuration.AddEnvironmentVariables(); // Else they won't be loaded
 
-        var environmentSwitcher = new EnvironmentSwitcher(Log.Logger, builder);
+        var environmentSwitcher = builder.CreateEnvironmentSwitcher<NovaLabEnvironmentSwitcher>(
+            options => {
+                options.DefinePreMadeVariables();
+                options.Variables.TryRegister<string>("DevelopmentDb");
+                options.Variables.TryRegister<string>("TwitchClientId");
+                options.Variables.TryRegister<string>("TwitchClientSecret");
+            }
+        );
         
         // -------------------------------------------------------------------------------------------------------------
         // Services
@@ -59,8 +63,8 @@ public static class Program {
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
             .AddTwitch(twitchOptions => {
-                twitchOptions.ClientId = environmentSwitcher.GetTwitchClientId();
-                twitchOptions.ClientSecret = environmentSwitcher.GetTwitchClientSecret();
+                twitchOptions.ClientId = environmentSwitcher.TwitchClientId;
+                twitchOptions.ClientSecret = environmentSwitcher.TwitchClientSecret;
                 // Update scopes as needed
                 //      This might look weird, but the idea is te that we don't reuse this at all anywhere, just create the list and move on
                 ((AuthScopes[]) [
@@ -126,9 +130,8 @@ public static class Program {
         ;
         
         // - Db -
-        string connectionString = environmentSwitcher.GetDatabaseConnectionString();
         builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(environmentSwitcher.DatabaseConnectionString);
         });
         builder.Services.AddScoped(options => 
             options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
@@ -146,7 +149,9 @@ public static class Program {
         // - Kestrel SLL - 
         builder.WebHost.ConfigureKestrel(options => {
             options.ConfigureHttpsDefaults(opt => {
-                opt.ServerCertificate = new X509Certificate2( environmentSwitcher.GetSslCertLocation(), environmentSwitcher.GetSslCertPassword());
+                opt.ServerCertificate = new X509Certificate2( 
+                environmentSwitcher.SslCertLocation, 
+                environmentSwitcher.SslCertPassword);
             });
         });
         
@@ -155,8 +160,8 @@ public static class Program {
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
         builder.Services.AddSingleton(new TwitchAPI {
             Settings = {
-                ClientId = environmentSwitcher.GetTwitchClientId(),
-                Secret = environmentSwitcher.GetTwitchClientSecret()
+                ClientId = environmentSwitcher.TwitchClientId,
+                Secret = environmentSwitcher.TwitchClientSecret
             }
         });
         builder.Services.AddScoped<TwitchTokensManager>();

@@ -7,11 +7,11 @@ using ISOLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NovaLab.API.Models.Twitch;
 using NovaLab.API.Services.Twitch;
 using NovaLab.Lib.Twitch;
 using NovaLab.Server.Data;
 using NovaLab.Server.Data.Models.Twitch;
-using NovaLab.Server.Data.Shared.Models.Twitch;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using TwitchLib.Api;
@@ -77,7 +77,7 @@ public class TrackedStreamSubjectController(
 
             TrackedStreamSubject[] result = await subjects.ToArrayAsync();
             
-            return Success(result.Select(subject => subject.ToDto()).ToArray());
+            return Success(result.Select(TrackedStreamSubjectDto.FromDto).ToArray());
         }
         catch (Exception ex) {
             logger.Warning(ex, "Unexpected Error");
@@ -104,7 +104,7 @@ public class TrackedStreamSubjectController(
             dbContext.TrackedStreamSubjects.Add(result);
             await dbContext.SaveChangesAsync();
             
-            return Success(result.ToDto());
+            return Success(TrackedStreamSubjectDto.FromDto(result));
         }
         catch (Exception ex) {
             logger.Warning(ex, "Unexpected error");
@@ -140,7 +140,7 @@ public class TrackedStreamSubjectController(
                 await twitchTokens.GetAccessTokenOrRefreshAsync(userId)
             );
             
-            return Success(result.ToDto());
+            return Success(TrackedStreamSubjectDto.FromDto(result));
         }
         catch (Exception ex) {
             logger.Warning(ex, "ERROR");
