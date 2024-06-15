@@ -62,8 +62,8 @@ public class TrackedStreamSubjectController(
     // GET Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpGet]
-    [ProducesResponseType<IApiResult<TrackedStreamSubjectDto>>((int)HttpStatusCode.OK)]
-    [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
+    [ProducesResponse<IApiResult<TrackedStreamSubjectDto>>(HttpStatusCode.OK)]
+    [ProducesResponse<IApiResult>(HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = nameof(GetTrackedStreamSubjects))]
     public async Task<IActionResult> GetTrackedStreamSubjects(
         [FromQuery(Name = "user-id")] Guid? userId = null
@@ -89,8 +89,8 @@ public class TrackedStreamSubjectController(
     // POST Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpPost]
-    [ProducesResponseType<IApiResult<TrackedStreamSubjectDto>>((int)HttpStatusCode.OK)]
-    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
+    [ProducesResponse<IApiResult<TrackedStreamSubjectDto>>(HttpStatusCode.OK)]
+    [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
     [SwaggerOperation(OperationId = nameof(PostTrackedStreamSubject))]
     public async Task<IActionResult> PostTrackedStreamSubject(
         [FromBody] TrackedStreamSubjectDtoPost dto
@@ -113,9 +113,9 @@ public class TrackedStreamSubjectController(
     }
     
     [HttpPost("select")]
-    [ProducesResponseType<IApiResult<bool>>((int)HttpStatusCode.OK)]
-    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
+    [ProducesResponse<IApiResult<bool>>(HttpStatusCode.OK)]
+    [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
+    [ProducesResponse<ApiResult>(HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = nameof(SelectTrackedStreamSubject))]
     public async Task<IActionResult> SelectTrackedStreamSubject(
         [FromQuery(Name="user-id")] Guid userId,
@@ -152,9 +152,9 @@ public class TrackedStreamSubjectController(
     // DELETE Methods
     // -----------------------------------------------------------------------------------------------------------------
     [HttpDelete]
-    [ProducesResponseType<IApiResult<bool>>((int)HttpStatusCode.OK)]
-    [ProducesResponseType<ApiResult>((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType<ApiResult>((int)HttpStatusCode.InternalServerError)]
+    [ProducesResponse<IApiResult<bool>>(HttpStatusCode.OK)]
+    [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
+    [ProducesResponse<ApiResult>(HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = nameof(DeleteTrackedStreamSubject))]
     public async Task<IActionResult> DeleteTrackedStreamSubject(
         [FromQuery(Name = "subject-id")] Guid subjectId
