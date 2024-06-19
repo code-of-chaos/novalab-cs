@@ -56,7 +56,10 @@
         }
         
         var api = new TrackedStreamSubjectApi();
+        Console.WriteLine(api.GetBasePath());
+        
         TrackedStreamSubjectDtoIApiResult a = await api.GetTrackedStreamSubjectsAsync(userId:userId);
+        
         Data = a.Data;
     }
 

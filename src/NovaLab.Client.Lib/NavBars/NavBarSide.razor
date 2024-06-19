@@ -1,5 +1,6 @@
 ﻿@using NovaLab.Client.Lib.Components.Account
-
+@using CodeOfChaos.Lucide
+@using LIconSize=CodeOfChaos.Lucide.IconSize
 
 <Bar Mode="BarMode.VerticalInline"
      CollapseMode="BarCollapseMode.Small"
@@ -9,7 +10,6 @@
     <BarBrand>
         <BarItem>
             <BarLink To="">
-                <BarIcon IconName="IconName.Dashboard" />
                 NovaLab
             </BarLink>
         </BarItem>
@@ -17,15 +17,22 @@
     <BarMenu>
         <BarStart>
             <BarItem>
-                <BarLink To="auth">
-                    <BarIcon IconName="IconName.Adjust" />
-                    Auth
-                </BarLink>
+                <BarDropdown>
+                    <BarDropdownToggle>
+                        <LucideIcon Name="Icons.GalleryVerticalEnd" CssClass="b-bar-icon" Size="LIconSize.Default"/>
+                        Stream Subjects
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="stream-subject">All Subjects</BarDropdownItem>
+                        <BarDropdownItem To="stream-subject/detail">Detailed view</BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+
             </BarItem>
         </BarStart>
         <BarEnd>
             <BarItem>
-                <BarLink To="https://localhost:9052">Swagger API</BarLink>
+                <BarLink To="api">Swagger API</BarLink>
             </BarItem>
             <BarItem>
                 <LogoutButton/>

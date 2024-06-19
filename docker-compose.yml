@@ -17,6 +17,7 @@ services:
       - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True
       - SslCertLocation=/root/.aspnet/https/NovaLab.Server.pfx
       - SslCertPassword=${SllCertsPassword}
+      - ApiUrlRoot="https://localhost:9052"
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
       - "${USERPROFILE}/.aspnet/https/NovaLab.Server.pfx:/root/.aspnet/https/NovaLab.Server.pfx:ro"

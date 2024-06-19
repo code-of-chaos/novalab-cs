@@ -37,6 +37,7 @@ public static class Program {
             options => {
                 options.DefinePreMadeVariables();
                 options.Variables.TryRegister<string>("DevelopmentDb");
+                options.Variables.TryRegister<string>("ApiUrlRoot");
                 options.Variables.TryRegister<string>("TwitchClientId");
                 options.Variables.TryRegister<string>("TwitchClientSecret");
             }
@@ -227,6 +228,11 @@ public static class Program {
 
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
+        app.MapGet("/api", httpContext => {
+            httpContext.Response.Redirect(environmentSwitcher.Variables.GetRequiredValue<string>("ApiUrlRoot"));
+            return Task.CompletedTask;
+        });
+        
 
         await app.RunAsync().ConfigureAwait(false);
     }

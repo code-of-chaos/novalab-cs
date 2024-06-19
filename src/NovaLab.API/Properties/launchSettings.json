@@ -15,6 +15,7 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7190",
       "environmentVariables": {
+        "RunningInDocker": "false",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SslCertLocation": "%USERPROFILE%/.aspnet/https/NovaLab.API.pfx"
       }
