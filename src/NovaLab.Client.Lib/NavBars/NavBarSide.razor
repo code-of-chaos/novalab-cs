@@ -1,7 +1,20 @@
-﻿@using NovaLab.Client.Lib.Components.Account
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using NovaLab.Client.Lib.Components.Account
 @using CodeOfChaos.Lucide
+@using System.Security.Claims
 @using LIconSize=CodeOfChaos.Lucide.IconSize
 
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@attribute [Authorize, StreamRendering]
+
+@inject AuthenticationStateProvider authenticationStateProvider
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
 <Bar Mode="BarMode.VerticalInline"
      CollapseMode="BarCollapseMode.Small"
      Breakpoint="Breakpoint.Desktop"
@@ -16,19 +29,20 @@
     </BarBrand>
     <BarMenu>
         <BarStart>
-            <BarItem>
-                <BarDropdown>
-                    <BarDropdownToggle>
-                        <LucideIcon Name="Icons.GalleryVerticalEnd" CssClass="b-bar-icon" Size="LIconSize.Default"/>
-                        Stream Subjects
-                    </BarDropdownToggle>
-                    <BarDropdownMenu>
-                        <BarDropdownItem To="stream-subject">All Subjects</BarDropdownItem>
-                        <BarDropdownItem To="stream-subject/detail">Detailed view</BarDropdownItem>
-                    </BarDropdownMenu>
-                </BarDropdown>
-
-            </BarItem>
+            <AuthorizeView>
+                <BarItem>
+                    <BarDropdown>
+                        <BarDropdownToggle>
+                            <LucideIcon Name="Icons.GalleryVerticalEnd" CssClass="b-bar-icon" Size="LIconSize.Default"/>
+                            Stream Subjects
+                        </BarDropdownToggle>
+                        <BarDropdownMenu>
+                            <BarDropdownItem To="stream-subject">All Subjects</BarDropdownItem>
+                            <BarDropdownItem To="stream-subject/detail">Detailed view</BarDropdownItem>
+                        </BarDropdownMenu>
+                    </BarDropdown>
+                </BarItem>
+            </AuthorizeView>
         </BarStart>
         <BarEnd>
             <BarItem>
@@ -40,3 +54,7 @@
         </BarEnd>
     </BarMenu>
 </Bar>
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@

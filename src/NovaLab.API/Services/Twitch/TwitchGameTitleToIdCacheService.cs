@@ -33,7 +33,8 @@ public class TwitchGameTitleToIdCacheService(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void InvalidateCache() => _fastCache = null;
+    [SuppressMessage("ReSharper", "UnusedMember.Global")] 
+    public void InvalidateCache() => _fastCache = null; // In the future, when the cache gets too big, clear the cache
     
     public async Task<TwitchGameTitleToIdCache?> GetCategoryIdAsync(string gameTitle) {
         await using NovaLabDbContext dbContext = await DbContext;

@@ -16,10 +16,10 @@
         "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
         "applicationUrl": "https://localhost:7145;http://localhost:5117",
         "environmentVariables": {
+          "RunningInDocker": "false",
           "ASPNETCORE_ENVIRONMENT": "Development",
           "SslCertLocation": "%USERPROFILE%/.aspnet/https/NovaLab.API.pfx",
-          "ApiUrlRoot": "https://localhost:7190",
-          "RunningInDocker": "false"
+          "ApiUrlRoot": "https://localhost:7190"
         }
       }
     }

@@ -67,8 +67,11 @@ public static class Program {
             // ignored
             #if !DEBUG
             if (environmentSwitcher.IsRunningInDocker) throw;
-            #endif
+            #else
+            // when not in debug, we need to create the swagger.json
+            //      THis makes it so that the swagger.json is generated correctly without having access to the database
             Log.Logger.Warning(ex, "Database connection could not be established");
+            #endif
         }
         
         // - Kestrel SLL - 
@@ -114,8 +117,9 @@ public static class Program {
             // ignored
             #if !DEBUG
             if (environmentSwitcher.IsRunningInDocker) throw;
-            #endif
+            #else
             Log.Logger.Warning(ex, "Twitch could not be added to the API");
+            #endif
         }
         
         // -------------------------------------------------------------------------------------------------------------

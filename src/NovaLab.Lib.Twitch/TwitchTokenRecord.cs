@@ -15,6 +15,9 @@ public record TwitchTokenRecord(
     string ExpiresAt,
     string TokenType
 ) {
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public IEnumerable<Tuple<string, string>> GetAsEnumerator() {
         yield return new Tuple<string, string>(TwitchTokensManager.AccessToken, AccessToken);
         yield return new Tuple<string, string>(TwitchTokensManager.RefreshToken, RefreshToken);
@@ -24,10 +27,10 @@ public record TwitchTokenRecord(
     
     public static TwitchTokenRecord CreateFromRefreshResponse(RefreshResponse response, ValidateAccessTokenResponse validation) {
         return new TwitchTokenRecord(
-        AccessToken: response.AccessToken, 
-        RefreshToken: response.RefreshToken,
-        ExpiresAt: DateTime.Now.AddSeconds(validation.ExpiresIn).ToString(CultureInfo.CurrentCulture) ,
-        TokenType: "bearer"
+            AccessToken: response.AccessToken, 
+            RefreshToken: response.RefreshToken,
+            ExpiresAt: DateTime.Now.AddSeconds(validation.ExpiresIn).ToString(CultureInfo.CurrentCulture) ,
+            TokenType: "bearer"
         );
     }
 }

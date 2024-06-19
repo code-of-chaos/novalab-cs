@@ -1,8 +1,14 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 
 namespace NovaLab.Client;
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
 
 // This is a client-side AuthenticationStateProvider that determines the user's authentication state by
 // looking for data persisted in the page when it was rendered on the server. This authentication state will
@@ -18,6 +24,9 @@ internal class PersistentAuthenticationStateProvider : AuthenticationStateProvid
 
     private readonly Task<AuthenticationState> _authenticationStateTask = DefaultUnauthenticatedTask;
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constructors
+    // -----------------------------------------------------------------------------------------------------------------
     public PersistentAuthenticationStateProvider(PersistentComponentState state) {
         if (!state.TryTakeFromJson(nameof(UserInfo), out UserInfo? userInfo) || userInfo is null) {
             return;
@@ -34,5 +43,8 @@ internal class PersistentAuthenticationStateProvider : AuthenticationStateProvid
         authenticationType: nameof(PersistentAuthenticationStateProvider)))));
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public override Task<AuthenticationState> GetAuthenticationStateAsync() => _authenticationStateTask;
 }

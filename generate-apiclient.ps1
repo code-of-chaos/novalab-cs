@@ -1,4 +1,6 @@
-﻿# Define variables
+﻿# -----------------------------------------------------------------------------------------------------------------
+# Tweakable variables
+# -----------------------------------------------------------------------------------------------------------------
 $generatorLanguage = "csharp"
 $specFilePath = "src\NovaLab.API\swagger.json"
 $outputFolder = "..\0005-01-cs-novalab-api_client"
@@ -8,7 +10,9 @@ $netCoreProjectFile = "true"
 $targetFramework = "net8.0"
 $nullableReferenceTypes = "true"
 
-# Run command
+# -----------------------------------------------------------------------------------------------------------------
+# Code
+# -----------------------------------------------------------------------------------------------------------------
 function main {
   echo "Generating OpenAPI client ..."
   openapi-generator-cli generate `

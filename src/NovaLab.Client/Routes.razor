@@ -1,6 +1,6 @@
 ﻿<Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.NullLayout)">
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(NullLayout)">
             <NotAuthorized>
                 <RedirectToLogin/>
             </NotAuthorized>

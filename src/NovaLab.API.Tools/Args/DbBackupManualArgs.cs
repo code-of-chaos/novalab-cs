@@ -10,6 +10,9 @@ namespace NovaLab.API.Tools.Args;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class DbBackupManualArgs : IParameters {
-    [AutoArgValue("path")]public string FilePath { get; set; } = "temp";
-    [AutoArgValue("database")]public string DatabaseName { get; set; } = "CatalDocV2Db";
+    [AutoArgValue("file", "Filename to be used. Cannot include .bak")]
+    public string FilePath { get; set; } = "temp";
+    
+    [AutoArgValue("database", "Specific database which you want to have exported")]
+    public string DatabaseName { get; set; } = "NovaLabDb";
 }

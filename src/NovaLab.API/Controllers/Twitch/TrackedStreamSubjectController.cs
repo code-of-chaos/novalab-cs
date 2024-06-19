@@ -42,10 +42,9 @@ public class TrackedStreamSubjectController(
         
         // Get the Twitch Category id when defined,
         //      If the category wasn't defined twitch will use the same one as the current one.
-        string? twitchGameId = null;
-        if (dtoPost.TwitchGameTitleName is not null) {
-            twitchGameId = (await twitchCategoryCache.GetCategoryIdAsync(dtoPost.TwitchGameTitleName))?.TwitchTitleId;
-        }
+        string? twitchGameId = dtoPost.TwitchGameTitleName is not null
+            ? (await twitchCategoryCache.GetCategoryIdAsync(dtoPost.TwitchGameTitleName))?.TwitchTitleId
+            : null;
         
         return new TrackedStreamSubject {
             Id = default,

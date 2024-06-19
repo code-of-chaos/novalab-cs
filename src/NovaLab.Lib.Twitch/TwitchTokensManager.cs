@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using NovaLab.Server.Data.Models.Account;
+using System.Diagnostics.CodeAnalysis;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Exceptions;
@@ -16,6 +17,7 @@ namespace NovaLab.Lib.Twitch;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public class TwitchTokensManager(ILogger logger, TwitchAPI twitchApi, IServiceScopeFactory scopeFactory, UserManager<NovaLabUser> userManager) {
     internal const string AccessToken = "access_token";
     internal const string RefreshToken = "refresh_token";
