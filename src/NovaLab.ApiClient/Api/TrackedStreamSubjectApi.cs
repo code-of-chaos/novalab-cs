@@ -9,6 +9,11 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net;
+using System.Net.Mime;
 using NovaLab.ApiClient.Client;
 using NovaLab.ApiClient.Model;
 
@@ -46,6 +51,28 @@ namespace NovaLab.ApiClient.Api
         /// </summary>
         /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="userId"> (optional)</param>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <returns>TrackedStreamSubjectDtoIApiResult</returns>
+        TrackedStreamSubjectDtoIApiResult GetTrackedStreamSubject(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="userId"> (optional)</param>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <returns>ApiResponse of TrackedStreamSubjectDtoIApiResult</returns>
+        ApiResponse<TrackedStreamSubjectDtoIApiResult> GetTrackedStreamSubjectWithHttpInfo(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="userId"> (optional)</param>
         /// <param name="operationIndex">Index associated with the operation.</param>
         /// <returns>TrackedStreamSubjectDtoIApiResult</returns>
         TrackedStreamSubjectDtoIApiResult GetTrackedStreamSubjects(Guid? userId = default(Guid?), int operationIndex = 0);
@@ -61,26 +88,6 @@ namespace NovaLab.ApiClient.Api
         /// <param name="operationIndex">Index associated with the operation.</param>
         /// <returns>ApiResponse of TrackedStreamSubjectDtoIApiResult</returns>
         ApiResponse<TrackedStreamSubjectDtoIApiResult> GetTrackedStreamSubjectsWithHttpInfo(Guid? userId = default(Guid?), int operationIndex = 0);
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
-        /// <param name="operationIndex">Index associated with the operation.</param>
-        /// <returns>TrackedStreamSubjectDtoIApiResult</returns>
-        TrackedStreamSubjectDtoIApiResult PostTrackedStreamSubject(TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
-        /// <param name="operationIndex">Index associated with the operation.</param>
-        /// <returns>ApiResponse of TrackedStreamSubjectDtoIApiResult</returns>
-        ApiResponse<TrackedStreamSubjectDtoIApiResult> PostTrackedStreamSubjectWithHttpInfo(TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0);
         /// <summary>
         /// 
         /// </summary>
@@ -103,6 +110,28 @@ namespace NovaLab.ApiClient.Api
         /// <param name="operationIndex">Index associated with the operation.</param>
         /// <returns>ApiResponse of BooleanIApiResult</returns>
         ApiResponse<BooleanIApiResult> SelectTrackedStreamSubjectWithHttpInfo(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <returns>TrackedStreamSubjectDtoIApiResult</returns>
+        TrackedStreamSubjectDtoIApiResult UpsertTrackedStreamSubject(Guid? subjectId = default(Guid?), TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <returns>ApiResponse of TrackedStreamSubjectDtoIApiResult</returns>
+        ApiResponse<TrackedStreamSubjectDtoIApiResult> UpsertTrackedStreamSubjectWithHttpInfo(Guid? subjectId = default(Guid?), TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0);
         #endregion Synchronous Operations
     }
 
@@ -145,6 +174,33 @@ namespace NovaLab.ApiClient.Api
         /// </remarks>
         /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="userId"> (optional)</param>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of TrackedStreamSubjectDtoIApiResult</returns>
+        System.Threading.Tasks.Task<TrackedStreamSubjectDtoIApiResult> GetTrackedStreamSubjectAsync(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="userId"> (optional)</param>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (TrackedStreamSubjectDtoIApiResult)</returns>
+        System.Threading.Tasks.Task<ApiResponse<TrackedStreamSubjectDtoIApiResult>> GetTrackedStreamSubjectWithHttpInfoAsync(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="userId"> (optional)</param>
         /// <param name="operationIndex">Index associated with the operation.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of TrackedStreamSubjectDtoIApiResult</returns>
@@ -162,31 +218,6 @@ namespace NovaLab.ApiClient.Api
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (TrackedStreamSubjectDtoIApiResult)</returns>
         System.Threading.Tasks.Task<ApiResponse<TrackedStreamSubjectDtoIApiResult>> GetTrackedStreamSubjectsWithHttpInfoAsync(Guid? userId = default(Guid?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
-        /// <param name="operationIndex">Index associated with the operation.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of TrackedStreamSubjectDtoIApiResult</returns>
-        System.Threading.Tasks.Task<TrackedStreamSubjectDtoIApiResult> PostTrackedStreamSubjectAsync(TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
-        /// <param name="operationIndex">Index associated with the operation.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (TrackedStreamSubjectDtoIApiResult)</returns>
-        System.Threading.Tasks.Task<ApiResponse<TrackedStreamSubjectDtoIApiResult>> PostTrackedStreamSubjectWithHttpInfoAsync(TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         /// <summary>
         /// 
         /// </summary>
@@ -214,6 +245,33 @@ namespace NovaLab.ApiClient.Api
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (BooleanIApiResult)</returns>
         System.Threading.Tasks.Task<ApiResponse<BooleanIApiResult>> SelectTrackedStreamSubjectWithHttpInfoAsync(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of TrackedStreamSubjectDtoIApiResult</returns>
+        System.Threading.Tasks.Task<TrackedStreamSubjectDtoIApiResult> UpsertTrackedStreamSubjectAsync(Guid? subjectId = default(Guid?), TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (TrackedStreamSubjectDtoIApiResult)</returns>
+        System.Threading.Tasks.Task<ApiResponse<TrackedStreamSubjectDtoIApiResult>> UpsertTrackedStreamSubjectWithHttpInfoAsync(Guid? subjectId = default(Guid?), TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         #endregion Asynchronous Operations
     }
 
@@ -481,6 +539,160 @@ namespace NovaLab.ApiClient.Api
         /// </summary>
         /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="userId"> (optional)</param>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <returns>TrackedStreamSubjectDtoIApiResult</returns>
+        public TrackedStreamSubjectDtoIApiResult GetTrackedStreamSubject(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0)
+        {
+            NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> localVarResponse = GetTrackedStreamSubjectWithHttpInfo(userId, subjectId);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="userId"> (optional)</param>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <returns>ApiResponse of TrackedStreamSubjectDtoIApiResult</returns>
+        public NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> GetTrackedStreamSubjectWithHttpInfo(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0)
+        {
+            NovaLab.ApiClient.Client.RequestOptions localVarRequestOptions = new NovaLab.ApiClient.Client.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+            }
+
+            var localVarAccept = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+            }
+
+            if (userId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(NovaLab.ApiClient.Client.ClientUtils.ParameterToMultiMap("", "user-id", userId));
+            }
+            if (subjectId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(NovaLab.ApiClient.Client.ClientUtils.ParameterToMultiMap("", "subject-id", subjectId));
+            }
+
+            localVarRequestOptions.Operation = "TrackedStreamSubjectApi.GetTrackedStreamSubject";
+            localVarRequestOptions.OperationIndex = operationIndex;
+
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Get<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject", localVarRequestOptions, this.Configuration);
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("GetTrackedStreamSubject", localVarResponse);
+                if (_exception != null)
+                {
+                    throw _exception;
+                }
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="userId"> (optional)</param>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of TrackedStreamSubjectDtoIApiResult</returns>
+        public async System.Threading.Tasks.Task<TrackedStreamSubjectDtoIApiResult> GetTrackedStreamSubjectAsync(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> localVarResponse = await GetTrackedStreamSubjectWithHttpInfoAsync(userId, subjectId, operationIndex, cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="userId"> (optional)</param>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (TrackedStreamSubjectDtoIApiResult)</returns>
+        public async System.Threading.Tasks.Task<NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult>> GetTrackedStreamSubjectWithHttpInfoAsync(Guid? userId = default(Guid?), Guid? subjectId = default(Guid?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+
+            NovaLab.ApiClient.Client.RequestOptions localVarRequestOptions = new NovaLab.ApiClient.Client.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+            }
+
+            var localVarAccept = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+            }
+
+            if (userId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(NovaLab.ApiClient.Client.ClientUtils.ParameterToMultiMap("", "user-id", userId));
+            }
+            if (subjectId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(NovaLab.ApiClient.Client.ClientUtils.ParameterToMultiMap("", "subject-id", subjectId));
+            }
+
+            localVarRequestOptions.Operation = "TrackedStreamSubjectApi.GetTrackedStreamSubject";
+            localVarRequestOptions.OperationIndex = operationIndex;
+
+
+            // make the HTTP request
+            var localVarResponse = await this.AsynchronousClient.GetAsync<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("GetTrackedStreamSubject", localVarResponse);
+                if (_exception != null)
+                {
+                    throw _exception;
+                }
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="userId"> (optional)</param>
         /// <param name="operationIndex">Index associated with the operation.</param>
         /// <returns>TrackedStreamSubjectDtoIApiResult</returns>
         public TrackedStreamSubjectDtoIApiResult GetTrackedStreamSubjects(Guid? userId = default(Guid?), int operationIndex = 0)
@@ -532,7 +744,7 @@ namespace NovaLab.ApiClient.Api
 
 
             // make the HTTP request
-            var localVarResponse = this.Client.Get<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Get<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject/all", localVarRequestOptions, this.Configuration);
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetTrackedStreamSubjects", localVarResponse);
@@ -604,153 +816,11 @@ namespace NovaLab.ApiClient.Api
 
 
             // make the HTTP request
-            var localVarResponse = await this.AsynchronousClient.GetAsync<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject/all", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetTrackedStreamSubjects", localVarResponse);
-                if (_exception != null)
-                {
-                    throw _exception;
-                }
-            }
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
-        /// <param name="operationIndex">Index associated with the operation.</param>
-        /// <returns>TrackedStreamSubjectDtoIApiResult</returns>
-        public TrackedStreamSubjectDtoIApiResult PostTrackedStreamSubject(TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0)
-        {
-            NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> localVarResponse = PostTrackedStreamSubjectWithHttpInfo(trackedStreamSubjectDtoPost);
-            return localVarResponse.Data;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
-        /// <param name="operationIndex">Index associated with the operation.</param>
-        /// <returns>ApiResponse of TrackedStreamSubjectDtoIApiResult</returns>
-        public NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> PostTrackedStreamSubjectWithHttpInfo(TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0)
-        {
-            NovaLab.ApiClient.Client.RequestOptions localVarRequestOptions = new NovaLab.ApiClient.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json",
-                "text/json",
-                "application/*+json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "text/plain",
-                "application/json",
-                "text/json"
-            };
-
-            var localVarContentType = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null)
-            {
-                localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-            }
-
-            var localVarAccept = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null)
-            {
-                localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-            }
-
-            localVarRequestOptions.Data = trackedStreamSubjectDtoPost;
-
-            localVarRequestOptions.Operation = "TrackedStreamSubjectApi.PostTrackedStreamSubject";
-            localVarRequestOptions.OperationIndex = operationIndex;
-
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject", localVarRequestOptions, this.Configuration);
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("PostTrackedStreamSubject", localVarResponse);
-                if (_exception != null)
-                {
-                    throw _exception;
-                }
-            }
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
-        /// <param name="operationIndex">Index associated with the operation.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of TrackedStreamSubjectDtoIApiResult</returns>
-        public async System.Threading.Tasks.Task<TrackedStreamSubjectDtoIApiResult> PostTrackedStreamSubjectAsync(TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> localVarResponse = await PostTrackedStreamSubjectWithHttpInfoAsync(trackedStreamSubjectDtoPost, operationIndex, cancellationToken).ConfigureAwait(false);
-            return localVarResponse.Data;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
-        /// <param name="operationIndex">Index associated with the operation.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (TrackedStreamSubjectDtoIApiResult)</returns>
-        public async System.Threading.Tasks.Task<NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult>> PostTrackedStreamSubjectWithHttpInfoAsync(TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            NovaLab.ApiClient.Client.RequestOptions localVarRequestOptions = new NovaLab.ApiClient.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json", 
-                "text/json", 
-                "application/*+json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "text/plain",
-                "application/json",
-                "text/json"
-            };
-
-            var localVarContentType = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null)
-            {
-                localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-            }
-
-            var localVarAccept = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null)
-            {
-                localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-            }
-
-            localVarRequestOptions.Data = trackedStreamSubjectDtoPost;
-
-            localVarRequestOptions.Operation = "TrackedStreamSubjectApi.PostTrackedStreamSubject";
-            localVarRequestOptions.OperationIndex = operationIndex;
-
-
-            // make the HTTP request
-            var localVarResponse = await this.AsynchronousClient.PostAsync<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
-
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("PostTrackedStreamSubject", localVarResponse);
                 if (_exception != null)
                 {
                     throw _exception;
@@ -905,6 +975,160 @@ namespace NovaLab.ApiClient.Api
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("SelectTrackedStreamSubject", localVarResponse);
+                if (_exception != null)
+                {
+                    throw _exception;
+                }
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <returns>TrackedStreamSubjectDtoIApiResult</returns>
+        public TrackedStreamSubjectDtoIApiResult UpsertTrackedStreamSubject(Guid? subjectId = default(Guid?), TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0)
+        {
+            NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> localVarResponse = UpsertTrackedStreamSubjectWithHttpInfo(subjectId, trackedStreamSubjectDtoPost);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <returns>ApiResponse of TrackedStreamSubjectDtoIApiResult</returns>
+        public NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> UpsertTrackedStreamSubjectWithHttpInfo(Guid? subjectId = default(Guid?), TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0)
+        {
+            NovaLab.ApiClient.Client.RequestOptions localVarRequestOptions = new NovaLab.ApiClient.Client.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json",
+                "text/json",
+                "application/*+json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+            }
+
+            var localVarAccept = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+            }
+
+            if (subjectId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(NovaLab.ApiClient.Client.ClientUtils.ParameterToMultiMap("", "subjectId", subjectId));
+            }
+            localVarRequestOptions.Data = trackedStreamSubjectDtoPost;
+
+            localVarRequestOptions.Operation = "TrackedStreamSubjectApi.UpsertTrackedStreamSubject";
+            localVarRequestOptions.OperationIndex = operationIndex;
+
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Post<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject", localVarRequestOptions, this.Configuration);
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("UpsertTrackedStreamSubject", localVarResponse);
+                if (_exception != null)
+                {
+                    throw _exception;
+                }
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of TrackedStreamSubjectDtoIApiResult</returns>
+        public async System.Threading.Tasks.Task<TrackedStreamSubjectDtoIApiResult> UpsertTrackedStreamSubjectAsync(Guid? subjectId = default(Guid?), TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult> localVarResponse = await UpsertTrackedStreamSubjectWithHttpInfoAsync(subjectId, trackedStreamSubjectDtoPost, operationIndex, cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="NovaLab.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="subjectId"> (optional)</param>
+        /// <param name="trackedStreamSubjectDtoPost"> (optional)</param>
+        /// <param name="operationIndex">Index associated with the operation.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (TrackedStreamSubjectDtoIApiResult)</returns>
+        public async System.Threading.Tasks.Task<NovaLab.ApiClient.Client.ApiResponse<TrackedStreamSubjectDtoIApiResult>> UpsertTrackedStreamSubjectWithHttpInfoAsync(Guid? subjectId = default(Guid?), TrackedStreamSubjectDtoPost? trackedStreamSubjectDtoPost = default(TrackedStreamSubjectDtoPost?), int operationIndex = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+
+            NovaLab.ApiClient.Client.RequestOptions localVarRequestOptions = new NovaLab.ApiClient.Client.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json", 
+                "text/json", 
+                "application/*+json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+            }
+
+            var localVarAccept = NovaLab.ApiClient.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+            }
+
+            if (subjectId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(NovaLab.ApiClient.Client.ClientUtils.ParameterToMultiMap("", "subjectId", subjectId));
+            }
+            localVarRequestOptions.Data = trackedStreamSubjectDtoPost;
+
+            localVarRequestOptions.Operation = "TrackedStreamSubjectApi.UpsertTrackedStreamSubject";
+            localVarRequestOptions.OperationIndex = operationIndex;
+
+
+            // make the HTTP request
+            var localVarResponse = await this.AsynchronousClient.PostAsync<TrackedStreamSubjectDtoIApiResult>("/api/twitch/tracked-stream-subject", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("UpsertTrackedStreamSubject", localVarResponse);
                 if (_exception != null)
                 {
                     throw _exception;

@@ -23,7 +23,7 @@ public class TwitchGameTitleToIdCacheService(
 
     private ConcurrentDictionary<string, TwitchGameTitleToIdCache>? _fastCache ;
     private ConcurrentDictionary<string, TwitchGameTitleToIdCache> FastCache => _fastCache ??= new ConcurrentDictionary<string, TwitchGameTitleToIdCache>();
-
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -35,8 +35,13 @@ public class TwitchGameTitleToIdCacheService(
     // -----------------------------------------------------------------------------------------------------------------
     [SuppressMessage("ReSharper", "UnusedMember.Global")] 
     public void InvalidateCache() => _fastCache = null; // In the future, when the cache gets too big, clear the cache
+
+    public async Task<TwitchGameTitleToIdCache?> GetCategoryByIdAsync(string gameId) {
+        await using NovaLabDbContext dbContext = await DbContext;
+        return await dbContext.TwitchGameTitleToIdCache.FirstOrDefaultAsync(item => item.TwitchTitleId == gameId);
+    }
     
-    public async Task<TwitchGameTitleToIdCache?> GetCategoryIdAsync(string gameTitle) {
+    public async Task<TwitchGameTitleToIdCache?> GetCategoryByNameAsync(string gameTitle) {
         await using NovaLabDbContext dbContext = await DbContext;
         
         // First try and hit the "fast cache"

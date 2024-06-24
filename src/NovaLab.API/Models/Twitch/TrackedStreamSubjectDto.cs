@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using JetBrains.Annotations;
 using NovaLab.Server.Data.Models.Twitch;
+using NovaLab.Server.Data.Models.Twitch.HelixApi;
 
 namespace NovaLab.API.Models.Twitch;
 
@@ -13,24 +14,28 @@ namespace NovaLab.API.Models.Twitch;
 public record TrackedStreamSubjectDto(
     Guid Id,
     Guid NovaLabUserId,
-    string? TwitchGameId,
+    string TwitchGameId,
+    string TwitchGameName,
+    string TwitchGameImageUrl,
     string TwitchBroadcastLanguage,
     string TwitchTitle,
-    string[]? TwitchTags,
+    string[] TwitchTags,
 
     Guid? TrackedStreamSubjectComponentId
 ) {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static TrackedStreamSubjectDto FromDto(TrackedStreamSubject model) {
+    public static TrackedStreamSubjectDto FromDto(TrackedStreamSubject model, TwitchGameTitleToIdCache? gameCache) {
         return new TrackedStreamSubjectDto(
             Id: model.Id,
             NovaLabUserId: model.User.Id,
-            TwitchGameId: model.TwitchGameId,
+            TwitchGameId: gameCache?.TwitchTitleId ?? "",
+            TwitchGameName : gameCache?.TwitchTitleName ?? "",
+            TwitchGameImageUrl : gameCache?.TwitchTitleBoxArtUrl ?? "",
             TwitchBroadcastLanguage: model.TwitchBroadcastLanguage,
             TwitchTitle: model.TwitchTitle,
-            TwitchTags: model.TwitchTags,
+            TwitchTags: model.TwitchTags ?? [],
             TrackedStreamSubjectComponentId: model.TrackedStreamSubjectComponent?.Id
         );
     }

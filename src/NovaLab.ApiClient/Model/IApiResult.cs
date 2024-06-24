@@ -26,10 +26,10 @@ using OpenAPIDateConverter = NovaLab.ApiClient.Client.OpenAPIDateConverter;
 namespace NovaLab.ApiClient.Model
 {
     /// <summary>
-    /// TrackedStreamSubjectDtoIApiResult
+    /// IApiResult
     /// </summary>
-    [DataContract(Name = "TrackedStreamSubjectDtoIApiResult")]
-    public partial class TrackedStreamSubjectDtoIApiResult : IValidatableObject
+    [DataContract(Name = "IApiResult")]
+    public partial class IApiResult : IValidatableObject
     {
 
         /// <summary>
@@ -38,12 +38,12 @@ namespace NovaLab.ApiClient.Model
         [DataMember(Name = "status", EmitDefaultValue = false)]
         public HttpStatusCode? Status { get; set; }
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrackedStreamSubjectDtoIApiResult" /> class.
+        /// Initializes a new instance of the <see cref="IApiResult" /> class.
         /// </summary>
         /// <param name="status">status.</param>
         /// <param name="message">message.</param>
         /// <param name="data">data.</param>
-        public TrackedStreamSubjectDtoIApiResult(HttpStatusCode? status = default(HttpStatusCode?), string message = default(string), List<TrackedStreamSubjectDto> data = default(List<TrackedStreamSubjectDto>))
+        public IApiResult(HttpStatusCode? status = default(HttpStatusCode?), string message = default(string), List<Object> data = default(List<Object>))
         {
             this.Status = status;
             this.Message = message;
@@ -60,7 +60,7 @@ namespace NovaLab.ApiClient.Model
         /// Gets or Sets Data
         /// </summary>
         [DataMember(Name = "data", EmitDefaultValue = true)]
-        public List<TrackedStreamSubjectDto> Data { get; set; }
+        public List<Object> Data { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -69,7 +69,7 @@ namespace NovaLab.ApiClient.Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class TrackedStreamSubjectDtoIApiResult {\n");
+            sb.Append("class IApiResult {\n");
             sb.Append("  Status: ").Append(Status).Append("\n");
             sb.Append("  Message: ").Append(Message).Append("\n");
             sb.Append("  Data: ").Append(Data).Append("\n");

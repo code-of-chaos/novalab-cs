@@ -6,7 +6,7 @@
     "version": "v1"
   },
   "paths": {
-    "/api/twitch/tracked-stream-subject": {
+    "/api/twitch/tracked-stream-subject/all": {
       "get": {
         "tags": [
           "TrackedStreamSubject"
@@ -64,12 +64,90 @@
             }
           }
         }
+      }
+    },
+    "/api/twitch/tracked-stream-subject": {
+      "get": {
+        "tags": [
+          "TrackedStreamSubject"
+        ],
+        "operationId": "GetTrackedStreamSubject",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "subject-id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackedStreamSubjectDtoIApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackedStreamSubjectDtoIApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackedStreamSubjectDtoIApiResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IApiResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IApiResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IApiResult"
+                }
+              }
+            }
+          }
+        }
       },
       "post": {
         "tags": [
           "TrackedStreamSubject"
         ],
-        "operationId": "PostTrackedStreamSubject",
+        "operationId": "UpsertTrackedStreamSubject",
+        "parameters": [
+          {
+            "name": "subjectId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -437,6 +515,14 @@
             "format": "uuid"
           },
           "twitchGameId": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitchGameName": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitchGameImageUrl": {
             "type": "string",
             "nullable": true
           },

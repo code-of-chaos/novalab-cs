@@ -9,10 +9,19 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
+using OpenAPIDateConverter = NovaLab.ApiClient.Client.OpenAPIDateConverter;
 
 namespace NovaLab.ApiClient.Model
 {
@@ -28,15 +37,19 @@ namespace NovaLab.ApiClient.Model
         /// <param name="id">id.</param>
         /// <param name="novaLabUserId">novaLabUserId.</param>
         /// <param name="twitchGameId">twitchGameId.</param>
+        /// <param name="twitchGameName">twitchGameName.</param>
+        /// <param name="twitchGameImageUrl">twitchGameImageUrl.</param>
         /// <param name="twitchBroadcastLanguage">twitchBroadcastLanguage.</param>
         /// <param name="twitchTitle">twitchTitle.</param>
         /// <param name="twitchTags">twitchTags.</param>
         /// <param name="trackedStreamSubjectComponentId">trackedStreamSubjectComponentId.</param>
-        public TrackedStreamSubjectDto(Guid id = default(Guid), Guid novaLabUserId = default(Guid), string twitchGameId = default(string), string twitchBroadcastLanguage = default(string), string twitchTitle = default(string), List<string> twitchTags = default(List<string>), Guid? trackedStreamSubjectComponentId = default(Guid?))
+        public TrackedStreamSubjectDto(Guid id = default(Guid), Guid novaLabUserId = default(Guid), string twitchGameId = default(string), string twitchGameName = default(string), string twitchGameImageUrl = default(string), string twitchBroadcastLanguage = default(string), string twitchTitle = default(string), List<string> twitchTags = default(List<string>), Guid? trackedStreamSubjectComponentId = default(Guid?))
         {
             this.Id = id;
             this.NovaLabUserId = novaLabUserId;
             this.TwitchGameId = twitchGameId;
+            this.TwitchGameName = twitchGameName;
+            this.TwitchGameImageUrl = twitchGameImageUrl;
             this.TwitchBroadcastLanguage = twitchBroadcastLanguage;
             this.TwitchTitle = twitchTitle;
             this.TwitchTags = twitchTags;
@@ -60,6 +73,18 @@ namespace NovaLab.ApiClient.Model
         /// </summary>
         [DataMember(Name = "twitchGameId", EmitDefaultValue = true)]
         public string TwitchGameId { get; set; }
+
+        /// <summary>
+        /// Gets or Sets TwitchGameName
+        /// </summary>
+        [DataMember(Name = "twitchGameName", EmitDefaultValue = true)]
+        public string TwitchGameName { get; set; }
+
+        /// <summary>
+        /// Gets or Sets TwitchGameImageUrl
+        /// </summary>
+        [DataMember(Name = "twitchGameImageUrl", EmitDefaultValue = true)]
+        public string TwitchGameImageUrl { get; set; }
 
         /// <summary>
         /// Gets or Sets TwitchBroadcastLanguage
@@ -96,6 +121,8 @@ namespace NovaLab.ApiClient.Model
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  NovaLabUserId: ").Append(NovaLabUserId).Append("\n");
             sb.Append("  TwitchGameId: ").Append(TwitchGameId).Append("\n");
+            sb.Append("  TwitchGameName: ").Append(TwitchGameName).Append("\n");
+            sb.Append("  TwitchGameImageUrl: ").Append(TwitchGameImageUrl).Append("\n");
             sb.Append("  TwitchBroadcastLanguage: ").Append(TwitchBroadcastLanguage).Append("\n");
             sb.Append("  TwitchTitle: ").Append(TwitchTitle).Append("\n");
             sb.Append("  TwitchTags: ").Append(TwitchTags).Append("\n");

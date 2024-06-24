@@ -4,22 +4,22 @@
 @using ISOLib
 @using NovaLab.ApiClient.Api
 @using NovaLab.ApiClient.Model
+@using NovaLab.Client.Lib.Services
 @using Serilog
-@using System.Security.Claims
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @attribute [Authorize, StreamRendering]
 
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject ILogger logger
+@inject UserService UserService
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@if (TrackedStreamSubjectDtoPostModel is not null) {
 <Validations @ref="@(ValidationsRefRequest)" Mode="ValidationMode.Manual" Model="@TrackedStreamSubjectDtoPostModel">
     <Fields>
         @* Stream title *@
@@ -78,35 +78,55 @@
     </Fields>
     
 </Validations>
-
+}
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
+    [Parameter]
+    public string? SubjectId { get; set; }
+    public Guid? SubjectGuid => Guid.TryParse(SubjectId, out Guid value) ? value : null;  
+    
     private Validations ValidationsRefRequest { get; set; } = null!;
     string SelectedLanguage { get; set; } = Languages.EN.Alpha2;
     IconName ResultIconName { get; set; } = IconName.Bell;
     
-    TrackedStreamSubjectDtoPost TrackedStreamSubjectDtoPostModel { get; set; } = new(
-        novaLabUserId:Guid.Empty,
-        twitchGameTitleName:string.Empty,
-        twitchBroadcastLanguage:Languages.EN.Alpha2,
-        twitchTitle:string.Empty,
-        twitchTags:[]
-    );
+    TrackedStreamSubjectDtoPost? TrackedStreamSubjectDtoPostModel { get; set; } 
 
     // ---------------------------------------------------------------------------------------------------------------------
     // Code
     // ---------------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        Guid? userId = await UserService.GetUserIdAsync();
+        if (SubjectId is null || userId is null ) {
+            TrackedStreamSubjectDtoPostModel = new TrackedStreamSubjectDtoPost(
+                novaLabUserId:Guid.Empty,
+                twitchGameTitleName:string.Empty,
+                twitchBroadcastLanguage:Languages.EN.Alpha2,
+                twitchTitle:string.Empty,
+                twitchTags:[]
+            );
+        }
+        
+        
+        var api = new TrackedStreamSubjectApi();
+        TrackedStreamSubjectDtoIApiResult result = await api.GetTrackedStreamSubjectAsync(userId, SubjectGuid);
+        TrackedStreamSubjectDto item = result.Data.First();
+        TrackedStreamSubjectDtoPostModel = new TrackedStreamSubjectDtoPost(
+            novaLabUserId:(Guid)userId!,
+            twitchGameTitleName:item.TwitchGameName,
+            twitchBroadcastLanguage:item.TwitchBroadcastLanguage,
+            twitchTitle:item.TwitchTitle,
+            twitchTags:item.TwitchTags
+        );
+    }
+
     private async Task OnCancelClickedAsync() {
         await ValidationsRefRequest.ClearAll();
         logger.Information("Cleared validations");
     }
 
     private async Task OnSubmitClickedAsync() {
-        AuthenticationState authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        ClaimsPrincipal claims = authState.User;
-        
         if (!await ValidationsRefRequest.ValidateAll() ) {
             logger.Warning("Some fields were not validated correctly");
             return;
@@ -114,18 +134,15 @@
         logger.Information("Validated correctly");
 
         // Get the user id claim
-        string? userIdClaim = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userIdClaim is null) {
-            logger.Warning("User Id claim is null");
-            return;
-        }
-        if (!Guid.TryParse(userIdClaim, out Guid userId))
-        {
-            logger.Warning("User Id claim is not a valid GUID");
+        Guid? userId = await UserService.GetUserIdAsync();
+        if (userId is null) return;
+        
+        if (TrackedStreamSubjectDtoPostModel is null ) {
+            logger.Warning("Model was not defined");
             return;
         }
         
-        TrackedStreamSubjectDtoPostModel.NovaLabUserId = userId;
+        TrackedStreamSubjectDtoPostModel.NovaLabUserId = (Guid)userId;
         TrackedStreamSubjectDtoPostModel.TwitchBroadcastLanguage = SelectedLanguage;
         
         logger.Warning("{language}", SelectedLanguage);
@@ -133,7 +150,10 @@
         
         var api = new TrackedStreamSubjectApi();
         try {
-            TrackedStreamSubjectDtoIApiResult result = await api.PostTrackedStreamSubjectAsync(TrackedStreamSubjectDtoPostModel);
+            TrackedStreamSubjectDtoIApiResult result = await api.UpsertTrackedStreamSubjectAsync(
+                subjectId: SubjectGuid,
+                trackedStreamSubjectDtoPost:TrackedStreamSubjectDtoPostModel
+            );
             ResultIconName = result.Status switch {
                 HttpStatusCode.NUMBER_200 => IconName.CheckCircle,
                 _ => IconName.ExclamationCircle

@@ -8,6 +8,7 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/stream-subject/detail"
+@page "/stream-subject/detail/{SubjectId}"
 @layout MainLayout
 @attribute [Authorize, StreamRendering]
 
@@ -15,12 +16,13 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <AuthorizeView>
-    <FormTrackedStreamSubjectNew/>
+    <FormTrackedStreamSubjectNew SubjectId="@SubjectId" />
 </AuthorizeView>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    
+    [Parameter]
+    public string? SubjectId { get; set; }
 }

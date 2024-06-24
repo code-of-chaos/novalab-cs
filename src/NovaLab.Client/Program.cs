@@ -1,9 +1,13 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using NovaLab.ApiClient.Client;
+using NovaLab.Client.Lib.Services;
 using Serilog;
 using Serilog.Core;
 
@@ -29,6 +33,7 @@ public static class Program {
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+        builder.Services.AddSingleton<UserService>();
         
         builder.Services
             .AddBlazorise( options => {
@@ -36,6 +41,10 @@ public static class Program {
             })
             .AddBootstrap5Providers()
             .AddFontAwesomeIcons();
+
+
+        // Configuration for NovaLab API Client
+        Log.Logger.Information($"Prior GlobalConfiguration Instance BasePath: {GlobalConfiguration.Instance.BasePath}");
 
         GlobalConfiguration.Instance = Configuration.MergeConfigurations(
             GlobalConfiguration.Instance,
@@ -48,7 +57,10 @@ public static class Program {
                     BasePath = "https://localhost:9052"
                 }            
             #endif
-        );
+            );
+
+        // After Configuration.MergeConfigurations
+        Log.Logger.Information($"Post GlobalConfiguration Instance BasePath: {GlobalConfiguration.Instance.BasePath}");;  
         
         await builder.Build().RunAsync();
     }

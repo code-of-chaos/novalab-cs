@@ -75,14 +75,26 @@ public static class Program {
         }
         
         // - Kestrel SLL - 
-        builder.WebHost.ConfigureKestrel(options => {
-            options.ConfigureHttpsDefaults(opt => {
-                opt.ServerCertificate = new X509Certificate2( 
-                environmentSwitcher.SslCertLocation, 
-                environmentSwitcher.SslCertPassword);
+        try {
+            builder.WebHost.ConfigureKestrel(options => {
+                options.ConfigureHttpsDefaults(opt => {
+                    opt.ServerCertificate = new X509Certificate2(
+                    environmentSwitcher.SslCertLocation,
+                    environmentSwitcher.SslCertPassword);
+                });
             });
-        });
-        
+        }
+        catch (Exception ex) {
+            // ignored
+            #if !DEBUG
+                if (environmentSwitcher.IsRunningInDocker) throw;
+            #else
+            // when not in debug, we need to create the swagger.json
+            //      THis makes it so that the swagger.json is generated correctly without having access to the database
+            Log.Logger.Warning(ex, "SSL certs could not be established");
+            #endif
+        }
+
         // - Cors -
         builder.Services.AddCors(options => {
             options.AddPolicy("AllowLocalHosts", policyBuilder => { policyBuilder
@@ -116,9 +128,9 @@ public static class Program {
         catch (Exception ex) {
             // ignored
             #if !DEBUG
-            if (environmentSwitcher.IsRunningInDocker) throw;
+                if (environmentSwitcher.IsRunningInDocker) throw;
             #else
-            Log.Logger.Warning(ex, "Twitch could not be added to the API");
+                Log.Logger.Warning(ex, "Twitch could not be added to the API");
             #endif
         }
         
