@@ -46,10 +46,13 @@
         </BarStart>
         <BarEnd>
             <BarItem>
-                <BarLink To="api">Swagger API</BarLink>
+                <BarLink To="api">
+                    <LucideIcon Name="Icons.NotebookText" CssClass="b-bar-icon" Size="LIconSize.Default"/>
+                    Swagger API
+                </BarLink>
             </BarItem>
-            <BarItem>
-                <LogoutButton/>
+            <BarItem TextColor="TextColor.Danger">
+                <BarLink To="/account/logout">Logout</BarLink>
             </BarItem>
         </BarEnd>
     </BarMenu>

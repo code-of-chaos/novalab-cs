@@ -13,6 +13,7 @@
         <ProjectReference Include="..\NovaLab.Server.Data\NovaLab.Server.Data.csproj" />
         <ProjectReference Include="..\NovaLab.Client\NovaLab.Client.csproj" />
         <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="8.0.0" />
+        <PackageReference Include="Blazorise.Tailwind" Version="1.5.3" />
         <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.8.3" />
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.4.0" />
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.1.1" />
@@ -24,7 +25,6 @@
         <PackageReference Include="TwitchLib.EventSub.Webhooks" Version="2.3.0" />
         <PackageReference Include="TwitchLib.EventSub.Websockets" Version="0.5.0" />
         <PackageReference Include="Blazorise" Version="1.5.3" />
-        <PackageReference Include="Blazorise.Bootstrap5" Version="1.5.3" />
         <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.5.3" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6"/>
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6"/>

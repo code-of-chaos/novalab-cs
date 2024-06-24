@@ -4,8 +4,8 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazorise;
-using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using Blazorise.Tailwind;
 using NovaLab.ApiClient.Client;
 using NovaLab.Client.Lib.Services;
 using Serilog;
@@ -33,13 +33,14 @@ public static class Program {
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
-        builder.Services.AddSingleton<UserService>();
+        builder.Services.AddScoped<UserService>();
         
         builder.Services
             .AddBlazorise( options => {
                 options.Immediate = true;
             })
-            .AddBootstrap5Providers()
+            .AddTailwindProviders()
+            .AddTailwindComponents()
             .AddFontAwesomeIcons();
 
 
