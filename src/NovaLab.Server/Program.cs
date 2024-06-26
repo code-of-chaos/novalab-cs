@@ -2,14 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Blazorise;
+using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
-using Blazorise.Tailwind;
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NovaLab.Client.Lib.Services;
 using NovaLab.EnvironmentSwitcher;
 using NovaLab.Lib.Twitch;
 using NovaLab.Server.Components;
@@ -175,8 +174,7 @@ public static class Program {
             .AddBlazorise( options => {
                 options.Immediate = true;
             })
-            .AddTailwindProviders()
-            .AddTailwindComponents()
+            .AddBootstrap5Providers()
             .AddFontAwesomeIcons();
         
         // - Cors -
@@ -197,9 +195,6 @@ public static class Program {
             });
         });
 
-        
-        builder.Services.AddScoped<UserService>();
-        
         // -------------------------------------------------------------------------------------------------------------
         // NovaLabApp
         // -------------------------------------------------------------------------------------------------------------

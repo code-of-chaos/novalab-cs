@@ -8,8 +8,8 @@
 
     <ItemGroup>
         <PackageReference Include="Blazorise" Version="1.5.3" />
+        <PackageReference Include="Blazorise.Bootstrap5" Version="1.5.3" />
         <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.5.3" />
-        <PackageReference Include="Blazorise.Tailwind" Version="1.5.3" />
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.4.0" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.1.0" />
         <PackageReference Include="CodeOfChaos.Lucide" Version="0.2.1" />

@@ -19,68 +19,48 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="grid w-full grid-cols-1 gap-4 self-start sm:grid-cols-2 lg:grid-cols-3">
+<style>
+    .card-container {
+        /* insert your styles here */
+        display:flex;
+        flex-direction: row;
+        justify-content: center;
+
+        gap: 1rem 3rem;
+    }
+
+    .card-item {
+
+    }
+</style>
+
+<div class="card-container">
     @if (Data is not null) {
         @foreach (TrackedStreamSubjectDto item in Data) {
-            
-            <div class="flex h-min gap-2 rounded-xl border-4 border-slate-800 bg-white p-3 lg:gap-4">
-                <div class="h-full w-1/3">
-                    <img class="aspect-[2/3] h-auto w-full rounded-md"
-                         alt="@item.TwitchGameName"
-                         src="@item.TwitchGameImageUrl.Replace("{width}", "300").Replace("{height}", "400")"
-                    />
-                </div>
-                <div class="flex w-px flex-1 flex-col gap-2">
-                    <div class="text-sm font-bold leading-5 lg:text-xl">
-                        <h2>@item.TwitchTitle</h2>
-                    </div>
-                    <div class="flex gap-2 text-xs font-semibold leading-4">
+            <div class="card-item">
+                <img alt="@item.TwitchGameName" src="@item.TwitchGameImageUrl.Replace("{width}", "300").Replace("{height}", "400")"/>
+                <div class="card-item-header">
+                    <h2>@item.TwitchTitle</h2>
+                    <div class="card-item-tags">
                         @foreach (string tag in item.TwitchTags) {
-                            <span class="rounded-lg bg-blue-800 px-2 pb-1 pt-0.5 text-white">@tag </span>
+                            <span>@tag </span>
                         }
                     </div>
-                    <div class="mt-auto flex gap-2 text-xs font-semibold leading-4 xl:text-xl">
-                        <Buttons class="flex w-full justify-between gap-2">
-                            <div class="flex gap-2">
-                                <Button class="px-2 py-1 xl:px-3 xl:py-2"
-                                        Color="Color.Danger"
-                                        Outline
-                                        Type="@ButtonType.Submit"
-                                        Clicked="@(() => ShowDeleteModal(item.Id))">
-                                    Delete
-                                </Button>
-                                <Button class="px-2 py-1 xl:px-3 xl:py-2"
-                                        Color="Color.Secondary"
-                                        Outline
-                                        Type="@ButtonType.Link" To=@($"/stream-subject/detail/{item.Id.ToString()}")>
-                                    Edit
-                                </Button>
-                            </div>
-                        </Buttons>
-                        <div class="ml-auto">
-                            <Button class="ml-auto px-2 py-1 xl:px-3 xl:py-2 justify-end" Color="Color.Primary" Outline Type="@ButtonType.Submit" Clicked="@(() => OnSubmitClickedAsync(item.Id))">
-                                Apply
-                            </Button>
-                        </div>
-
-                        @* <LucideIcon Icon="@Icons." *@
-                    </div>
+                </div>
+                <div>
+                    <Button Color="Color.Primary" Outline Type="@ButtonType.Submit" Clicked="@(() => OnSubmitClickedAsync(item.Id))">Apply</Button>
+                    <Button 
+                        Color="Color.Secondary" 
+                        Outline 
+                        Type="@ButtonType.Link"
+                        To=@($"/stream-subject/detail/{item.Id.ToString()}")
+                    >Edit</Button>
+                    @* <LucideIcon Icon="@Icons." *@
+                    <Button Color="Color.Danger" Outline Type="@ButtonType.Submit" Clicked="@(() => ShowDeleteModal(item.Id))">Delete</Button>
                 </div>
             </div>
         }
     }
-
-    <div class="card-container">
-        <div class="card-picture"></div>
-        <div class="card-header"></div>
-        <div class="card-tags"></div>
-        <div class="card-buttons">
-            <Button Color="Color.Secondary" Outline Type="@ButtonType.Link" To="/stream-subject/detail">
-                Create new stream
-            </Button>
-        </div>
-    </div>
-    
 </div>
 
 <Modal @ref="ModalRef">

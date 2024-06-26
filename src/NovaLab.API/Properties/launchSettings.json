@@ -12,7 +12,7 @@
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
+      "launchBrowser": true,
       "applicationUrl": "https://localhost:7190",
       "environmentVariables": {
         "RunningInDocker": "false",
