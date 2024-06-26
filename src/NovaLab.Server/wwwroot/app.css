@@ -1,7 +1,11 @@
-.container-with-lucide-icon, .cwli {
+/*To fix some issues when a lucide icon is inside of a button*/
+a.container-with-lucide-icon,
+button.container-with-lucide-icon,
+a.cwli,
+button.cwli {
     display: flex;
     align-items: center;
     svg {
-        margin-right: .1em;
+        margin-right: .15em;
     }
 }
