@@ -1,0 +1,7 @@
+.container-with-lucide-icon, .cwli {
+    display: flex;
+    align-items: center;
+    svg {
+        margin-right: .1em;
+    }
+}

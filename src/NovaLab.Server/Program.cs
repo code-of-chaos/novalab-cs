@@ -9,6 +9,7 @@ using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NovaLab.Client.Lib.Services;
 using NovaLab.EnvironmentSwitcher;
 using NovaLab.Lib.Twitch;
 using NovaLab.Server.Components;
@@ -194,6 +195,9 @@ public static class Program {
                 .AllowAnyMethod();
             });
         });
+        
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddSingleton<NovaLabApiService>();
 
         // -------------------------------------------------------------------------------------------------------------
         // NovaLabApp

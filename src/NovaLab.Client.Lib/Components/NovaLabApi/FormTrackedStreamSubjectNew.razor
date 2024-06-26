@@ -12,9 +12,10 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @attribute [Authorize, StreamRendering]
 
-@inject AuthenticationStateProvider authenticationStateProvider
-@inject ILogger logger
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ILogger Logger
 @inject UserService UserService
+@inject NovaLabApiService NovaLabApiService
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -85,7 +86,7 @@
 @code {
     [Parameter]
     public string? SubjectId { get; set; }
-    public Guid? SubjectGuid => Guid.TryParse(SubjectId, out Guid value) ? value : null;  
+    private Guid? SubjectGuid => Guid.TryParse(SubjectId, out Guid value) ? value : null;  
     
     private Validations ValidationsRefRequest { get; set; } = null!;
     string SelectedLanguage { get; set; } = Languages.EN.Alpha2;
@@ -108,9 +109,7 @@
             );
         }
         
-        
-        var api = new TrackedStreamSubjectApi();
-        TrackedStreamSubjectDtoIApiResult result = await api.GetTrackedStreamSubjectAsync(userId, SubjectGuid);
+        TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.GetTrackedStreamSubjectAsync(userId, SubjectGuid);
         TrackedStreamSubjectDto item = result.Data.First();
         TrackedStreamSubjectDtoPostModel = new TrackedStreamSubjectDtoPost(
             novaLabUserId:(Guid)userId!,
@@ -123,34 +122,33 @@
 
     private async Task OnCancelClickedAsync() {
         await ValidationsRefRequest.ClearAll();
-        logger.Information("Cleared validations");
+        Logger.Information("Cleared validations");
     }
 
     private async Task OnSubmitClickedAsync() {
         if (!await ValidationsRefRequest.ValidateAll() ) {
-            logger.Warning("Some fields were not validated correctly");
+            Logger.Warning("Some fields were not validated correctly");
             return;
         }
-        logger.Information("Validated correctly");
+        Logger.Information("Validated correctly");
 
         // Get the user id claim
         Guid? userId = await UserService.GetUserIdAsync();
         if (userId is null) return;
         
         if (TrackedStreamSubjectDtoPostModel is null ) {
-            logger.Warning("Model was not defined");
+            Logger.Warning("Model was not defined");
             return;
         }
         
         TrackedStreamSubjectDtoPostModel.NovaLabUserId = (Guid)userId;
         TrackedStreamSubjectDtoPostModel.TwitchBroadcastLanguage = SelectedLanguage;
         
-        logger.Warning("{language}", SelectedLanguage);
-        logger.Warning("{language}", TrackedStreamSubjectDtoPostModel.TwitchBroadcastLanguage);
+        Logger.Warning("{language}", SelectedLanguage);
+        Logger.Warning("{language}", TrackedStreamSubjectDtoPostModel.TwitchBroadcastLanguage);
         
-        var api = new TrackedStreamSubjectApi();
         try {
-            TrackedStreamSubjectDtoIApiResult result = await api.UpsertTrackedStreamSubjectAsync(
+            TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.UpsertTrackedStreamSubjectAsync(
                 subjectId: SubjectGuid,
                 trackedStreamSubjectDtoPost:TrackedStreamSubjectDtoPostModel
             );
@@ -160,7 +158,7 @@
             };
         }
         catch (Exception ex) {
-            logger.Warning(ex, "unexpected error during execution to API endpoint");
+            Logger.Warning(ex, "unexpected error during execution to API endpoint");
             ResultIconName = IconName.ExclamationTriangle;
         }
     }

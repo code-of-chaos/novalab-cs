@@ -3,6 +3,7 @@
 @using NovaLab.ApiClient.Model
 @using NovaLab.Client.Lib.Services
 @using ILogger=Serilog.ILogger
+@using CodeOfChaos.Lucide
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -12,9 +13,10 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @attribute [Authorize, StreamRendering]
 
-@inject AuthenticationStateProvider authenticationStateProvider
-@inject ILogger logger
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ILogger Logger
 @inject UserService UserService
+@inject NovaLabApiService NovaLabApiService
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -48,15 +50,33 @@
                     </div>
                 </div>
                 <div>
-                    <Button Color="Color.Primary" Outline Type="@ButtonType.Submit" Clicked="@(() => OnSubmitClickedAsync(item.Id))">Apply</Button>
-                    <Button 
-                        Color="Color.Secondary" 
-                        Outline 
-                        Type="@ButtonType.Link"
-                        To=@($"/stream-subject/detail/{item.Id.ToString()}")
-                    >Edit</Button>
-                    @* <LucideIcon Icon="@Icons." *@
-                    <Button Color="Color.Danger" Outline Type="@ButtonType.Submit" Clicked="@(() => ShowDeleteModal(item.Id))">Delete</Button>
+                    <Buttons>
+                        <Button
+                            Class="container-with-lucide-icon"
+                            Color="Color.Secondary"
+                            Outline
+                            Type="@ButtonType.Link"
+                            To=@($"/stream-subject/detail/{item.Id.ToString()}")>
+                            <LucideIcon Name="Icons.Pencil" CssClass="icon"/>
+                            Edit
+                        </Button>
+                        <Button
+                            Class="container-with-lucide-icon"
+                            Color="Color.Danger"
+                            Outline
+                            Type="@ButtonType.Submit"
+                            Clicked="@(() => ShowDeleteModal(item.Id))">
+                            <LucideIcon Name="Icons.Trash2" CssClass="icon"/>
+                            Delete
+                        </Button>
+                    </Buttons>
+                    <Button
+                        Color="Color.Primary"
+                        Outline
+                        Type="@ButtonType.Submit"
+                        Clicked="@(() => OnSubmitClickedAsync(item.Id))">
+                        Apply
+                    </Button>
                 </div>
             </div>
         }
@@ -99,7 +119,6 @@
     private Modal? ModalRef { get; set; }
     private Guid? SelectedRecordId { get; set; } = null;
     
-    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -107,10 +126,9 @@
         Guid? userId = await UserService.GetUserIdAsync();
         if (userId is null) return;
         
-        var api = new TrackedStreamSubjectApi();
-        logger.Warning(api.GetBasePath());
+        Logger.Warning(NovaLabApiService.TrackedStreamSubject.GetBasePath());
         
-        TrackedStreamSubjectDtoIApiResult result = await api.GetTrackedStreamSubjectsAsync(userId:userId);
+        TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.GetTrackedStreamSubjectsAsync(userId:userId);
         Data = result.Data;
     }
 
@@ -118,12 +136,11 @@
         Guid? userId = await UserService.GetUserIdAsync();
         if (userId is null) return;
         
-        var api = new TrackedStreamSubjectApi();
-        await api.SelectTrackedStreamSubjectAsync(
+        await NovaLabApiService.TrackedStreamSubject.SelectTrackedStreamSubjectAsync(
             userId,
             itemId
         );
-        logger.Information("SENT!!!");
+        Logger.Information("SENT!!!");
     }
 
     private void ShowDeleteModal(Guid itemId) {
@@ -136,13 +153,12 @@
         Guid? userId = await UserService.GetUserIdAsync();
         if (userId is null) return;
         
-        var api = new TrackedStreamSubjectApi();
-        await api.DeleteTrackedStreamSubjectAsync(
+        await NovaLabApiService.TrackedStreamSubject.DeleteTrackedStreamSubjectAsync(
             SelectedRecordId
         );
         
         Data = null;
-        TrackedStreamSubjectDtoIApiResult result = await api.GetTrackedStreamSubjectsAsync(userId:userId);
+        TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.GetTrackedStreamSubjectsAsync(userId:userId);
         Data = result.Data;
         
         ModalRef?.Hide();
