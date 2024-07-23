@@ -1,16 +1,21 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Blazorise;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NovaLab.Client.Lib.Services;
+using NovaLab.EnvironmentSwitcher;
+using NovaLab.Lib.Twitch;
 using NovaLab.Server.Components;
 using NovaLab.Server.Components.Account;
 using NovaLab.Server.Data;
 using NovaLab.Server.Data.Models.Account;
-using Serilog;
 using System.Security.Cryptography.X509Certificates;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
@@ -28,9 +33,16 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.OverrideLoggingAsSeriLog();
-        builder.Configuration.AddEnvironmentVariables(); // Else they won't be loaded
 
-        var environmentSwitcher = new EnvironmentSwitcher(Log.Logger, builder);
+        var environmentSwitcher = builder.CreateEnvironmentSwitcher<NovaLabEnvironmentSwitcher>(
+            options => {
+                options.DefinePreMadeVariables();
+                options.Variables.TryRegister<string>("DevelopmentDb");
+                options.Variables.TryRegister<string>("ApiUrlRoot");
+                options.Variables.TryRegister<string>("TwitchClientId");
+                options.Variables.TryRegister<string>("TwitchClientSecret");
+            }
+        );
         
         // -------------------------------------------------------------------------------------------------------------
         // Services
@@ -53,8 +65,8 @@ public static class Program {
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
             .AddTwitch(twitchOptions => {
-                twitchOptions.ClientId = environmentSwitcher.GetTwitchClientId();
-                twitchOptions.ClientSecret = environmentSwitcher.GetTwitchClientSecret();
+                twitchOptions.ClientId = environmentSwitcher.TwitchClientId;
+                twitchOptions.ClientSecret = environmentSwitcher.TwitchClientSecret;
                 // Update scopes as needed
                 //      This might look weird, but the idea is te that we don't reuse this at all anywhere, just create the list and move on
                 ((AuthScopes[]) [
@@ -120,9 +132,8 @@ public static class Program {
         ;
         
         // - Db -
-        string connectionString = environmentSwitcher.GetDatabaseConnectionString();
         builder.Services.AddDbContextFactory<NovaLabDbContext>(options => {
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(environmentSwitcher.DatabaseConnectionString);
         });
         builder.Services.AddScoped(options => 
             options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
@@ -140,7 +151,9 @@ public static class Program {
         // - Kestrel SLL - 
         builder.WebHost.ConfigureKestrel(options => {
             options.ConfigureHttpsDefaults(opt => {
-                opt.ServerCertificate = new X509Certificate2( environmentSwitcher.GetSslCertLocation(), environmentSwitcher.GetSslCertPassword());
+                opt.ServerCertificate = new X509Certificate2( 
+                environmentSwitcher.SslCertLocation, 
+                environmentSwitcher.SslCertPassword);
             });
         });
         
@@ -149,14 +162,42 @@ public static class Program {
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
         builder.Services.AddSingleton(new TwitchAPI {
             Settings = {
-                ClientId = builder.Configuration["Authentication_Twitch_ClientId"],
-                Secret = builder.Configuration["Authentication_Twitch_ClientSecret"]
+                ClientId = environmentSwitcher.TwitchClientId,
+                Secret = environmentSwitcher.TwitchClientSecret
             }
         });
+        builder.Services.AddScoped<TwitchTokensManager>();
         // builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
         // builder.Services.AddHostedTwitchServices();
 
-        builder.Services.AddScoped<TwitchTokensManager>();
+        // - Blazorise -
+        builder.Services
+            .AddBlazorise( options => {
+                options.Immediate = true;
+            })
+            .AddBootstrap5Providers()
+            .AddFontAwesomeIcons();
+        
+        // - Cors -
+        builder.Services.AddCors(options => {
+            options.AddPolicy("AllowLocalHosts", policyBuilder => {
+                policyBuilder
+                    .WithOrigins(
+                    // Local Development 
+                    "https://localhost:7190", "https://localhost:7145", 
+                    // Docker 
+                    "http://localhost:9052", "https://localhost:9052", // API
+                    "http://localhost:9051", "https://localhost:9051", // Server
+                    "https://localhost:80"
+                )
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .AllowAnyMethod();
+            });
+        });
+        
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddSingleton<NovaLabApiService>();
 
         // -------------------------------------------------------------------------------------------------------------
         // NovaLabApp
@@ -175,6 +216,9 @@ public static class Program {
         }
 
         app.UseHttpsRedirection();
+        
+        // - Cors -
+        app.UseCors("AllowLocalHosts");
 
         app.UseAuthentication();
         app.UseAuthorization(); 
@@ -184,10 +228,15 @@ public static class Program {
         app.MapRazorComponents<NovaLabApp>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            .AddAdditionalAssemblies(typeof(Client.Program).Assembly);
 
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
+        app.MapGet("/api", httpContext => {
+            httpContext.Response.Redirect(environmentSwitcher.Variables.GetRequiredValue<string>("ApiUrlRoot"));
+            return Task.CompletedTask;
+        });
+        
 
         await app.RunAsync().ConfigureAwait(false);
     }

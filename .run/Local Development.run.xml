@@ -1,0 +1,7 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Local Development" type="CompoundRunConfigurationType">
+    <toRun name="NovaLab.API: https" type="LaunchSettings" />
+    <toRun name="NovaLab.Server: https" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>

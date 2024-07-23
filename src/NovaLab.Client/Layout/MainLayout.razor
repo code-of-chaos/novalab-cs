@@ -1,6 +1,23 @@
-﻿@inherits LayoutComponentBase
+﻿@using NovaLab.Client.Lib.NavBars
 
-@Body
+@inherits NullLayout
+
+<Layout Sider>
+    <LayoutSider>
+        <LayoutSiderContent>
+            <NavBarSide/>
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutHeader Fixed>
+            <NavBarTop/>
+        </LayoutHeader>
+        <LayoutContent>
+            @Body
+        </LayoutContent>
+    </Layout>
+</Layout>
+
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

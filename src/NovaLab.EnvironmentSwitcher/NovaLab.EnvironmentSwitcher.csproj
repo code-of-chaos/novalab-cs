@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.8.3" />
+      <PackageReference Include="CodeOfChaos.Extensions" Version="0.4.0" />
+    </ItemGroup>
+
+</Project>

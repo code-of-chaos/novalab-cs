@@ -1,0 +1,166 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using ISOLib
+@using NovaLab.ApiClient.Api
+@using NovaLab.ApiClient.Model
+@using NovaLab.Client.Lib.Services
+@using Serilog
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@attribute [Authorize, StreamRendering]
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ILogger Logger
+@inject UserService UserService
+@inject NovaLabApiService NovaLabApiService
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@if (TrackedStreamSubjectDtoPostModel is not null) {
+<Validations @ref="@(ValidationsRefRequest)" Mode="ValidationMode.Manual" Model="@TrackedStreamSubjectDtoPostModel">
+    <Fields>
+        @* Stream title *@
+        <Field ColumnSize="ColumnSize.IsHalf">
+            <FieldLabel>Twitch Stream Title</FieldLabel>
+            <Validation Validator="ValidationRule.IsNotEmpty">
+                <TextEdit Placeholder="Amazing Gameplay 101" @bind-Text="@TrackedStreamSubjectDtoPostModel.TwitchTitle">
+                    <Feedback>
+                        <ValidationNone>Please enter a stream title.</ValidationNone>
+                        <ValidationError>Invalid stream title!</ValidationError>
+                    </Feedback>
+                </TextEdit>
+            </Validation>
+        </Field>
+
+        @* Game title *@
+        <Field ColumnSize="ColumnSize.Is4">
+            <FieldLabel>Twitch Category</FieldLabel>
+            <Validation Validator="ValidationRule.IsNotEmpty">
+                <TextEdit Placeholder="Just Chatting" @bind-Text="@TrackedStreamSubjectDtoPostModel.TwitchGameTitleName">
+                    <Feedback>
+                        <ValidationNone>Please enter a category title.</ValidationNone>
+                        <ValidationError>Invalid category title!</ValidationError>
+                    </Feedback>
+                </TextEdit>
+            </Validation>
+        </Field>
+
+        @* Selection for already known games *@
+        <Field ColumnSize="ColumnSize.Is2">
+            
+        </Field>
+        
+        @* Stream title *@
+        <Field ColumnSize="ColumnSize.IsHalf">
+            <FieldLabel>Broadcast Language</FieldLabel>
+            <Select TValue="string" @bind-SelectedValue="@SelectedLanguage">
+                @foreach (Language language in Languages.Collection) {
+                    <SelectItem Value="@language.Alpha2">@language.Name</SelectItem>
+                }
+            </Select>
+        </Field>
+    </Fields>
+    
+    <Fields>
+        <Field ColumnSize="ColumnSize.Is1">
+            <Button Color="Color.Primary" Type="@ButtonType.Submit" Clicked="@OnSubmitClickedAsync">Save</Button>
+        </Field>
+        <Field ColumnSize="ColumnSize.Is1">
+            <Button Color="Color.Secondary" Type="@ButtonType.Reset" Clicked="@OnCancelClickedAsync" >Cancel</Button>
+        </Field>
+        
+        <Field>
+            <Icon Name="@ResultIconName"></Icon>
+        </Field>
+    </Fields>
+    
+</Validations>
+}
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    [Parameter]
+    public string? SubjectId { get; set; }
+    private Guid? SubjectGuid => Guid.TryParse(SubjectId, out Guid value) ? value : null;  
+    
+    private Validations ValidationsRefRequest { get; set; } = null!;
+    string SelectedLanguage { get; set; } = Languages.EN.Alpha2;
+    IconName ResultIconName { get; set; } = IconName.Bell;
+    
+    TrackedStreamSubjectDtoPost? TrackedStreamSubjectDtoPostModel { get; set; } 
+
+    // ---------------------------------------------------------------------------------------------------------------------
+    // Code
+    // ---------------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        Guid? userId = await UserService.GetUserIdAsync();
+        if (SubjectId is null || userId is null ) {
+            TrackedStreamSubjectDtoPostModel = new TrackedStreamSubjectDtoPost(
+                novaLabUserId:Guid.Empty,
+                twitchGameTitleName:string.Empty,
+                twitchBroadcastLanguage:Languages.EN.Alpha2,
+                twitchTitle:string.Empty,
+                twitchTags:[]
+            );
+        }
+        
+        TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.GetTrackedStreamSubjectAsync(userId, SubjectGuid);
+        TrackedStreamSubjectDto item = result.Data.First();
+        TrackedStreamSubjectDtoPostModel = new TrackedStreamSubjectDtoPost(
+            novaLabUserId:(Guid)userId!,
+            twitchGameTitleName:item.TwitchGameName,
+            twitchBroadcastLanguage:item.TwitchBroadcastLanguage,
+            twitchTitle:item.TwitchTitle,
+            twitchTags:item.TwitchTags
+        );
+    }
+
+    private async Task OnCancelClickedAsync() {
+        await ValidationsRefRequest.ClearAll();
+        Logger.Information("Cleared validations");
+    }
+
+    private async Task OnSubmitClickedAsync() {
+        if (!await ValidationsRefRequest.ValidateAll() ) {
+            Logger.Warning("Some fields were not validated correctly");
+            return;
+        }
+        Logger.Information("Validated correctly");
+
+        // Get the user id claim
+        Guid? userId = await UserService.GetUserIdAsync();
+        if (userId is null) return;
+        
+        if (TrackedStreamSubjectDtoPostModel is null ) {
+            Logger.Warning("Model was not defined");
+            return;
+        }
+        
+        TrackedStreamSubjectDtoPostModel.NovaLabUserId = (Guid)userId;
+        TrackedStreamSubjectDtoPostModel.TwitchBroadcastLanguage = SelectedLanguage;
+        
+        Logger.Warning("{language}", SelectedLanguage);
+        Logger.Warning("{language}", TrackedStreamSubjectDtoPostModel.TwitchBroadcastLanguage);
+        
+        try {
+            TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.UpsertTrackedStreamSubjectAsync(
+                subjectId: SubjectGuid,
+                trackedStreamSubjectDtoPost:TrackedStreamSubjectDtoPostModel
+            );
+            ResultIconName = result.Status switch {
+                HttpStatusCode.NUMBER_200 => IconName.CheckCircle,
+                _ => IconName.ExclamationCircle
+            };
+        }
+        catch (Exception ex) {
+            Logger.Warning(ex, "unexpected error during execution to API endpoint");
+            ResultIconName = IconName.ExclamationTriangle;
+        }
+    }
+    
+}

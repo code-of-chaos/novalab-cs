@@ -199,6 +199,10 @@ namespace NovaLab.Server.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TwitchBroadcasterId")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -217,6 +221,95 @@ namespace NovaLab.Server.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("NovaLab.Server.Data.Models.Twitch.HelixApi.TwitchGameTitleToIdCache", b =>
+                {
+                    b.Property<string>("NovaLabName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("TwitchTitleBoxArtUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("TwitchTitleId")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("TwitchTitleIgdbId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("TwitchTitleName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("NovaLabName");
+
+                    b.ToTable("TwitchGameTitleToIdCache");
+                });
+
+            modelBuilder.Entity("NovaLab.Server.Data.Models.Twitch.TrackedStreamSubject", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TwitchBroadcastLanguage")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("TwitchGameId")
+                        .HasMaxLength(140)
+                        .HasColumnType("nvarchar(140)");
+
+                    b.Property<string>("TwitchTags")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TwitchTitle")
+                        .IsRequired()
+                        .HasMaxLength(140)
+                        .HasColumnType("nvarchar(140)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TrackedStreamSubjects");
+                });
+
+            modelBuilder.Entity("NovaLab.Server.Data.Models.Twitch.TrackedStreamSubjectComponent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ComponentStyling")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ComponentText")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<Guid>("TrackedStreamSubjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("TrackedStreamSubjectComponents");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -268,6 +361,31 @@ namespace NovaLab.Server.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("NovaLab.Server.Data.Models.Twitch.TrackedStreamSubject", b =>
+                {
+                    b.HasOne("NovaLab.Server.Data.Models.Account.NovaLabUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("NovaLab.Server.Data.Models.Twitch.TrackedStreamSubjectComponent", b =>
+                {
+                    b.HasOne("NovaLab.Server.Data.Models.Twitch.TrackedStreamSubject", "TrackedStreamSubject")
+                        .WithOne("TrackedStreamSubjectComponent")
+                        .HasForeignKey("NovaLab.Server.Data.Models.Twitch.TrackedStreamSubjectComponent", "Id");
+
+                    b.Navigation("TrackedStreamSubject");
+                });
+
+            modelBuilder.Entity("NovaLab.Server.Data.Models.Twitch.TrackedStreamSubject", b =>
+                {
+                    b.Navigation("TrackedStreamSubjectComponent");
                 });
 #pragma warning restore 612, 618
         }

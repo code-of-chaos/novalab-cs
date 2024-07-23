@@ -7,4 +7,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="CodeOfChaos.Extensions" Version="0.4.0" />
+      <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.1.0" />
+    </ItemGroup>
+
 </Project>

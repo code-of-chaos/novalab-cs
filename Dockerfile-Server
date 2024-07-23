@@ -1,28 +1,25 @@
 ARG DOTNET_RUNTIME=mcr.microsoft.com/dotnet/aspnet:8.0
 ARG DOTNET_SDK=mcr.microsoft.com/dotnet/sdk:8.0
 
-# Stage 1: Build the Blazor application
+# Stage 1: Build the application
 FROM ${DOTNET_SDK} AS build
 ARG BUILD_CONFIGURATION=Release
 
 COPY . .
 
 WORKDIR ./src/NovaLab.Server
-RUN dotnet restore
-RUN dotnet build -c $BUILD_CONFIGURATION --no-restore -o /app/build
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
 WORKDIR ../NovaLab.Server.Tools
-RUN dotnet restore
-RUN dotnet build -c $BUILD_CONFIGURATION --no-restore -o /app/build
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
 # Stage 2: Publish the application
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "../NovaLab.Server/NovaLab.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Server /p:UseAppHost=false
-RUN dotnet publish "NovaLab.Server.Tools.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Server.Tools /p:UseAppHost=false
+RUN dotnet publish "../NovaLab.Server/NovaLab.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Server /p:UseAppHost=false -p:PublishTrimmed=false && \
+    dotnet publish "NovaLab.Server.Tools.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Server.Tools /p:UseAppHost=false -p:PublishTrimmed=false
 
 # Stage 3: Create the runtime image
-FROM ${DOTNET_SDK} AS base
+FROM ${DOTNET_RUNTIME} AS base
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY --from=publish /app/publish/NovaLab.Server/wwwroot ./wwwroot
