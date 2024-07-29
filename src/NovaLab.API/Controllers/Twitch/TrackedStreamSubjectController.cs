@@ -6,7 +6,6 @@ using CodeOfChaos.AspNetCore.Contracts;
 using ISOLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using NovaLab.API.Models.Twitch;
 using NovaLab.API.Services.Twitch;
 using NovaLab.Lib.Twitch;

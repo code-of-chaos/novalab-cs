@@ -1,17 +1,15 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using NovaLab.Client.Lib.Components.Account
 @using CodeOfChaos.Lucide
-@using System.Security.Claims
-@using LIconSize=CodeOfChaos.Lucide.IconSize
+@using NovaLab.Components.Account
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @attribute [Authorize, StreamRendering]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-@inject AuthenticationStateProvider authenticationStateProvider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -20,6 +18,9 @@
      Breakpoint="Breakpoint.Desktop"
      NavigationBreakpoint="Breakpoint.Tablet"
      ThemeContrast="ThemeContrast.Dark">
+    <BarToggler Class="text-slate-500">
+        <LucideIcon Name="@LucideIconNames.ListFilter" Size="2em"/>
+    </BarToggler>
     <BarBrand>
         <BarItem>
             <BarLink To="">
@@ -31,10 +32,12 @@
         <BarStart>
             <AuthorizeView>
                 <BarItem>
-                    <BarDropdown>
-                        <BarDropdownToggle Class="container-with-lucide-icon">
-                            <LucideIcon Name="Icons.GalleryVerticalEnd" CssClass="b-bar-icon" Size="LIconSize.Default"/>
-                            Stream Subjects
+                    <BarDropdown >
+                        <BarDropdownToggle Class="justify-items-center">
+                            <div class="flex flex-nowrap ">
+                                <LucideIcon id="StreamSubjectsIcon" Name="@LucideIconNames.GalleryVerticalEnd" Class="my-auto mr-2 size-6"/>
+                                <span>Stream Subjects</span>
+                            </div>
                         </BarDropdownToggle>
                         <BarDropdownMenu>
                             <BarDropdownItem To="stream-subject">All Subjects</BarDropdownItem>
@@ -46,7 +49,12 @@
         </BarStart>
         <BarEnd>
             <BarItem>
-                <BarLink To="api">Swagger API</BarLink>
+                <BarLink To="api">
+                    <div class="flex flex-nowrap">
+                        <LucideIcon Name="@LucideIconNames.Webhook" Class="my-auto mr-2"/>
+                        <span>NovaLab API</span>
+                    </div>
+                </BarLink>
             </BarItem>
             <BarItem>
                 <LogoutButton/>

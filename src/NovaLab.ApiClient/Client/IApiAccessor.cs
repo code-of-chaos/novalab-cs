@@ -8,8 +8,6 @@
  */
 
 
-using System;
-
 namespace NovaLab.ApiClient.Client
 {
     /// <summary>

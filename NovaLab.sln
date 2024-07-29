@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.API.Tools", "src\No
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{0F4E42D3-57AC-4812-B5D8-F42AE1D67466}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Client.Lib", "src\NovaLab.Client.Lib\NovaLab.Client.Lib.csproj", "{26984A61-C2FC-470E-9B81-03FE3703D6F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Components", "src\NovaLab.Components\NovaLab.Components.csproj", "{26984A61-C2FC-470E-9B81-03FE3703D6F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{2BDC0275-6858-4CE0-95AB-4238F77E001D}"
 EndProject
@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{F6E0A6
 		generate-certs.ps1 = generate-certs.ps1
 		generate-apiclient.ps1 = generate-apiclient.ps1
 		generate-dotenv.ps1 = generate-dotenv.ps1
+		package.json = package.json
+		tailwind.config.js = tailwind.config.js
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.ApiClient", "src\NovaLab.ApiClient\NovaLab.ApiClient.csproj", "{91090ADF-1658-4860-8457-47A934BAAD46}"
@@ -55,6 +57,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{936A2537-797F-483B-AAB6-EA69C0B11FEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.EnvironmentSwitcher", "src\NovaLab.EnvironmentSwitcher\NovaLab.EnvironmentSwitcher.csproj", "{305E7100-17CF-4D39-9DA3-2CF7A406D19F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Services", "src\NovaLab.Services\NovaLab.Services.csproj", "{4B323BF7-D13C-4EC4-A039-544D332CEAA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,6 +106,10 @@ Global
 		{305E7100-17CF-4D39-9DA3-2CF7A406D19F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{305E7100-17CF-4D39-9DA3-2CF7A406D19F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{305E7100-17CF-4D39-9DA3-2CF7A406D19F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B323BF7-D13C-4EC4-A039-544D332CEAA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B323BF7-D13C-4EC4-A039-544D332CEAA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B323BF7-D13C-4EC4-A039-544D332CEAA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B323BF7-D13C-4EC4-A039-544D332CEAA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{678CB555-C56F-4110-A459-E20D583C6D42} = {DA6483C2-D3D2-4F86-9C80-5CE42920D101}
@@ -120,5 +128,6 @@ Global
 		{A884630C-2DBA-4504-9986-F63F85D1254C} = {2E36D9D8-D045-4852-8722-43A42BDCDFEC}
 		{936A2537-797F-483B-AAB6-EA69C0B11FEA} = {DA6483C2-D3D2-4F86-9C80-5CE42920D101}
 		{305E7100-17CF-4D39-9DA3-2CF7A406D19F} = {936A2537-797F-483B-AAB6-EA69C0B11FEA}
+		{4B323BF7-D13C-4EC4-A039-544D332CEAA6} = {0F4E42D3-57AC-4812-B5D8-F42AE1D67466}
 	EndGlobalSection
 EndGlobal

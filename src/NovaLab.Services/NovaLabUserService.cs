@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Serilog;
 using System.Security.Claims;
 
-namespace NovaLab.Client.Lib.Services;
+namespace NovaLab.Services;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserService(AuthenticationStateProvider authenticationStateProvider, ILogger logger) {
+public class NovaLabUserService(AuthenticationStateProvider authenticationStateProvider, ILogger logger) {
     public async Task<Guid?> GetUserIdAsync() {
         AuthenticationState authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         ClaimsPrincipal claims = authState.User;

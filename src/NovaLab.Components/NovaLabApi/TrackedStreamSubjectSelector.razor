@@ -1,9 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
-@using NovaLab.ApiClient.Api
 @using NovaLab.ApiClient.Model
-@using NovaLab.Client.Lib.Services
 @using ILogger=Serilog.ILogger
 @using CodeOfChaos.Lucide
+@using NovaLab.Services
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -15,9 +14,8 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILogger Logger
-@inject UserService UserService
+@inject NovaLabUserService NovaLabUserService
 @inject NovaLabApiService NovaLabApiService
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -57,7 +55,7 @@
                             Outline
                             Type="@ButtonType.Link"
                             To=@($"/stream-subject/detail/{item.Id.ToString()}")>
-                            <LucideIcon Name="Icons.Pencil" CssClass="icon"/>
+                            <LucideIcon Name="@LucideIconNames.Pencil"/>
                             Edit
                         </Button>
                         <Button
@@ -66,7 +64,7 @@
                             Outline
                             Type="@ButtonType.Submit"
                             Clicked="@(() => ShowDeleteModal(item.Id))">
-                            <LucideIcon Name="Icons.Trash2" CssClass="icon"/>
+                            <LucideIcon Name="@LucideIconNames.Trash2"/>
                             Delete
                         </Button>
                     </Buttons>
@@ -123,7 +121,7 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
-        Guid? userId = await UserService.GetUserIdAsync();
+        Guid? userId = await NovaLabUserService.GetUserIdAsync();
         if (userId is null) return;
         
         Logger.Warning(NovaLabApiService.TrackedStreamSubject.GetBasePath());
@@ -133,7 +131,7 @@
     }
 
     private async Task OnSubmitClickedAsync(Guid itemId) {
-        Guid? userId = await UserService.GetUserIdAsync();
+        Guid? userId = await NovaLabUserService.GetUserIdAsync();
         if (userId is null) return;
         
         await NovaLabApiService.TrackedStreamSubject.SelectTrackedStreamSubjectAsync(
@@ -150,7 +148,7 @@
     }
     
     private async Task TryDeleteRecordAndCloseModalAsync(MouseEventArgs obj) {
-        Guid? userId = await UserService.GetUserIdAsync();
+        Guid? userId = await NovaLabUserService.GetUserIdAsync();
         if (userId is null) return;
         
         await NovaLabApiService.TrackedStreamSubject.DeleteTrackedStreamSubjectAsync(

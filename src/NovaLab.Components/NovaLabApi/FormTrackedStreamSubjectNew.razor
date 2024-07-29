@@ -2,11 +2,9 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using ISOLib
-@using NovaLab.ApiClient.Api
 @using NovaLab.ApiClient.Model
-@using NovaLab.Client.Lib.Services
+@using NovaLab.Services
 @using Serilog
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -14,7 +12,7 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILogger Logger
-@inject UserService UserService
+@inject NovaLabUserService NovaLabUserService
 @inject NovaLabApiService NovaLabApiService
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -98,7 +96,7 @@
     // Code
     // ---------------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
-        Guid? userId = await UserService.GetUserIdAsync();
+        Guid? userId = await NovaLabUserService.GetUserIdAsync();
         if (SubjectId is null || userId is null ) {
             TrackedStreamSubjectDtoPostModel = new TrackedStreamSubjectDtoPost(
                 novaLabUserId:Guid.Empty,
@@ -133,7 +131,7 @@
         Logger.Information("Validated correctly");
 
         // Get the user id claim
-        Guid? userId = await UserService.GetUserIdAsync();
+        Guid? userId = await NovaLabUserService.GetUserIdAsync();
         if (userId is null) return;
         
         if (TrackedStreamSubjectDtoPostModel is null ) {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using NovaLab.ApiClient.Api;
 using NovaLab.ApiClient.Client;
 
-namespace NovaLab.Client.Lib.Services;
+namespace NovaLab.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
