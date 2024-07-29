@@ -10,6 +10,9 @@ module.exports = {
                 '2/10': '20%',
                 '1/5': '20%',
             },
+            boxShadow: {
+                'inner-lg': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.1)',
+            }
         },
     },
     variants: {
