@@ -1,14 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Blazorise;
-using Blazorise.Icons.FontAwesome;
-using Blazorise.Tailwind;
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using NovaLab.EnvironmentSwitcher;
 using NovaLab.Lib.Twitch;
 using NovaLab.Server.Components;
@@ -170,13 +168,8 @@ public static class Program {
         // builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
         // builder.Services.AddHostedTwitchServices();
 
-        // - Blazorise -
-        builder.Services
-            .AddBlazorise( options => {
-                options.Immediate = true;
-            })
-            .AddTailwindProviders()
-            .AddFontAwesomeIcons();
+        // - MudBlazor -
+        builder.Services.AddMudServices();
         
         // - Cors -
         builder.Services.AddCors(options => {

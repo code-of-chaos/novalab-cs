@@ -1,25 +1,145 @@
-﻿@using NovaLab.Components.NavBars
-@inherits NullLayout
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
 
-<Layout Sider>
-    <LayoutSider>
-        <LayoutSiderContent>
-            <NavBarSide/>
-        </LayoutSiderContent>
-    </LayoutSider>
-    <Layout>
-        <LayoutHeader Fixed>
-            <NavBarTop/>
-        </LayoutHeader>
-        <LayoutContent>
-            @Body
-        </LayoutContent>
-    </Layout>
-</Layout>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@attribute [Authorize]
+@rendermode InteractiveWebAssembly
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="DrawerToggle"/>
+        <MudSpacer/>
+        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle"/>
+
+        @if (Claims is { Identity : { IsAuthenticated : true, Name: not null } }) {
+            <MudIconButton Href="/account/manage" Variant="Variant.Outlined" Class="border-0">
+                <MudAvatar Color="Color.Primary">
+                    U 
+                </MudAvatar>
+            </MudIconButton>
+        }
+        else {
+            <MudButton Href="/account/login">Log In</MudButton>
+        }
+        
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <MudNavMenu Class="flex flex-grow flex-col">
+            <MudText Typo="Typo.h6" Class="px-4">NovaLab</MudText>
+            <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Explode your streams</MudText>
+            <MudDivider Class="my-2 grow-0" />
+            
+            <AuthorizeView>
+                <MudNavMenu>
+                    <MudNavGroup Title="Stream Selector" Icon="@Icons.Material.Filled.Settings" Expanded="false">
+                        <MudNavLink Href="/streams/selector" Match="NavLinkMatch.Prefix">All</MudNavLink>
+                    </MudNavGroup>
+                </MudNavMenu>
+                <MudDivider Class="my-2" />
+            </AuthorizeView>
+            <MudNavLink Href="/api" Match="NavLinkMatch.Prefix" Target="_blank" Icon="@Icons.Material.Filled.Webhook">API</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    bool _drawerOpen = true;
+    private bool _isDarkMode = true;
+    private MudTheme? _theme = null;
+    private ClaimsPrincipal? Claims { get; set; }
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        _theme = new MudTheme {
+            PaletteLight = _lightPalette,
+            PaletteDark = _darkPalette,
+            LayoutProperties = new LayoutProperties()
+        };
+    }
+    
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+        
+        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        Claims = authState.User;
+    }
+
+    private void DrawerToggle() {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void DarkModeToggle() {
+        _isDarkMode = !_isDarkMode;
+    }
+
+    private readonly PaletteLight _lightPalette = new() {
+        Black = "#110e2d",
+        AppbarText = "#424242",
+        AppbarBackground = "rgba(255,255,255,0.8)",
+        DrawerBackground = "#ffffff",
+        GrayLight = "#e8e8e8",
+        GrayLighter = "#f9f9f9",
+    };
+
+    private readonly PaletteDark _darkPalette = new() {
+        Primary = "#7e6fff",
+        Surface = "#1e1e2d",
+        Background = "#1a1a27",
+        BackgroundGray = "#151521",
+        AppbarText = "#92929f",
+        AppbarBackground = "rgba(26,26,39,0.8)",
+        DrawerBackground = "#1a1a27",
+        ActionDefault = "#74718e",
+        ActionDisabled = "#9999994d",
+        ActionDisabledBackground = "#605f6d4d",
+        TextPrimary = "#b2b0bf",
+        TextSecondary = "#92929f",
+        TextDisabled = "#ffffff33",
+        DrawerIcon = "#92929f",
+        DrawerText = "#92929f",
+        GrayLight = "#2a2833",
+        GrayLighter = "#1e1e2d",
+        Info = "#4a86ff",
+        Success = "#3dcb6c",
+        Warning = "#ffb545",
+        Error = "#ff3f5f",
+        LinesDefault = "#33323e",
+        TableLines = "#33323e",
+        Divider = "#292838",
+        OverlayLight = "#1e1e2d80",
+    };
+
+    public string DarkLightModeButtonIcon => _isDarkMode switch {
+        true => Icons.Material.Rounded.AutoMode,
+        false => Icons.Material.Outlined.DarkMode,
+    };
+}

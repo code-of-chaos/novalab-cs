@@ -7,18 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazorise" Version="1.6.0" />
-        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.6.0" />
-        <PackageReference Include="Blazorise.Tailwind" Version="1.6.0" />
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.6.0" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.1.1" />
-        <PackageReference Include="CodeOfChaos.Lucide" Version="0.414.0" />
         <PackageReference Include="ISOLib" Version="3.0.0" />
         <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.7" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.7" />
-        <PackageReference Include="Serilog" Version="4.0.0" />
+        <PackageReference Include="MudBlazor" Version="7.4.0" />
+        <PackageReference Include="Serilog" Version="4.0.1" />
     </ItemGroup>
 
     <ItemGroup><!--      <ProjectReference Include="..\NovaLab.ApiClient\NovaLab.ApiClient.csproj" />-->
@@ -30,9 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Account\LogoutButton.razor" />
-      <AdditionalFiles Include="NovaLabApi\FormTrackedStreamSubjectNew.razor" />
-      <AdditionalFiles Include="NovaLabApi\TrackedStreamSubjectSelector.razor" />
+      <UpToDateCheckInput Remove="NavBars\NavBarSide.razor" />
+      <UpToDateCheckInput Remove="NavBars\NavBarTop.razor" />
     </ItemGroup>
 
 </Project>

@@ -3,9 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Blazorise;
-using Blazorise.Icons.FontAwesome;
-using Blazorise.Tailwind;
+using MudBlazor.Services;
 using NovaLab.ApiClient.Client;
 using NovaLab.Services;
 using Serilog;
@@ -36,13 +34,8 @@ public static class Program {
         builder.Services.AddScoped<NovaLabUserService>();
         builder.Services.AddSingleton<NovaLabApiService>();
         
-        builder.Services
-            .AddBlazorise( options => {
-                options.Immediate = true;
-            })
-            .AddTailwindProviders()
-            .AddFontAwesomeIcons();
-
+        // MudBlazor
+        builder.Services.AddMudServices();
 
         // Configuration for NovaLab API Client
         Log.Logger.Information($"Prior GlobalConfiguration Instance BasePath: {GlobalConfiguration.Instance.BasePath}");

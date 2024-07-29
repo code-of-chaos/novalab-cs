@@ -1,0 +1,85 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using NovaLab.ApiClient.Model
+@using NovaLab.Services
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/streams/selector"
+@layout MainLayout
+@inject ILogger Logger
+@inject NovaLabUserService NovaLabUserService
+@inject NovaLabApiService NovaLabApiService
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<div class="h-full w-full p-6">
+    <MudGrid>
+        @if (Data is not null) {
+            @foreach (TrackedStreamSubjectDto item in Data) {
+                <MudItem sm="12" md="6" xl="4">
+                    <MudPaper Class="flex flex-row gap-2 rounded-xl p-3 lg:gap-4">
+                        @* Image Section *@
+                        <div class="h-full w-2/5 flex-shrink-0 flex-grow">
+                            <MudImage Src="@(item.TwitchGameImageUrl.Replace("{width}x{height}", "200x300"))" Alt="@item.TwitchGameName" Class="rounded-lg aspect-[2/3] h-auto w-full "/>
+                        </div>
+
+                        @* Data Section *@
+                        <div class="flex flex-col">
+                            <MudText Typo="Typo.h6" Class="flex-wrap text-wrap">@item.TwitchTitle</MudText>
+                            <MudStack Row="true" Class="flex-wrap gap-x-0.5 gap-y-2">
+                                @foreach (string tag in item.TwitchTags) {
+                                    <MudChip T="string" Color="Color.Primary" Size="Size.Small">@tag</MudChip>
+                                }
+                            </MudStack>
+                            <div id="tags"></div>
+
+                            <MudToolBar Class="mt-auto pl-0">
+                                <MudIconButton Icon="@Icons.Material.Outlined.Edit"/>
+                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Error"/>
+                                <MudSpacer/>
+                                <MudButton OnClick="() => OnSubmitClickedAsync(item.Id)">Apply</MudButton>
+                            </MudToolBar>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+            }
+        }
+    </MudGrid>
+</div>
+
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+     private List<TrackedStreamSubjectDto>? Data { get; set; } = null;
+     
+     private Guid? SelectedRecordId { get; set; } = null;
+    
+     // -----------------------------------------------------------------------------------------------------------------
+     // Methods
+     // -----------------------------------------------------------------------------------------------------------------
+     protected override async Task OnInitializedAsync() {
+         Guid? userId = await NovaLabUserService.GetUserIdAsync();
+         if (userId is null) return;
+        
+         Logger.Warning(NovaLabApiService.TrackedStreamSubject.GetBasePath());
+        
+         TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.GetTrackedStreamSubjectsAsync(userId:userId);
+         Data = result.Data;
+     }
+
+     private async Task OnSubmitClickedAsync(Guid itemId) {
+         Guid? userId = await NovaLabUserService.GetUserIdAsync();
+         if (userId is null) return;
+        
+         await NovaLabApiService.TrackedStreamSubject.SelectTrackedStreamSubjectAsync(
+             userId,
+             itemId
+         );
+         Logger.Information("SENT!!!");
+     }
+}
