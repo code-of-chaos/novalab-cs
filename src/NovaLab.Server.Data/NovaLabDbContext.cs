@@ -4,7 +4,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NovaLab.Server.Data.Models.Account;
 using NovaLab.Server.Data.Models.Twitch;
 using NovaLab.Server.Data.Models.Twitch.HelixApi;
 
@@ -15,7 +14,10 @@ namespace NovaLab.Server.Data;
 // ---------------------------------------------------------------------------------------------------------------------
 public class NovaLabDbContext : IdentityDbContext<NovaLabUser, IdentityRole<Guid>, Guid> {
     public DbSet<TrackedStreamSubject> TrackedStreamSubjects { get; init; }
+    public IQueryable<TrackedStreamSubject> ActiveTrackedStreamSubjects => TrackedStreamSubjects.Where(subject => !subject.IsSoftDeleted);
+    
     public DbSet<TrackedStreamSubjectComponent> TrackedStreamSubjectComponents { get; init; }
+    public IQueryable<TrackedStreamSubjectComponent> ActiveTrackedStreamSubjectComponents => TrackedStreamSubjectComponents.Where(subject => !subject.IsSoftDeleted);
     
     public DbSet<TwitchGameTitleToIdCache> TwitchGameTitleToIdCache { get; init; }
     

@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
 
 namespace NovaLab.Server.Data.Models.Account;
 

@@ -48,6 +48,7 @@ public class TrackedStreamSubjectController(
         
         return new TrackedStreamSubject {
             Id = guid ?? default,
+            IsSoftDeleted = false,
             User = user,
             TwitchGameId = twitchGameId,
             TwitchBroadcastLanguage = dtoPost.TwitchBroadcastLanguage ?? Languages.EN.Alpha2,
@@ -70,7 +71,7 @@ public class TrackedStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            IQueryable<TrackedStreamSubject> subjects = dbContext.TrackedStreamSubjects
+            IQueryable<TrackedStreamSubject> subjects = dbContext.ActiveTrackedStreamSubjects
                 .Include(subject => subject.User)
                 .ConditionalWhere(userId is not null, subject => subject.User.Id == userId);
 
@@ -103,7 +104,7 @@ public class TrackedStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TrackedStreamSubject? result = await dbContext.TrackedStreamSubjects
+            TrackedStreamSubject? result = await dbContext.ActiveTrackedStreamSubjects
                 .Include(subject => subject.User)
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId && subject.User.Id == userId);
             if (result is null) return FailureClient(msg:"No Tracked Subject found");
@@ -168,7 +169,7 @@ public class TrackedStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TrackedStreamSubject? result = await dbContext.TrackedStreamSubjects
+            TrackedStreamSubject? result = await dbContext.ActiveTrackedStreamSubjects
                 .Include(subject => subject.User)
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId && subject.User.Id == userId);
             if (result is null) return FailureClient(msg:"No Tracked Subject found");
@@ -213,8 +214,8 @@ public class TrackedStreamSubjectController(
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId);
 
             if (result is null) return FailureClient(msg:"No Tracked Subject found");
+            result.SoftDelete();
             
-            dbContext.TrackedStreamSubjects.Remove(result);
             await dbContext.SaveChangesAsync();
             return Success(true);
         }
