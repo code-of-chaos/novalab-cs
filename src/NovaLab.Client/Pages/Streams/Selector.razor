@@ -11,6 +11,7 @@
 @inject ILogger Logger
 @inject NovaLabUserService NovaLabUserService
 @inject NovaLabApiService NovaLabApiService
+@inject IDialogService DialogService
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -39,7 +40,8 @@
 
                             <MudToolBar Class="mt-auto pl-0">
                                 <MudIconButton Icon="@Icons.Material.Outlined.Edit"/>
-                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Error"/>
+                                <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Error"
+                                               OnClick="() => OnDeleteClickedAsync(item.Id)"/>
                                 <MudSpacer/>
                                 <MudButton OnClick="() => OnSubmitClickedAsync(item.Id)">Apply</MudButton>
                             </MudToolBar>
@@ -51,36 +53,46 @@
     </MudGrid>
 </div>
 
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
      private List<TrackedStreamSubjectDto>? Data { get; set; } = null;
-     
      private Guid? SelectedRecordId { get; set; } = null;
     
      // -----------------------------------------------------------------------------------------------------------------
      // Methods
      // -----------------------------------------------------------------------------------------------------------------
      protected override async Task OnInitializedAsync() {
+         await FetchDataAsync();
+     }
+
+     private async Task FetchDataAsync() {
          Guid? userId = await NovaLabUserService.GetUserIdAsync();
          if (userId is null) return;
-        
-         Logger.Warning(NovaLabApiService.TrackedStreamSubject.GetBasePath());
-        
+         
          TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.GetTrackedStreamSubjectsAsync(userId:userId);
          Data = result.Data;
      }
-
+     
      private async Task OnSubmitClickedAsync(Guid itemId) {
          Guid? userId = await NovaLabUserService.GetUserIdAsync();
          if (userId is null) return;
-        
+         
          await NovaLabApiService.TrackedStreamSubject.SelectTrackedStreamSubjectAsync(
              userId,
              itemId
          );
          Logger.Information("SENT!!!");
+     }
+
+     private async Task OnDeleteClickedAsync(Guid itemId) {
+         bool? result = await DialogService.ShowMessageBox("Delete Stream Setup", "Deletion can only be undone by an admin", yesText: "Delete", cancelText: "Cancel");
+         if (result is true) {
+             await NovaLabApiService.TrackedStreamSubject.DeleteTrackedStreamSubjectAsync(
+                itemId
+            );
+             await FetchDataAsync();
+         }
      }
 }

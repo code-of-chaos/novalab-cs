@@ -1,0 +1,60 @@
+﻿@using System.ComponentModel.DataAnnotations
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    
+    <MudCard>
+        <MudCardContent>
+            <MudTextField Label="Stream Title" HelperText="Max. 124 Characters" @bind-Value="_model.TwitchTitle" For="@(() => _model.TwitchTitle)"/>
+            <MudTextField Label="Broadcast Language" HelperText="en" @bind-Value="_model.TwitchBroadcastLanguage" For="@(() => _model.TwitchBroadcastLanguage)"/>
+            <MudTextField Label="Tags" HelperText="Seperated by `;`" @bind-Value="_model.TwitchTags" For="@(() => _model.TwitchTags)"/>
+            <MudTextField Label="Game Title" HelperText="Fallout 4, ..." @bind-Value="_model.TwitchGameTitleName" For="@(() => _model.TwitchGameTitleName)"/>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto"> Register</MudButton>
+        </MudCardActions>
+    </MudCard>
+    
+</EditForm>
+
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    private StreamEditorForm _model = new();
+    private bool _success;
+    
+    [Parameter] public EventCallback<StreamEditorForm> OnSubmit { get; set; }
+    
+    public class StreamEditorForm { 
+        [Required, StringLength(124, ErrorMessage = "Title Length exceeded maximum length of 124 characters")]
+        public string TwitchTitle { get; set; } = string.Empty;
+        public string? TwitchBroadcastLanguage { get; set; } = null;
+        public string? TwitchTags { get; set; } = null;
+        
+        [Required]
+        public string TwitchGameTitleName { get; set; }  = string.Empty;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    private void OnValidSubmit() {
+        _success = true;
+        StateHasChanged();
+        
+        OnSubmit.InvokeAsync(_model);
+    }
+
+}
