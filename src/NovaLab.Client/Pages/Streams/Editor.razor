@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using NovaLab.ApiClient.Model
 @using NovaLab.Services
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
@@ -14,10 +15,36 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+<MudPaper>
+    <EditorComponent OnSubmit="@OnSubmit" StreamSubject="@StreamSubject"/>
+</MudPaper>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
+    public TrackedStreamSubjectDto StreamSubject { get; set; } = new(
+        twitchTitle: string.Empty,
+        twitchBroadcastLanguage: "en",
+        twitchTags: [],
+        twitchGameName :string.Empty
+    );
     
+    private async Task OnSubmit(StreamEditorForm form) {
+        Guid? userId = await NovaLabUserService.GetUserIdAsync();
+        if (userId is null) return;
+
+        await NovaLabApiService.TrackedStreamSubject.UpsertTrackedStreamSubjectAsync(
+            null,
+            new TrackedStreamSubjectDtoPost(
+                novaLabUserId:(Guid)userId,
+                twitchTitle:form.TwitchTitle,
+                twitchBroadcastLanguage:form.TwitchBroadcastLanguage ?? "en",
+                twitchTags:form.TwitchTags?.Split(";").ToList() ?? [],
+                twitchGameTitleName :form.TwitchGameTitleName
+            )
+        );
+
+        StreamSubject = new TrackedStreamSubjectDto();
+        StateHasChanged();
+    }
 }

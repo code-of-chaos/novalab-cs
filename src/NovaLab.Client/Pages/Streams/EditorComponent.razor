@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using CodeOfChaos.Extensions
 @using NovaLab.ApiClient.Model
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -35,10 +36,10 @@
     [Parameter] public required TrackedStreamSubjectDto StreamSubject { get; set; }
     private StreamEditorForm? _modelCache;
     private StreamEditorForm Model => _modelCache ??= new StreamEditorForm {
-        TwitchTitle = StreamSubject.TwitchTitle,
-        TwitchBroadcastLanguage = StreamSubject.TwitchBroadcastLanguage,
+        TwitchTitle = StreamSubject.TwitchTitle.IsNotNullOrEmpty() ? StreamSubject.TwitchTitle : string.Empty ,
+        TwitchBroadcastLanguage = StreamSubject.TwitchBroadcastLanguage.IsNotNullOrEmpty() ? StreamSubject.TwitchBroadcastLanguage : "en" ,
         TwitchTags = string.Join(";", StreamSubject.TwitchTags),
-        TwitchGameTitleName = StreamSubject.TwitchGameName
+        TwitchGameTitleName = StreamSubject.TwitchGameName.IsNotNullOrEmpty() ? StreamSubject.TwitchGameName :string.Empty
     };
     private bool _success;
     

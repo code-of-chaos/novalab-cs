@@ -23,14 +23,14 @@
                 <MudItem sm="12" md="6" xl="4">
                     <MudPaper Class="flex flex-row gap-2 rounded-xl p-3 lg:gap-4">
                         @* Image Section *@
-                        <div class="h-full w-2/5 flex-shrink-0 flex-grow relative">
+                        <div class="h-full w-2/5 flex-shrink-0 relative">
                             <MudImage Src="@(item.TwitchGameImageUrl.Replace("{width}x{height}", "200x300"))" 
                                       Alt="@item.TwitchGameName" 
-                                      Class="rounded-xl aspect-[2/3] h-auto w-full shadow-inner"/>
+                                      Class="rounded-lg aspect-[2/3] h-auto w-full shadow-inner"/>
                         </div>
 
                         @* Data Section *@
-                        <div class="flex flex-col">
+                        <div class="flex flex-col flex-grow">
                             <MudText Typo="Typo.h6" Class="flex-wrap text-wrap">@item.TwitchTitle</MudText>
                             <MudStack Row="true" Class="flex-wrap gap-x-0.5 gap-y-2">
                                 @foreach (string tag in item.TwitchTags) {
