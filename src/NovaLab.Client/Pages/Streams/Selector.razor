@@ -93,7 +93,7 @@
          if (dto is null) return;
          
          var parameters = new DialogParameters<EditorDialog> { { x => x.StreamSubject, dto} };
-         var options = new DialogOptions { MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true};
+         var options = new DialogOptions {FullWidth = true,};
          
          IDialogReference dialog = await DialogService.ShowAsync<EditorDialog>("Edit Stream Info", parameters, options);
          DialogResult? result = await dialog.Result;

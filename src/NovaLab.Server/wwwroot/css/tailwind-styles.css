@@ -623,6 +623,10 @@ video {
   width: 50% !important;
 }
 
+.max-w-3xl {
+  max-width: 48rem;
+}
+
 .flex-shrink-0 {
   flex-shrink: 0;
 }
