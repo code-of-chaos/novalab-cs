@@ -46,9 +46,13 @@
             
             <AuthorizeView>
                 <MudNavMenu>
-                    <MudNavGroup Title="Stream Selector" Icon="@Icons.Material.Filled.Settings" Expanded="false">
+                    <MudNavGroup Title="Stream Selector" Icon="@Icons.Material.Filled.Settings" Expanded="true">
                         <MudNavLink Href="/streams/selector" Match="NavLinkMatch.Prefix">Selector</MudNavLink>
                         <MudNavLink Href="/streams/editor" Match="NavLinkMatch.Prefix">Editor</MudNavLink>
+                    </MudNavGroup>
+                    
+                    <MudNavGroup Title="Workfloor" Icon="@Icons.Material.Filled.DeviceUnknown" Expanded="false">
+                        <MudNavLink Href="/workfloor/profile-card" Match="NavLinkMatch.Prefix">Profile Card</MudNavLink>
                     </MudNavGroup>
                 </MudNavMenu>
                 <MudDivider Class="my-2" />

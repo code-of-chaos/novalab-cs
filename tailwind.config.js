@@ -5,6 +5,9 @@ module.exports = {
     ],
     theme: {
         extend: {
+            lineHeight: {
+                '0.5': "0.5rem",
+            },
             spacing: {
                 '1/10': '10%',
                 '2/10': '20%',
@@ -12,6 +15,9 @@ module.exports = {
             },
             boxShadow: {
                 'inner-lg': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.1)',
+            },
+            aspectRatio : {
+                poster : '2/3'
             }
         },
     },

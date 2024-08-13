@@ -26,18 +26,20 @@
                         <div class="h-full w-2/5 flex-shrink-0 relative">
                             <MudImage Src="@(item.TwitchGameImageUrl.Replace("{width}x{height}", "200x300"))" 
                                       Alt="@item.TwitchGameName" 
-                                      Class="rounded-lg aspect-[2/3] h-auto w-full shadow-inner"/>
+                                      Class="rounded-lg aspect-poster h-auto w-full shadow-inner"/>
                         </div>
 
                         @* Data Section *@
                         <div class="flex flex-col flex-grow">
                             <MudText Typo="Typo.h6" Class="flex-wrap text-wrap">@item.TwitchTitle</MudText>
-                            <MudStack Row="true" Class="flex-wrap gap-x-0.5 gap-y-2">
+                            
+                            <MudStack Row="true" Class="flex-wrap gap-1 mt-4">
                                 @foreach (string tag in item.TwitchTags) {
-                                    <MudChip T="string" Color="Color.Primary" Size="Size.Small">@tag</MudChip>
+                                    <MudChip T="string" Class="m-0 leading-0.5 !h-4 !px-2 transition-[color,background] ease-in-out duration-1000 rounded-full bg-slate-600 text-slate-300 hover:text-slate-50 hover:bg-slate-400">
+                                        <span class="text-xs">@tag</span>
+                                    </MudChip>
                                 }
                             </MudStack>
-                            <div id="tags"></div>
 
                             <MudToolBar Class="mt-auto pl-0">
                                 <MudIconButton Icon="@Icons.Material.Outlined.Edit"
@@ -93,7 +95,7 @@
          if (dto is null) return;
          
          var parameters = new DialogParameters<EditorDialog> { { x => x.StreamSubject, dto} };
-         var options = new DialogOptions {FullWidth = true,};
+         var options = new DialogOptions {FullWidth = true};
          
          IDialogReference dialog = await DialogService.ShowAsync<EditorDialog>("Edit Stream Info", parameters, options);
          DialogResult? result = await dialog.Result;
