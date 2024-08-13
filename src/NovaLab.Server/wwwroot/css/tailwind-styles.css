@@ -615,6 +615,14 @@ video {
   width: 100%;
 }
 
+.w-1\/2 {
+  width: 50%;
+}
+
+.\!w-1\/2 {
+  width: 50% !important;
+}
+
 .flex-shrink-0 {
   flex-shrink: 0;
 }

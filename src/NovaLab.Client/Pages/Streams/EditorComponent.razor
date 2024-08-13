@@ -1,7 +1,7 @@
-﻿@using System.ComponentModel.DataAnnotations
-@* ------------------------------------------------------------------------------------------------------------------ *@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using NovaLab.ApiClient.Model
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
@@ -10,15 +10,15 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
     
     <MudCard>
         <MudCardContent>
-            <MudTextField Label="Stream Title" HelperText="Max. 124 Characters" @bind-Value="_model.TwitchTitle" For="@(() => _model.TwitchTitle)"/>
-            <MudTextField Label="Broadcast Language" HelperText="en" @bind-Value="_model.TwitchBroadcastLanguage" For="@(() => _model.TwitchBroadcastLanguage)"/>
-            <MudTextField Label="Tags" HelperText="Seperated by `;`" @bind-Value="_model.TwitchTags" For="@(() => _model.TwitchTags)"/>
-            <MudTextField Label="Game Title" HelperText="Fallout 4, ..." @bind-Value="_model.TwitchGameTitleName" For="@(() => _model.TwitchGameTitleName)"/>
+            <MudTextField Label="Stream Title" HelperText="Max. 124 Characters" @bind-Value="Model.TwitchTitle" For="@(() => Model.TwitchTitle)"/>
+            <MudTextField Label="Broadcast Language" HelperText="en" @bind-Value="Model.TwitchBroadcastLanguage" For="@(() => Model.TwitchBroadcastLanguage)"/>
+            <MudTextField Label="Tags" HelperText="Seperated by `;`" @bind-Value="Model.TwitchTags" For="@(() => Model.TwitchTags)"/>
+            <MudTextField Label="Game Title" HelperText="Fallout 4, ..." @bind-Value="Model.TwitchGameTitleName" For="@(() => Model.TwitchGameTitleName)"/>
         </MudCardContent>
         <MudCardActions>
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto"> Register</MudButton>
@@ -32,20 +32,18 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    private StreamEditorForm _model = new();
+    [Parameter] public required TrackedStreamSubjectDto StreamSubject { get; set; }
+    private StreamEditorForm? _modelCache;
+    private StreamEditorForm Model => _modelCache ??= new StreamEditorForm {
+        TwitchTitle = StreamSubject.TwitchTitle,
+        TwitchBroadcastLanguage = StreamSubject.TwitchBroadcastLanguage,
+        TwitchTags = string.Join(";", StreamSubject.TwitchTags),
+        TwitchGameTitleName = StreamSubject.TwitchGameName
+    };
     private bool _success;
     
-    [Parameter] public EventCallback<StreamEditorForm> OnSubmit { get; set; }
     
-    public class StreamEditorForm { 
-        [Required, StringLength(124, ErrorMessage = "Title Length exceeded maximum length of 124 characters")]
-        public string TwitchTitle { get; set; } = string.Empty;
-        public string? TwitchBroadcastLanguage { get; set; } = null;
-        public string? TwitchTags { get; set; } = null;
-        
-        [Required]
-        public string TwitchGameTitleName { get; set; }  = string.Empty;
-    }
+    [Parameter] public EventCallback<StreamEditorForm> OnSubmit { get; set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -54,7 +52,7 @@
         _success = true;
         StateHasChanged();
         
-        OnSubmit.InvokeAsync(_model);
+        OnSubmit.InvokeAsync(Model);
     }
 
 }

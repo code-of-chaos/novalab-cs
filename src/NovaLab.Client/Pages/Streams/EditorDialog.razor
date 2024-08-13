@@ -1,18 +1,28 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using NovaLab.ApiClient.Model
+@using NovaLab.Services
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
+@inject ILogger Logger
+@inject NovaLabUserService NovaLabUserService
+@inject NovaLabApiService NovaLabApiService
+@inject IDialogService DialogService
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <MudDialog>
     <DialogContent>
-        <EditorComponent OnSubmit="OnSubmit"/>
+        <EditorComponent OnSubmit="@OnSubmit" StreamSubject="@StreamSubject"/>
     </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
 </MudDialog>
 
 
@@ -20,12 +30,30 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
+    [CascadingParameter] private MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public TrackedStreamSubjectDto StreamSubject { get; set; } = new();
 
     // ---------------------------------------------------------------------------------------------------------------------
     // Code
     // ---------------------------------------------------------------------------------------------------------------------
-    private async Task OnSubmit() {
+    private async Task OnSubmit(StreamEditorForm form) {
+        Guid? userId = await NovaLabUserService.GetUserIdAsync();
+        if (userId is null) return;
+
+        await NovaLabApiService.TrackedStreamSubject.UpsertTrackedStreamSubjectAsync(
+            subjectId:StreamSubject.Id,
+            new TrackedStreamSubjectDtoPost(
+                novaLabUserId:(Guid)userId,
+                twitchTitle:form.TwitchTitle,
+                twitchBroadcastLanguage:form.TwitchBroadcastLanguage ?? "en",
+                twitchTags:form.TwitchTags?.Split(";").ToList() ?? [],
+                twitchGameTitleName :form.TwitchGameTitleName
+            )
+        );
         
+        MudDialog?.Close(DialogResult.Ok(true));
     }
-    
+    private void Cancel() => MudDialog?.Cancel();
+
 }

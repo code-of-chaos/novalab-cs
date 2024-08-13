@@ -24,7 +24,8 @@
                     <MudPaper Class="flex flex-row gap-2 rounded-xl p-3 lg:gap-4">
                         @* Image Section *@
                         <div class="h-full w-2/5 flex-shrink-0 flex-grow relative">
-                            <MudImage Src="@(item.TwitchGameImageUrl.Replace("{width}x{height}", "200x300"))" Alt="@item.TwitchGameName" 
+                            <MudImage Src="@(item.TwitchGameImageUrl.Replace("{width}x{height}", "200x300"))" 
+                                      Alt="@item.TwitchGameName" 
                                       Class="rounded-xl aspect-[2/3] h-auto w-full shadow-inner"/>
                         </div>
 
@@ -39,7 +40,8 @@
                             <div id="tags"></div>
 
                             <MudToolBar Class="mt-auto pl-0">
-                                <MudIconButton Icon="@Icons.Material.Outlined.Edit"/>
+                                <MudIconButton Icon="@Icons.Material.Outlined.Edit"
+                                               OnClick="() => OnEditClickedAsync(item.Id)"/>
                                 <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Error"
                                                OnClick="() => OnDeleteClickedAsync(item.Id)"/>
                                 <MudSpacer/>
@@ -57,8 +59,7 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-     private List<TrackedStreamSubjectDto>? Data { get; set; } = null;
-     private Guid? SelectedRecordId { get; set; } = null;
+     private List<TrackedStreamSubjectDto>? Data { get; set; }
     
      // -----------------------------------------------------------------------------------------------------------------
      // Methods
@@ -73,6 +74,8 @@
          
          TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.GetTrackedStreamSubjectsAsync(userId:userId);
          Data = result.Data;
+         
+         StateHasChanged();
      }
      
      private async Task OnSubmitClickedAsync(Guid itemId) {
@@ -84,6 +87,20 @@
              itemId
          );
          Logger.Information("SENT!!!");
+     }
+     private async Task OnEditClickedAsync(Guid itemId) {
+         TrackedStreamSubjectDto? dto = Data?.First(d => d.Id == itemId);
+         if (dto is null) return;
+         
+         var parameters = new DialogParameters<EditorDialog> { { x => x.StreamSubject, dto} };
+         var options = new DialogOptions { MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true};
+         
+         IDialogReference dialog = await DialogService.ShowAsync<EditorDialog>("Edit Stream Info", parameters, options);
+         DialogResult? result = await dialog.Result;
+         
+         if (result is { Canceled: false }) {
+             await FetchDataAsync();
+         }
      }
 
      private async Task OnDeleteClickedAsync(Guid itemId) {
