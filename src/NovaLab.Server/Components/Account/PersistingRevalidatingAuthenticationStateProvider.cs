@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using NovaLab.Client;
-using NovaLab.Server.Data.Models.Account;
+using NovaLab.Database.Models.Account;
 using System.Diagnostics;
 using System.Security.Claims;
 

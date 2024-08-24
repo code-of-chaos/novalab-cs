@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.AspNetCore.API;
 using Microsoft.EntityFrameworkCore;
-using NovaLab.Server.Data;
+using NovaLab.Database;
 
 namespace NovaLab.API;
 

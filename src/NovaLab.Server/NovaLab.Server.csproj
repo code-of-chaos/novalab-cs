@@ -8,9 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Ulid" Version="1.3.4" />
         <ProjectReference Include="..\NovaLab.EnvironmentSwitcher\NovaLab.EnvironmentSwitcher.csproj" />
-        <ProjectReference Include="..\NovaLab.Lib.Twitch\NovaLab.Lib.Twitch.csproj" />
-        <ProjectReference Include="..\NovaLab.Server.Data\NovaLab.Server.Data.csproj" />
+        <ProjectReference Include="..\NovaLab.Twitch\NovaLab.Twitch.csproj" />
+        <ProjectReference Include="..\NovaLab.Database\NovaLab.Database.csproj" />
         <ProjectReference Include="..\NovaLab.Client\NovaLab.Client.csproj" />
         <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="8.1.0" />
         <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.8.4" />

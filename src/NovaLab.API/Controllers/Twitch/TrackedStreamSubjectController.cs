@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.API.Models.Twitch;
 using NovaLab.API.Services.Twitch;
-using NovaLab.Lib.Twitch;
-using NovaLab.Server.Data;
-using NovaLab.Server.Data.Models.Twitch;
-using NovaLab.Server.Data.Models.Twitch.HelixApi;
+using NovaLab.Twitch;
+using NovaLab.Database;
+using NovaLab.Database.Models.Twitch;
+using NovaLab.Database.Models.Twitch.HelixApi;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using TwitchLib.Api;
@@ -82,7 +82,7 @@ public class TrackedStreamSubjectController(
                     : Task.FromResult<TwitchGameTitleToIdCache?>(null) )
                 );
             
-            return Success(result.Select((item, i) => TrackedStreamSubjectDto.FromDto(
+            return Success(result.Select((item, i) => TrackedStreamSubjectDto.FromDatabase(
                 item,
                 images[i]
             )).ToArray());
@@ -110,7 +110,7 @@ public class TrackedStreamSubjectController(
             if (result is null) return FailureClient(msg:"No Tracked Subject found");
 
             
-            return Success(TrackedStreamSubjectDto.FromDto(
+            return Success(TrackedStreamSubjectDto.FromDatabase(
                 result,
                 result.TwitchGameId is not null ? await twitchCategoryCache.GetCategoryByIdAsync(result.TwitchGameId) : null
             ));
@@ -146,7 +146,7 @@ public class TrackedStreamSubjectController(
             }
             await dbContext.SaveChangesAsync();
             
-            return Success(TrackedStreamSubjectDto.FromDto(
+            return Success(TrackedStreamSubjectDto.FromDatabase(
                 result,
                 result.TwitchGameId is not null ? await twitchCategoryCache.GetCategoryByIdAsync(result.TwitchGameId) : null
             ));
@@ -185,7 +185,7 @@ public class TrackedStreamSubjectController(
                 await twitchTokens.GetAccessTokenOrRefreshAsync(userId)
             );
             
-            return Success(TrackedStreamSubjectDto.FromDto(
+            return Success(TrackedStreamSubjectDto.FromDatabase(
                 result,
                 result.TwitchGameId is not null ? await twitchCategoryCache.GetCategoryByIdAsync(result.TwitchGameId) : null
             ));

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NovaLab.EnvironmentSwitcher;
-using NovaLab.Server.Data;
+using NovaLab.Database;
 
 namespace NovaLab.API.Tools;
 // ---------------------------------------------------------------------------------------------------------------------

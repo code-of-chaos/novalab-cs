@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.AspNetCore.API;
 using Microsoft.EntityFrameworkCore;
-using NovaLab.Server.Data;
-using NovaLab.Server.Data.Models.Twitch.HelixApi;
+using NovaLab.Database;
+using NovaLab.Database.Models.Twitch.HelixApi;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using TwitchLib.Api;

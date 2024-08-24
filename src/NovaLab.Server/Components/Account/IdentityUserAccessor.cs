@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using NovaLab.Server.Data.Models.Account;
+using NovaLab.Database.Models.Account;
 
 namespace NovaLab.Server.Components.Account;
 

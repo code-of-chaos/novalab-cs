@@ -1,4 +1,4 @@
-using NovaLab.Server.Data;
+using NovaLab.Database;
 using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);

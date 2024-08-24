@@ -23,13 +23,14 @@
         <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+        <PackageReference Include="Ulid" Version="1.3.4" />
     </ItemGroup>
 
 
 
     <ItemGroup>
       <ProjectReference Include="..\NovaLab.EnvironmentSwitcher\NovaLab.EnvironmentSwitcher.csproj" />
-      <ProjectReference Include="..\NovaLab.Server.Data\NovaLab.Server.Data.csproj" />
+      <ProjectReference Include="..\NovaLab.Database\NovaLab.Database.csproj" />
     </ItemGroup>
 
 </Project>

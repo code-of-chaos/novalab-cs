@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using NovaLab.Server.Data.Models.Account;
+using NovaLab.Database.Models.Account;
 using System.Security.Claims;
 using System.Text.Json;
 using NovaLab.Server.Components.Account.Pages;

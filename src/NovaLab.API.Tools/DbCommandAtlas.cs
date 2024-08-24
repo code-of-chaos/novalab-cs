@@ -5,7 +5,7 @@ using CliArgsParser.Attributes;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.API.Tools.Args;
-using NovaLab.Server.Data;
+using NovaLab.Database;
 using System.Diagnostics.CodeAnalysis;
 using ILogger=Serilog.ILogger;
 
