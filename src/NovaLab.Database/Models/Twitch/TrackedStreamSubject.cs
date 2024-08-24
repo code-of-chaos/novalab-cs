@@ -13,7 +13,7 @@ namespace NovaLab.Database.Models.Twitch;
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
 public class TrackedStreamSubject : ISoftDeletable{
     [Key]
-    public Guid Id { get; init; }
+    public Ulid Id { get; init; }
     public virtual NovaLabUser User { get; init; } = null!;
     
     [MaxLength(140)] public string? TwitchGameId { get; set; }

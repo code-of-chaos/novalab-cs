@@ -3,12 +3,15 @@
 # -----------------------------------------------------------------------------------------------------------------
 $generatorLanguage = "csharp"
 $specFilePath = "src\NovaLab.API\swagger.json"
-$outputFolder = "..\0005-01-cs-novalab-api_client"
+$outputFolder = "..\02-novalab-api_client"
 $packageName = "NovaLab.ApiClient"
 
 $netCoreProjectFile = "true"
 $targetFramework = "net8.0"
 $nullableReferenceTypes = "true"
+
+$sourceFolder = "..\02-novalab-api_client\src\NovaLab.ApiClient"
+$destinationFolder = "src\NovaLab.ApiClient"
 
 # -----------------------------------------------------------------------------------------------------------------
 # Code
@@ -23,11 +26,7 @@ function main {
     --additional-properties=netCoreProjectFile=$netCoreProjectFile `
     --additional-properties=targetFramework=$targetFramework `
     --additional-properties=nullableReferenceTypes=$nullableReferenceTypes
-
-  # Define variables
-  $sourceFolder = "..\0005-01-cs-novalab-api_client\src\NovaLab.ApiClient"
-  $destinationFolder = "src\NovaLab.ApiClient"
-
+  
   # Remove all items in the destination folder
   echo "Cleaning destination Folder ..."
   Remove-Item -Path "$destinationFolder\*" -Recurse -Force

@@ -85,8 +85,7 @@
             "name": "subject-id",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "$ref": "#/components/schemas/Ulid"
             }
           }
         ],
@@ -143,8 +142,7 @@
             "name": "subjectId",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "$ref": "#/components/schemas/Ulid"
             }
           }
         ],
@@ -220,8 +218,7 @@
             "name": "subject-id",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "$ref": "#/components/schemas/Ulid"
             }
           }
         ],
@@ -308,8 +305,7 @@
             "name": "subject-id",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "$ref": "#/components/schemas/Ulid"
             }
           }
         ],
@@ -507,8 +503,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
+            "$ref": "#/components/schemas/Ulid"
           },
           "novaLabUserId": {
             "type": "string",
@@ -542,9 +537,7 @@
             "nullable": true
           },
           "trackedStreamSubjectComponentId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "$ref": "#/components/schemas/Ulid"
           }
         },
         "additionalProperties": false
@@ -594,6 +587,23 @@
           "twitchGameTitleName": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Ulid": {
+        "type": "object",
+        "properties": {
+          "random": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true,
+            "readOnly": true
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
           }
         },
         "additionalProperties": false

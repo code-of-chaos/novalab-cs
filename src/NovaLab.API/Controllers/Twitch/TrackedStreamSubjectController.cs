@@ -35,7 +35,9 @@ public class TrackedStreamSubjectController(
     // -----------------------------------------------------------------------------------------------------------------
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private async Task<TrackedStreamSubject?> CreateNewTrackedStreamSubjectAsync(NovaLabDbContext dbContext, TrackedStreamSubjectDtoPost dtoPost, Guid? guid = null) {
+    private async Task<TrackedStreamSubject?> CreateNewTrackedStreamSubjectAsync(
+        NovaLabDbContext dbContext, TrackedStreamSubjectDtoPost dtoPost, Ulid? ulid = null
+    ) {
         if (await dbContext.Users.FirstOrDefaultAsync(novaLabUser => novaLabUser.Id == dtoPost.NovaLabUserId) is not {} user) {
             return null;
         }
@@ -47,7 +49,7 @@ public class TrackedStreamSubjectController(
             : null;
         
         return new TrackedStreamSubject {
-            Id = guid ?? default,
+            Id = ulid ?? default,
             IsSoftDeleted = false,
             User = user,
             TwitchGameId = twitchGameId,
@@ -99,7 +101,7 @@ public class TrackedStreamSubjectController(
     [SwaggerOperation(OperationId = nameof(GetTrackedStreamSubject))]
     public async Task<IActionResult> GetTrackedStreamSubject(
         [FromQuery(Name="user-id")] Guid userId,
-        [FromQuery(Name="subject-id")] Guid subjectId
+        [FromQuery(Name="subject-id")] Ulid subjectId
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
@@ -130,7 +132,7 @@ public class TrackedStreamSubjectController(
     [SwaggerOperation(OperationId = nameof(UpsertTrackedStreamSubject))]
     public async Task<IActionResult> UpsertTrackedStreamSubject(
         [FromBody] TrackedStreamSubjectDtoPost dto,
-        [FromQuery] Guid? subjectId = null
+        [FromQuery] Ulid? subjectId = null
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
@@ -164,7 +166,7 @@ public class TrackedStreamSubjectController(
     [SwaggerOperation(OperationId = nameof(SelectTrackedStreamSubject))]
     public async Task<IActionResult> SelectTrackedStreamSubject(
         [FromQuery(Name="user-id")] Guid userId,
-        [FromQuery(Name="subject-id")] Guid subjectId
+        [FromQuery(Name="subject-id")] Ulid subjectId
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
@@ -205,7 +207,7 @@ public class TrackedStreamSubjectController(
     [ProducesResponse<ApiResult>(HttpStatusCode.InternalServerError)]
     [SwaggerOperation(OperationId = nameof(DeleteTrackedStreamSubject))]
     public async Task<IActionResult> DeleteTrackedStreamSubject(
-        [FromQuery(Name = "subject-id")] Guid subjectId
+        [FromQuery(Name = "subject-id")] Ulid subjectId
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 

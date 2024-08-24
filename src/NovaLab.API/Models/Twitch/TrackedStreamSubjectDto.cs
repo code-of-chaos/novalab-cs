@@ -12,7 +12,7 @@ namespace NovaLab.API.Models.Twitch;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public record TrackedStreamSubjectDto(
-    Guid Id,
+    Ulid Id,
     Guid NovaLabUserId,
     string TwitchGameId,
     string TwitchGameName,
@@ -21,7 +21,7 @@ public record TrackedStreamSubjectDto(
     string TwitchTitle,
     string[] TwitchTags,
 
-    Guid? TrackedStreamSubjectComponentId
+    Ulid? TrackedStreamSubjectComponentId
 ) {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
