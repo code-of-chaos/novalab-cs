@@ -6,7 +6,7 @@ namespace NovaLab.Database.Contracts;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ISoftDeletable {
-    bool IsSoftDeleted { get; }
-    void SoftDelete();
+// ReSharper disable once VirtualMemberNeverOverridden.Global
+public abstract class UserContent : Content {
+    public virtual NovaLabUser User { get; init; } = null!;
 }

@@ -19,14 +19,12 @@ public record TrackedStreamSubjectDto(
     string TwitchGameImageUrl,
     string TwitchBroadcastLanguage,
     string TwitchTitle,
-    string[] TwitchTags,
-
-    Ulid? TrackedStreamSubjectComponentId
+    string[] TwitchTags
 ) {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static TrackedStreamSubjectDto FromDatabase(TrackedStreamSubject model, TwitchGameTitleToIdCache? gameCache) {
+    public static TrackedStreamSubjectDto FromDatabase(TwitchStreamSubject model, TwitchGameTitleToIdCache? gameCache) {
         return new TrackedStreamSubjectDto(
             Id: model.Id,
             NovaLabUserId: model.User.Id,
@@ -35,8 +33,7 @@ public record TrackedStreamSubjectDto(
             TwitchGameImageUrl : gameCache?.TwitchTitleBoxArtUrl ?? "",
             TwitchBroadcastLanguage: model.TwitchBroadcastLanguage,
             TwitchTitle: model.TwitchTitle,
-            TwitchTags: model.TwitchTags ?? [],
-            TrackedStreamSubjectComponentId: model.TrackedStreamSubjectComponent?.Id
+            TwitchTags: model.TwitchTags ?? []
         );
     }
 }

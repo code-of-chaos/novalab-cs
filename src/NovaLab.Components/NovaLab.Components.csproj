@@ -22,8 +22,6 @@
     <ItemGroup><!--      <ProjectReference Include="..\NovaLab.ApiClient\NovaLab.ApiClient.csproj" />-->
 <!--      <ProjectReference Include="..\NovaLab.Server.Data.Shared\NovaLab.Server.Data.Shared.csproj" />-->
     
-      <ProjectReference Include="..\NovaLab.ApiClient\NovaLab.ApiClient.csproj" />
-    
       <ProjectReference Include="..\NovaLab.Services\NovaLab.Services.csproj" />
     </ItemGroup>
 

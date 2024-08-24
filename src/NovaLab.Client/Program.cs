@@ -37,25 +37,6 @@ public static class Program {
         // MudBlazor
         builder.Services.AddMudServices();
 
-        // Configuration for NovaLab API Client
-        Log.Logger.Information($"Prior GlobalConfiguration Instance BasePath: {GlobalConfiguration.Instance.BasePath}");
-
-        GlobalConfiguration.Instance = Configuration.MergeConfigurations(
-            GlobalConfiguration.Instance,
-            #if DEBUG
-                new Configuration {
-                    BasePath = "https://localhost:7190"
-                }
-            #else
-                new Configuration {
-                    BasePath = "https://localhost:9052"
-                }            
-            #endif
-            );
-
-        // After Configuration.MergeConfigurations
-        Log.Logger.Information($"Post GlobalConfiguration Instance BasePath: {GlobalConfiguration.Instance.BasePath}");;  
-        
         await builder.Build().RunAsync();
     }
 }

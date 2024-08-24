@@ -6,7 +6,13 @@ namespace NovaLab.Database.Contracts;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ISoftDeletable {
-    bool IsSoftDeleted { get; }
-    void SoftDelete();
+public abstract class Content : ISoftDeletable {
+    [Key] public Ulid Id { get; init; }
+    
+    #region SoftDelete
+    public bool IsSoftDeleted { get; private set; }
+    public void SoftDelete() {
+        IsSoftDeleted = true;
+    }
+    #endregion
 }

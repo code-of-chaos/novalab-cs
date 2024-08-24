@@ -1,12 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Database.Contracts;
+using NovaLab.Database.Contracts;
+using NovaLab.Database.Models.Twitch;
 
+namespace NovaLab.Database.Models;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ISoftDeletable {
-    bool IsSoftDeleted { get; }
-    void SoftDelete();
+public class ManagedStream : UserContent {
+    public virtual TwitchStreamSubject? TwitchStreamSubject { get; set; }
 }

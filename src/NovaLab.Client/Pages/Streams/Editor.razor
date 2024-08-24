@@ -1,7 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using NovaLab.ApiClient.Model
+@using NovaLab.ApiClient.Models
 @using NovaLab.Services
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
@@ -22,26 +22,26 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    public TrackedStreamSubjectDto StreamSubject { get; set; } = new(
-        twitchTitle: string.Empty,
-        twitchBroadcastLanguage: "en",
-        twitchTags: [],
-        twitchGameName :string.Empty
-    );
+    public TrackedStreamSubjectDto StreamSubject { get; set; } = new() {
+        TwitchTitle = string.Empty,
+        TwitchBroadcastLanguage = "en",
+        TwitchTags = [],
+        TwitchGameName = string.Empty
+    };
     
     private async Task OnSubmit(StreamEditorForm form) {
         Guid? userId = await NovaLabUserService.GetUserIdAsync();
         if (userId is null) return;
 
-        await NovaLabApiService.TrackedStreamSubject.UpsertTrackedStreamSubjectAsync(
+        await NovaLabApiService.TrackedStreamSubject..UpsertTrackedStreamSubjectAsync(
             null,
-            new TrackedStreamSubjectDtoPost(
-                novaLabUserId:(Guid)userId,
-                twitchTitle:form.TwitchTitle,
-                twitchBroadcastLanguage:form.TwitchBroadcastLanguage ?? "en",
-                twitchTags:form.TwitchTags?.Split(";").ToList() ?? [],
-                twitchGameTitleName :form.TwitchGameTitleName
-            )
+            new TrackedStreamSubjectDtoPost {
+                NovaLabUserId=(Guid)userId,
+                TwitchTitle=form.TwitchTitle,
+                TwitchBroadcastLanguage=form.TwitchBroadcastLanguage ?? "en",
+                TwitchTags=form.TwitchTags?.Split(";").ToList() ?? [],
+                TwitchGameTitleName =form.TwitchGameTitleName
+            }
         );
 
         StreamSubject = new TrackedStreamSubjectDto();

@@ -2,16 +2,24 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.Extensions.Configuration;
-using NovaLab.ApiClient.Api;
-using NovaLab.ApiClient.Client;
+using Microsoft.Kiota.Abstractions;
+using NovaLab.ApiClient;
+using Microsoft.Kiota.Abstractions;
+using Microsoft.Kiota.Abstractions.Authentication;
+using Microsoft.Kiota.Http.HttpClientLibrary;
+using NovaLab.ApiClient.Api.Twitch.TrackedStreamSubject;
 
 namespace NovaLab.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class NovaLabApiService(IConfiguration configuration) {
-    private readonly Configuration _configuration = new() { BasePath = configuration["ApiEndpoint"]! };
+public class NovaLabApiService(IConfiguration configuration, HttpClient client, IAuthenticationProvider authenticationProvider) {
+    public readonly NovaLabApiClient NovaLabApiClient = new(new HttpClientRequestAdapter(
+        authenticationProvider,
+        httpClient: new HttpClient { BaseAddress = new Uri(configuration["ApiEndpoint"]!) }
+    ));
     
-    private TrackedStreamSubjectApi? _trackedStreamSubjectApi;
-    public TrackedStreamSubjectApi TrackedStreamSubject => _trackedStreamSubjectApi ??= new TrackedStreamSubjectApi(_configuration);
+    
+    private  TrackedStreamSubjectRequestBuilder ? _trackedStreamSubjectApi;
+    public  TrackedStreamSubjectRequestBuilder  TrackedStreamSubject => _trackedStreamSubjectApi ??= NovaLabApiClient.Api.Twitch.TrackedStreamSubject;
 }

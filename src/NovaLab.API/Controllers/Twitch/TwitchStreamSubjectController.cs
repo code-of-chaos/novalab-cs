@@ -12,7 +12,6 @@ using NovaLab.Twitch;
 using NovaLab.Database;
 using NovaLab.Database.Models.Twitch;
 using NovaLab.Database.Models.Twitch.HelixApi;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.Channels.ModifyChannelInformation;
@@ -24,7 +23,7 @@ namespace NovaLab.API.Controllers.Twitch;
 // ---------------------------------------------------------------------------------------------------------------------
 [ApiController]
 [Route("api/twitch/tracked-stream-subject")]
-public class TrackedStreamSubjectController(
+public class TwitchStreamSubjectController(
     IDbContextFactory<NovaLabDbContext> contextFactory,
     ILogger logger,
     TwitchAPI twitchApi,
@@ -35,7 +34,7 @@ public class TrackedStreamSubjectController(
     // -----------------------------------------------------------------------------------------------------------------
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private async Task<TrackedStreamSubject?> CreateNewTrackedStreamSubjectAsync(
+    private async Task<TwitchStreamSubject?> CreateTwitchStreamSubjectAsync(
         NovaLabDbContext dbContext, TrackedStreamSubjectDtoPost dtoPost, Ulid? ulid = null
     ) {
         if (await dbContext.Users.FirstOrDefaultAsync(novaLabUser => novaLabUser.Id == dtoPost.NovaLabUserId) is not {} user) {
@@ -48,36 +47,32 @@ public class TrackedStreamSubjectController(
             ? (await twitchCategoryCache.GetCategoryByNameAsync(dtoPost.TwitchGameTitleName))?.TwitchTitleId
             : null;
         
-        return new TrackedStreamSubject {
+        return new TwitchStreamSubject {
             Id = ulid ?? default,
-            IsSoftDeleted = false,
             User = user,
             TwitchGameId = twitchGameId,
             TwitchBroadcastLanguage = dtoPost.TwitchBroadcastLanguage ?? Languages.EN.Alpha2,
             TwitchTitle = dtoPost.TwitchTitle,
-            TwitchTags = dtoPost.TwitchTags,
-            TrackedStreamSubjectComponent = null
+            TwitchTags = dtoPost.TwitchTags
         };
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // GET Methods
     // -----------------------------------------------------------------------------------------------------------------
-    [HttpGet("all")]
     [ProducesResponse<IApiResult<TrackedStreamSubjectDto>>(HttpStatusCode.OK)]
     [ProducesResponse<IApiResult>(HttpStatusCode.InternalServerError)]
-    [SwaggerOperation(OperationId = nameof(GetTrackedStreamSubjects))]
-    public async Task<IActionResult> GetTrackedStreamSubjects(
+    public async Task<IActionResult> GetTwitchStreamSubjects(
         [FromQuery(Name = "user-id")] Guid? userId = null
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            IQueryable<TrackedStreamSubject> subjects = dbContext.ActiveTrackedStreamSubjects
+            IQueryable<TwitchStreamSubject> subjects = dbContext.ActiveTwitchStreamSubject
                 .Include(subject => subject.User)
                 .ConditionalWhere(userId is not null, subject => subject.User.Id == userId);
 
-            TrackedStreamSubject[] result = await subjects.ToArrayAsync();
+            TwitchStreamSubject[] result = await subjects.ToArrayAsync();
             TwitchGameTitleToIdCache?[] images = await Task.WhenAll(result
                 .Select(item => item.TwitchGameId is not null 
                     ? twitchCategoryCache.GetCategoryByIdAsync(item.TwitchGameId)
@@ -95,18 +90,17 @@ public class TrackedStreamSubjectController(
         }
     }
     
-    [HttpGet]
+    [HttpGet("/{subjectId}")]
     [ProducesResponse<IApiResult<TrackedStreamSubjectDto>>(HttpStatusCode.OK)]
     [ProducesResponse<IApiResult>(HttpStatusCode.InternalServerError)]
-    [SwaggerOperation(OperationId = nameof(GetTrackedStreamSubject))]
-    public async Task<IActionResult> GetTrackedStreamSubject(
+    public async Task<IActionResult> GetTwitchStreamSubject(
         [FromQuery(Name="user-id")] Guid userId,
         [FromQuery(Name="subject-id")] Ulid subjectId
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TrackedStreamSubject? result = await dbContext.ActiveTrackedStreamSubjects
+            TwitchStreamSubject? result = await dbContext.ActiveTwitchStreamSubject
                 .Include(subject => subject.User)
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId && subject.User.Id == userId);
             if (result is null) return FailureClient(msg:"No Tracked Subject found");
@@ -129,22 +123,20 @@ public class TrackedStreamSubjectController(
     [HttpPost]
     [ProducesResponse<IApiResult<TrackedStreamSubjectDto>>(HttpStatusCode.OK)]
     [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
-    [SwaggerOperation(OperationId = nameof(UpsertTrackedStreamSubject))]
-    public async Task<IActionResult> UpsertTrackedStreamSubject(
+    public async Task<IActionResult> UpsertTwitchStreamSubject(
         [FromBody] TrackedStreamSubjectDtoPost dto,
         [FromQuery] Ulid? subjectId = null
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TrackedStreamSubject? result = await CreateNewTrackedStreamSubjectAsync(dbContext, dto, subjectId);
+            TwitchStreamSubject? result = await CreateTwitchStreamSubjectAsync(dbContext, dto, subjectId);
             if (result is null) return FailureClient();
 
             if (subjectId is not null) {
-                dbContext.TrackedStreamSubjects.Update(result);
-            }
-            else {
-                dbContext.TrackedStreamSubjects.Add(result);
+                dbContext.TwitchStreamSubject.Update(result);
+            } else {
+                dbContext.TwitchStreamSubject.Add(result);
             }
             await dbContext.SaveChangesAsync();
             
@@ -163,15 +155,14 @@ public class TrackedStreamSubjectController(
     [ProducesResponse<IApiResult<bool>>(HttpStatusCode.OK)]
     [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
     [ProducesResponse<ApiResult>(HttpStatusCode.InternalServerError)]
-    [SwaggerOperation(OperationId = nameof(SelectTrackedStreamSubject))]
-    public async Task<IActionResult> SelectTrackedStreamSubject(
+    public async Task<IActionResult> SelectTwitchStreamSubject(
         [FromQuery(Name="user-id")] Guid userId,
         [FromQuery(Name="subject-id")] Ulid subjectId
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TrackedStreamSubject? result = await dbContext.ActiveTrackedStreamSubjects
+            TwitchStreamSubject? result = await dbContext.ActiveTwitchStreamSubject
                 .Include(subject => subject.User)
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId && subject.User.Id == userId);
             if (result is null) return FailureClient(msg:"No Tracked Subject found");
@@ -205,14 +196,13 @@ public class TrackedStreamSubjectController(
     [ProducesResponse<IApiResult<bool>>(HttpStatusCode.OK)]
     [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
     [ProducesResponse<ApiResult>(HttpStatusCode.InternalServerError)]
-    [SwaggerOperation(OperationId = nameof(DeleteTrackedStreamSubject))]
     public async Task<IActionResult> DeleteTrackedStreamSubject(
         [FromQuery(Name = "subject-id")] Ulid subjectId
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TrackedStreamSubject? result = await dbContext.TrackedStreamSubjects
+            TwitchStreamSubject? result = await dbContext.TwitchStreamSubject
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId);
 
             if (result is null) return FailureClient(msg:"No Tracked Subject found");

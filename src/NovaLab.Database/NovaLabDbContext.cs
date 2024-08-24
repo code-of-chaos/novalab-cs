@@ -13,26 +13,21 @@ namespace NovaLab.Database;
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 public class NovaLabDbContext : IdentityDbContext<NovaLabUser, IdentityRole<Guid>, Guid> {
-    public DbSet<TrackedStreamSubject> TrackedStreamSubjects { get; init; }
-    public IQueryable<TrackedStreamSubject> ActiveTrackedStreamSubjects => TrackedStreamSubjects.Where(subject => !subject.IsSoftDeleted);
-    
-    public DbSet<TrackedStreamSubjectComponent> TrackedStreamSubjectComponents { get; init; }
-    public IQueryable<TrackedStreamSubjectComponent> ActiveTrackedStreamSubjectComponents => TrackedStreamSubjectComponents.Where(subject => !subject.IsSoftDeleted);
-    
-    public DbSet<TwitchFollowerGoal> TwitchFollowerGoals { get; init; }
-    public IQueryable<TwitchFollowerGoal> ActiveTwitchFollowerGoals => TwitchFollowerGoals.Where(goal => !goal.IsSoftDeleted);
-    
+    #region TwitchStreamSubject
+    public DbSet<TwitchStreamSubject> TwitchStreamSubject { get; init; }
+    public IQueryable<TwitchStreamSubject> ActiveTwitchStreamSubject => TwitchStreamSubject.Where(subject => !subject.IsSoftDeleted);
+    #endregion
+    #region TwitchManagedRewards
     public DbSet<TwitchManagedReward> TwitchManagedRewards { get; init; }
     public IQueryable<TwitchManagedReward> ActiveTwitchManagedRewards => TwitchManagedRewards.Where(goal => !goal.IsSoftDeleted);
-    
+    #endregion
+    #region TwitchManagedRewardRedemptions
     public DbSet<TwitchManagedRewardRedemption> TwitchManagedRewardRedemptions { get; init; }
     public IQueryable<TwitchManagedRewardRedemption> ActiveTwitchManagedRewardRedemptions => TwitchManagedRewardRedemptions.Where(goal => !goal.IsSoftDeleted);
-    
-    public DbSet<TwitchNewFollower> TwitchNewFollowers { get; init; }
-    public IQueryable<TwitchNewFollower> ActiveTwitchNewFollowers => TwitchNewFollowers.Where(goal => !goal.IsSoftDeleted);
-    
+    #endregion
+    #region TwitchGameTitleToIdCache
     public DbSet<TwitchGameTitleToIdCache> TwitchGameTitleToIdCache { get; init; }
-    
+    #endregion
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
@@ -44,15 +39,5 @@ public class NovaLabDbContext : IdentityDbContext<NovaLabUser, IdentityRole<Guid
     // -----------------------------------------------------------------------------------------------------------------
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
-        
-        modelBuilder.Entity<TrackedStreamSubject>()
-            .HasOne(p => p.TrackedStreamSubjectComponent)
-            .WithOne(t => t.TrackedStreamSubject)
-            .HasForeignKey<TrackedStreamSubjectComponent>(rem => rem.Id)
-            .IsRequired(false);
-
-        modelBuilder.Entity<TrackedStreamSubjectComponent>()
-            .HasIndex(b => b.Id)
-            .IsUnique();
     }
 }

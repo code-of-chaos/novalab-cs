@@ -1,8 +1,9 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using NovaLab.ApiClient.Model
+@using NovaLab.ApiClient.Models
 @using NovaLab.Services
+@using Ulid=NovaLab.ApiClient.Models.Ulid
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -23,7 +24,7 @@
                     <MudPaper Class="flex flex-row gap-2 rounded-xl p-3 lg:gap-4">
                         @* Image Section *@
                         <div class="h-full w-2/5 flex-shrink-0 relative">
-                            <MudImage Src="@(item.TwitchGameImageUrl.Replace("{width}x{height}", "200x300"))" 
+                            <MudImage Src="@(item.TwitchGameImageUrl?.Replace("{width}x{height}", "200x300"))" 
                                       Alt="@item.TwitchGameName" 
                                       Class="rounded-lg aspect-poster h-auto w-full shadow-inner"/>
                         </div>
@@ -79,7 +80,7 @@
          StateHasChanged();
      }
      
-     private async Task OnSubmitAsync(Guid itemId) {
+     private async Task OnSubmitAsync(Ulid itemId) {
          if (await NovaLabUserService.GetUserIdAsync() is not {} userId) return;
          
          await NovaLabApiService.TrackedStreamSubject.SelectTrackedStreamSubjectAsync(
@@ -88,7 +89,7 @@
          );
      }
      
-     private async Task OnEditAsync(Guid itemId) {
+     private async Task OnEditAsync(Ulid itemId) {
          TrackedStreamSubjectDto? dto = Data?.First(d => d.Id == itemId);
          if (dto is null) return;
          
@@ -101,7 +102,7 @@
          if (result is { Canceled: false }) await FetchDataAsync();
      }
 
-     private async Task OnDeleteAsync(Guid itemId) {
+     private async Task OnDeleteAsync(Ulid itemId) {
          bool? result = await DialogService.ShowMessageBox("Delete Stream Setup", "Deletion can only be undone by an admin", yesText: "Delete", cancelText: "Cancel");
          if (result is true) {
              await NovaLabApiService.TrackedStreamSubject.DeleteTrackedStreamSubjectAsync(
