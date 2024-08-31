@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------------------------------------------
 $Language = "CSharp"
 $NameSpace = "NovaLab.ApiClient"
-$OutputFolder = "./src/NovaLab.ApiClient/"
+$OutputFolder = "./src/lib/NovaLab.ApiClient/"
 $ClassName = "NovaLabApiClient"
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -11,9 +11,9 @@ $ClassName = "NovaLabApiClient"
 # -----------------------------------------------------------------------------------------------------------------
 function main {
   echo "Generating OpenAPI client ..."
-  cd "./src/NovaLab.ApiClient/"
+  cd "./src/lib/NovaLab.ApiClient/"
   kiota generate `
-    --openapi ..\NovaLab.API\swagger.json `
+    --openapi ..\..\server\api\NovaLab.Server.API\swagger.json `
     --language $Language `
     --namespace-name $NameSpace `
     --backing-store false `
