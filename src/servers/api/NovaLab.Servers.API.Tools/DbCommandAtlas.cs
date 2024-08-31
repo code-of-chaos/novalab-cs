@@ -6,6 +6,8 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Server.Database;
 using NovaLab.Servers.API.Tools.Args;
+using Serilog;
+using Serilog.Core;
 using System.Diagnostics.CodeAnalysis;
 using ILogger=Serilog.ILogger;
 
@@ -21,14 +23,19 @@ public class DbCommandAtlas(IDbContextFactory<NovaLabDbContext> contextFactory, 
     // -----------------------------------------------------------------------------------------------------------------
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private static bool TrySanitizeFilePath(string input, [NotNullWhen(true)] out string? output) {
+    private bool TrySanitizeFilePath(string input, [NotNullWhen(true)] out string? output) {
         output = null;
         if (input.Contains(' ')) return false;
         if (input.Contains('\'')) return false;
 
-        output = input;
-        if (output.EndsWith(".bak")) output = output.Replace(".bak", "");
-        return true;
+        try {
+            output = Path.ChangeExtension(input, "");
+            return true;
+        }
+        catch (Exception ex) {
+            logger.Error(ex, "Failed to parse output path.");
+            return false;
+        }
     }
     
     // -----------------------------------------------------------------------------------------------------------------

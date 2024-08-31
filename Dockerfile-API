@@ -6,17 +6,17 @@ FROM ${DOTNET_SDK} AS build
 ARG BUILD_CONFIGURATION=Release
 
 COPY . .
-WORKDIR ./src/NovaLab.API
+WORKDIR ./src/servers/api/NovaLab.Servers.API
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-WORKDIR ../NovaLab.API.Tools
+WORKDIR ../NovaLab.Servers.API.Tools
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
 # Stage 2: Publish the application
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "../NovaLab.API/NovaLab.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.API /p:UseAppHost=false -p:PublishTrimmed=false && \
-    dotnet publish "NovaLab.API.Tools.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.API.Tools /p:UseAppHost=false -p:PublishTrimmed=false
+RUN dotnet publish "../NovaLab.Servers.API/NovaLab.Servers.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Servers.API /p:UseAppHost=false -p:PublishTrimmed=false && \
+    dotnet publish "NovaLab.Servers.API.Tools.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Servers.API.Tools /p:UseAppHost=false -p:PublishTrimmed=false
 
 # Stage 3: Create the runtime image
 FROM ${DOTNET_RUNTIME} AS base
@@ -28,4 +28,4 @@ RUN chmod +x ./tools-api.sh
 
 EXPOSE 443
 
-ENTRYPOINT ["dotnet", "/app/NovaLab.API/NovaLab.API.dll"]
+ENTRYPOINT ["dotnet", "/app/NovaLab.Servers.API/NovaLab.Servers.API.dll"]

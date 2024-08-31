@@ -4,7 +4,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NovaLab.Server.Database.Models.Account;
 using NovaLab.Server.Database.Models.Twitch;
 using NovaLab.Server.Database.Models.Twitch.HelixApi;
 
@@ -42,3 +41,13 @@ public class NovaLabDbContext : IdentityDbContext<NovaLabUser, IdentityRole<Guid
         base.OnModelCreating(modelBuilder);
     }
 }
+
+
+
+
+
+
+
+
+
+

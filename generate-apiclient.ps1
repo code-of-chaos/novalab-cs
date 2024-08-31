@@ -10,10 +10,10 @@ $ClassName = "NovaLabApiClient"
 # Code
 # -----------------------------------------------------------------------------------------------------------------
 function main {
-  echo "Generating OpenAPI client ..."
+  echo "Generating OpenAPI client with Kiota ..."
   cd "./src/lib/NovaLab.ApiClient/"
   kiota generate `
-    --openapi ..\..\server\api\NovaLab.Server.API\swagger.json `
+    --openapi ..\..\servers\api\NovaLab.Servers.API\swagger.json `
     --language $Language `
     --namespace-name $NameSpace `
     --backing-store false `

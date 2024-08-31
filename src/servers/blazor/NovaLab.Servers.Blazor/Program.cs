@@ -14,6 +14,7 @@ using NovaLab.Server.Services.Twitch;
 using NovaLab.Servers.Blazor.Components;
 using NovaLab.Servers.Blazor.Components.Account;
 using NovaLab.WasmClient.Services;
+using Serilog;
 using System.Security.Cryptography.X509Certificates;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
@@ -190,7 +191,7 @@ public static class Program {
         });
         
         builder.Services.AddScoped<NovaLabUserService>();
-        builder.Services.AddSingleton<NovaLabApiService>();
+        builder.Services.AddScoped<NovaLabApiService>();
 
         // -------------------------------------------------------------------------------------------------------------
         // NovaLabApp

@@ -3,19 +3,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NovaLab.EnvironmentSwitcher;
-using NovaLab.Twitch;
-using NovaLab.Database;
-using NovaLab.Database.Models.Account;
+using NovaLab.Server.Database;
+using NovaLab.Server.Database.Models.Account;
+using NovaLab.Server.EnvironmentSwitcher;
+using NovaLab.Server.Services.Twitch;
 using NovaLab.Servers.API.Services.Twitch;
 using Serilog;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using TwitchLib.Api;
 
 namespace NovaLab.Servers.API;
@@ -46,11 +43,6 @@ public static class Program {
         builder.Services.AddControllers();
         
         // - Auth -
-        
-        
-        builder.Services
-            .AddIdentityApiEndpoints<IdentityUser<Guid>>()
-            .AddEntityFrameworkStores<NovaLabDbContext>();
         
         // - Swagger -
         builder.Services.AddEndpointsApiExplorer();

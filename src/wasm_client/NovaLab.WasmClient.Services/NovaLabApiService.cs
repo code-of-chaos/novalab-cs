@@ -11,9 +11,9 @@ namespace NovaLab.WasmClient.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class NovaLabApiService(IConfiguration configuration, HttpClient client, IAuthenticationProvider authenticationProvider) {
+public class NovaLabApiService(IConfiguration configuration) {
     public readonly NovaLabApiClient NovaLabApiClient = new(new HttpClientRequestAdapter(
-        authenticationProvider,
+        new AnonymousAuthenticationProvider(),
         httpClient: new HttpClient { BaseAddress = new Uri(configuration["ApiEndpoint"]!) }
     ));
     

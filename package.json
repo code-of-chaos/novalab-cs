@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "watch:tailwind-css": "npx tailwindcss -i ./src/NovaLab.Server/Styles/tailwind.css -o ./src/NovaLab.Server/wwwroot/css/tailwind-styles.css --watch"
+    "watch:tailwind-css": "npx tailwindcss -i ./src/servers/blazor/NovaLab.Servers.Blazor/Styles/tailwind.css -o ./src/servers/blazor/NovaLab.Servers.Blazor/wwwroot/css/tailwind-styles.css --watch"
   },
   "keywords": [],
   "author": "",

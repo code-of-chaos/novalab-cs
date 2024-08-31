@@ -29,8 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{67926B6C-902
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{8F02CDA3-17B9-4390-96C2-C465BE88C9CC}"
 	ProjectSection(SolutionItems) = preProject
-		tools-server.sh = tools-server.sh
-		Dockerfile-Server = Dockerfile-Server
+		tools-blazor.sh = tools-blazor.sh
+		Dockerfile-Blazor = Dockerfile-Blazor
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Servers.Blazor", "src\servers\blazor\NovaLab.Servers.Blazor\NovaLab.Servers.Blazor.csproj", "{EADD5C14-1AFE-4CE9-B3F2-27E1165DEA19}"
@@ -41,9 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Servers.Blazor.Tool
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{F6E0A6C1-00DE-494F-887E-90AE8F57A2C1}"
 	ProjectSection(SolutionItems) = preProject
-		generate-certs.ps1 = generate-certs.ps1
 		generate-apiclient.ps1 = generate-apiclient.ps1
-		generate-dotenv.ps1 = generate-dotenv.ps1
+		generate-common.ps1 = generate-common.ps1
 		package.json = package.json
 		tailwind.config.js = tailwind.config.js
 	EndProjectSection

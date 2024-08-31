@@ -3,6 +3,8 @@
 $envVariables = @{
     "SqlServerSAPassword"             = "pa55w0rd!"
     "SslCertPassword"                 = "pa55w0rd!" # If you change this one, then you have to change it in generate-certs.ps1 as well
+    "TwitchClientId"                  = $null
+    "TwitchClientSecret"              = $null
 }
 # -----------------------------------------------------------------------------------------------------------------
 # Code
@@ -38,7 +40,17 @@ function main(){
         Add-Content -Path $envFileName -Value ("{0}={1}" -f $entry.Key, $entry.Value)
     }
 
-    Write-Output "Successfully created .env with these variables: $($envVariables.Keys -join ', ')"
+    Write-Output "Successfully created .env files, with the following variables: $($envVariables.Keys -join ', ')"
+
+    # Generate the Development certificates for the various systems which need it
+    #      The default password is also used in the launch configurations
+    echo "Creating NovaLab.Servers.Blazor.pfx ..."
+    dotnet dev-certs https --trust -ep $env:USERPROFILE/.aspnet/https/NovaLab.Servers.Blazor.pfx -p $envVariables["SslCertPassword"]
+
+    echo "Creating NovaLab.Servers.API.pfx ..."
+    dotnet dev-certs https --trust -ep $env:USERPROFILE/.aspnet/https/NovaLab.Servers.API.pfx -p $envVariables["SslCertPassword"]
+    
+    echo "Successfully created .pfx files"
 }
 
 # Run the main
