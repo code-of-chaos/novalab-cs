@@ -14,6 +14,7 @@ using NovaLab.Servers.API.Services.Twitch;
 using Serilog;
 using System.Security.Cryptography.X509Certificates;
 using TwitchLib.Api;
+using NovaLab.Server.Services.Jwt;
 
 namespace NovaLab.Servers.API;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -43,13 +44,14 @@ public static class Program {
         builder.Services.AddControllers();
         
         // - Auth -
+        builder.AddNovaLabJwtAuthentication();
         
         // - Swagger -
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options => {
             options.SwaggerDoc("v1", new OpenApiInfo {
                 Version = "v1",
-                Title = "NovaLab API",
+                Title = "NovaLab API v1",
                 Description = "An ASP.NET Core Web API for managing your streams",
             });
             options.EnableAnnotations();
@@ -154,7 +156,7 @@ public static class Program {
         // - Swagger -
         app.UseSwagger();
         app.UseSwaggerUI(ctx => {
-            ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "NovaLab API");
+            ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "NovaLab API v1");
             ctx.RoutePrefix = string.Empty;
         });
 
@@ -165,6 +167,7 @@ public static class Program {
         });
         
         app.MapControllers();
+        
         await app.RunAsync().ConfigureAwait(false);
     }
 }

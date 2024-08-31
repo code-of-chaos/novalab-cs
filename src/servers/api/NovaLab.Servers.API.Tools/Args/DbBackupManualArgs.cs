@@ -1,18 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CliArgsParser.Attributes;
-using CliArgsParser.Contracts;
+using CliArgsParser;
 
 namespace NovaLab.Servers.API.Tools.Args;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class DbBackupManualArgs : IParameters {
-    [AutoArgValue("file", "Filename to be used. Cannot include .bak")]
+public class DbBackupManualArgs : ICommandParameters {
+    [ArgValue("file", "Filename to be used. Cannot include .bak")]
     public string FilePath { get; set; } = "temp";
     
-    [AutoArgValue("database", "Specific database which you want to have exported")]
+    [ArgValue("database", "Specific database which you want to have exported")]
     public string DatabaseName { get; set; } = "NovaLabDb";
 }
+

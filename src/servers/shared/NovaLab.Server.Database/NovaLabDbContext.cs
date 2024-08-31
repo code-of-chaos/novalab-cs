@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NovaLab.Server.Database.Converters;
 using NovaLab.Server.Database.Models.Twitch;
 using NovaLab.Server.Database.Models.Twitch.HelixApi;
 
@@ -39,6 +40,13 @@ public class NovaLabDbContext : IdentityDbContext<NovaLabUser, IdentityRole<Guid
     // -----------------------------------------------------------------------------------------------------------------
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
+    }
+    
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder) {
+        configurationBuilder
+            .Properties<Ulid>()
+            .HaveConversion<UlidToStringConverter>();
+        // .HaveConversion<UlidToBytesConverter>();
     }
 }
 

@@ -1,13 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CliArgsParser.Attributes;
+using CliArgsParser;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Server.Database;
 using NovaLab.Servers.API.Tools.Args;
-using Serilog;
-using Serilog.Core;
 using System.Diagnostics.CodeAnalysis;
 using ILogger=Serilog.ILogger;
 
@@ -16,8 +14,7 @@ namespace NovaLab.Servers.API.Tools;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[CommandAtlas]
-public class DbCommandAtlas(IDbContextFactory<NovaLabDbContext> contextFactory, ILogger logger) {
+public class DbCommandAtlas(IDbContextFactory<NovaLabDbContext> contextFactory, ILogger logger) : ICommandAtlas {
     private Task<NovaLabDbContext> NovaLabDb => contextFactory.CreateDbContextAsync();
 
     // -----------------------------------------------------------------------------------------------------------------

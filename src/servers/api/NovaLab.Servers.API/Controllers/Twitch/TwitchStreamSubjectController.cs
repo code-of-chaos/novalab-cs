@@ -62,6 +62,7 @@ public class TwitchStreamSubjectController(
     // -----------------------------------------------------------------------------------------------------------------
     // GET Methods
     // -----------------------------------------------------------------------------------------------------------------
+    [HttpGet]
     [ProducesResponse<IApiResult<TrackedStreamSubjectDto>>(HttpStatusCode.OK)]
     [ProducesResponse<IApiResult>(HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetTwitchStreamSubjects(

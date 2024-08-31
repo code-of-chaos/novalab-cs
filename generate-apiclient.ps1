@@ -18,7 +18,8 @@ function main {
     --namespace-name $NameSpace `
     --backing-store false `
     --class-name $ClassName `
-    --output ./
+    --output ./ `
+    --exclude-backward-compatible
   
   echo "Finished"
 }

@@ -2,8 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CliArgsParser;
-using CliArgsParser.Contracts;
-using CliArgsParser.PreMade.Commands;
 using CodeOfChaos.AspNetCore.Environment;
 using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -42,23 +40,25 @@ public static class Program {
         });
         builder.Services.AddScoped(options => 
             options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
+        
+        builder.Services.AddCliArgsParser(configuration =>
+            configuration
+                .SetConfig(new CliArgsParserConfig {
+                    Overridable = true,
+                    GenerateShortNames = true,
+                    EnableExitAtlas = true,
+                    EnableHelpAtlas = true
+                })
+                .AddFromAssembly(typeof(Program).Assembly)
+        );
 
         // -------------------------------------------------------------------------------------------------------------
         // App
         // -------------------------------------------------------------------------------------------------------------
         WebApplication app = builder.Build();
-
-        List<Type> atlasTypes = [
-            typeof(HelpCommand), // TODO pester the dev of CliArgsParser into making an actually decent Help Command
-            typeof(DbCommandAtlas),
-        ];
         
         // Configure parser & load all Command atlases
-        var parserConfiguration = new ParserConfiguration();
-        atlasTypes.ForEach(t => parserConfiguration.RegisterAtlas(ActivatorUtilities.CreateInstance(app.Services, t)));
-
-        // Create parser and treat the system like a CLI
-        ICliParser parser = parserConfiguration.CreateCliParser();
-        await parser.TryParseContinuousAsync();
+        var parser = app.Services.GetRequiredService<ICliParser>();
+        await parser.StartParsingAsync();
     }
 }

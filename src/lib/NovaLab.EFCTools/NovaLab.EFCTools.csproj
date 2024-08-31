@@ -9,7 +9,7 @@
     <ItemGroup>
       <PackageReference Include="Ulid" Version="1.3.4" />
       <ProjectReference Include="..\..\servers\shared\NovaLab.Server.Database\NovaLab.Server.Database.csproj" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
