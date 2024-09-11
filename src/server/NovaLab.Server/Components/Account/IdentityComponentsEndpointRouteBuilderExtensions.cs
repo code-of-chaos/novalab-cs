@@ -66,7 +66,7 @@ internal static class IdentityComponentsEndpointRouteBuilderExtensions {
         });
 
         var loggerFactory = endpoints.ServiceProvider.GetRequiredService<ILoggerFactory>();
-        ILogger downloadLogger = loggerFactory.CreateLogger("DownloadPersonalData");
+        Microsoft.Extensions.Logging.ILogger downloadLogger = loggerFactory.CreateLogger("DownloadPersonalData");
 
         manageGroup.MapPost("/DownloadPersonalData", async (
             HttpContext context,

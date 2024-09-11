@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
+using NovaLab.Server.API.Services.Twitch;
 using NovaLab.Server.Components;
 using NovaLab.Server.Components.Account;
 using NovaLab.Server.Database;
@@ -14,6 +15,7 @@ using NovaLab.Server.Database.Models.Account;
 using NovaLab.Server.EnvironmentSwitcher;
 using NovaLab.Server.Services.Twitch;
 using NovaLab.WasmClient.Services;
+using Serilog;
 using System.Security.Cryptography.X509Certificates;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
@@ -158,15 +160,24 @@ public static class Program {
         // - Twitch Services -
         // TwitchApi is a singleton because they don't use injection
         //      Check into if Twitch has an Openapi.json / swagger.json and build own lib with injection?
-        builder.Services.AddSingleton(new TwitchAPI {
-            Settings = {
-                ClientId = environmentSwitcher.TwitchClientId,
-                Secret = environmentSwitcher.TwitchClientSecret
-            }
-        });
-        builder.Services.AddScoped<TwitchTokensManager>();
-        // builder.Services.AddTwitchLibEventSubWebsockets(); // Needed by TwitchLib's websockets. I don't remember why.
-        // builder.Services.AddHostedTwitchServices();
+        try {
+            builder.Services.AddSingleton(new TwitchAPI {
+                Settings = {
+                    ClientId = environmentSwitcher.TwitchClientId,
+                    Secret = environmentSwitcher.TwitchClientSecret
+                }
+            });
+            builder.Services.AddScoped<TwitchTokensManager>();
+            builder.Services.AddSingleton<TwitchGameTitleToIdCacheService>();
+        } 
+        catch (Exception ex) {
+            // ignored
+            #if !DEBUG
+                if (environmentSwitcher.IsRunningInDocker) throw;
+            #else
+            Log.Logger.Warning(ex, "Twitch could not be added to the API");
+            #endif
+        }
 
         // - MudBlazor -
         builder.Services.AddMudServices();
@@ -179,7 +190,6 @@ public static class Program {
                     // Local Development 
                     "https://localhost:7190", "https://localhost:7145", 
                     // Docker 
-                    "http://localhost:9052", "https://localhost:9052", // API
                     "http://localhost:9051", "https://localhost:9051", // Server
                     "https://localhost:80"
                 )
@@ -223,12 +233,21 @@ public static class Program {
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(WasmClient.Program).Assembly);
 
-        // Add additional endpoints required by the Identity /Account Razor components.
-        app.MapAdditionalIdentityEndpoints();
-        app.MapGet("/api", httpContext => {
-            httpContext.Response.Redirect(environmentSwitcher.Variables.GetRequiredValue<string>("ApiUrlRoot"));
+        // - Swagger -
+        app.UseSwagger();
+        app.UseSwaggerUI(ctx => {
+            ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "NovaLab API v1");
+            ctx.RoutePrefix = string.Empty;
+        });
+
+        // - Custom endpoints -
+        app.MapGet("", ctx => {
+            ctx.Response.Redirect("/swagger/index.html");
             return Task.CompletedTask;
         });
+        
+        // - api controllers -
+        app.MapControllers();
         
 
         await app.RunAsync().ConfigureAwait(false);
