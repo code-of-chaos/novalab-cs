@@ -200,18 +200,11 @@ public static class Program {
         
         // - Cors -
         builder.Services.AddCors(options => {
-            options.AddPolicy("AllowLocalHosts", policyBuilder => {
+            options.AddPolicy("AllowAll", policyBuilder => {
                 policyBuilder
-                    .WithOrigins(
-                    // Local Development 
-                    "https://localhost:7190", "https://localhost:7145", 
-                    // Docker 
-                    "http://localhost:9051", "https://localhost:9051", // Server
-                    "https://localhost:80"
-                )
-                .AllowAnyHeader()
-                .AllowCredentials()
-                .AllowAnyMethod();
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
             });
         });
         
@@ -237,37 +230,27 @@ public static class Program {
         app.UseHttpsRedirection();
         
         // - Cors -
-        app.UseCors("AllowLocalHosts");
+        app.UseCors("AllowAll");
 
         app.UseAuthentication();
         app.UseAuthorization(); 
         app.UseStaticFiles();
         app.UseAntiforgery();
-
         
-        // - api controllers -
-        app.MapControllers();
-        
+        // - Pages -
         app.MapRazorComponents<NovaLabApp>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(WasmClient.Program).Assembly);
 
-        // - Swagger -
+        // - API & Swagger -
         app.UseSwagger();
         app.UseSwaggerUI(ctx => {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "NovaLab API v1");
-            ctx.RoutePrefix = string.Empty;
+            ctx.RoutePrefix = "swagger";
         });
-
-        // - Custom endpoints -
-        app.MapGet("/api", ctx => {
-            ctx.Response.Redirect("/swagger/index.html");
-            return Task.CompletedTask;
-        });
+        app.MapControllers();
         
-        
-
         await app.RunAsync().ConfigureAwait(false);
     }
 }

@@ -8,18 +8,19 @@ services:
     depends_on:
       - novalab-sqlserver
     environment:
-      - ASPNETCORE_URLS=https://+:443
-      - ASPNETCORE_ENVIRONMENT=Release
-      - RunningInDocker=true
-      - TwitchClientId=${TwitchClientId}
-      - TwitchClientSecret=${TwitchClientSecret}
-      - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True
-      - SslCertLocation=/root/.aspnet/https/NovaLab.Servers.Blazor.pfx
-      - SslCertPassword=${SslCertPassword}
-      - ApiUrlRoot="https://localhost:9052"
+      ASPNETCORE_URLS : "https://+:443"
+      ASPNETCORE_ENVIRONMENT : "Release"
+      RunningInDocker : "true"
+      TwitchClientId : ${TwitchClientId}
+      TwitchClientSecret : ${TwitchClientSecret}
+      DockerDb : "Server=novalab-sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True"
+      SslCertLocation : "/root/.aspnet/https/NovaLab.Servers.Blazor.pfx"
+      SslCertPassword : ${SslCertPassword}
+      ApiUrlRoot : "https://localhost:9052"
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
       - "${USERPROFILE}/.aspnet/https/NovaLab.Servers.Blazor.pfx:/root/.aspnet/https/NovaLab.Servers.Blazor.pfx:ro"
+      - "/var/opt/mssql/backups:/backups" # bind to same backup location as the sqlserver
     networks:
       - novalab-net
       
