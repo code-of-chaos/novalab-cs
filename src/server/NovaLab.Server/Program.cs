@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
 using NovaLab.Server.API;
+using NovaLab.Server.API.Services.Twitch;
 using NovaLab.Server.Components;
 using NovaLab.Server.Components.Account;
 using NovaLab.Server.Database;
@@ -210,6 +211,7 @@ public static class Program {
         
         builder.Services.AddScoped<NovaLabUserService>();
         builder.Services.AddScoped<NovaLabApiService>();
+        builder.Services.AddSingleton<TwitchGameTitleToIdCacheService>();
 
         // -------------------------------------------------------------------------------------------------------------
         // NovaLabApp
@@ -252,6 +254,8 @@ public static class Program {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "NovaLab API v1");
             ctx.RoutePrefix = "swagger";
         });
+
+        app.MapControllers();
         
         await app.RunAsync().ConfigureAwait(false);
     }
