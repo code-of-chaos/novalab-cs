@@ -8,6 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\wasm_client\NovaLab.WasmClient\NovaLab.WasmClient.csproj" />
+        <ProjectReference Include="..\NovaLab.Server.API\NovaLab.Server.API.csproj" />
+<!--        <ProjectReference Include="..\NovaLab.Server.API\NovaLab.Server.API.csproj" />-->
+        <ProjectReference Include="..\NovaLab.Server.Database\NovaLab.Server.Database.csproj" />
+        <ProjectReference Include="..\NovaLab.Server.EnvironmentSwitcher\NovaLab.Server.EnvironmentSwitcher.csproj" />
+        <ProjectReference Include="..\NovaLab.Server.Services.Jwt\NovaLab.Server.Services.Jwt.csproj" />
+        <ProjectReference Include="..\NovaLab.Server.Services.Twitch\NovaLab.Server.Services.Twitch.csproj" />
         <PackageReference Include="Ulid" Version="1.3.4" />
         <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="8.1.0" />
         <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.8.5" />
@@ -30,62 +37,4 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-
-    <ItemGroup>
-        <_ContentIncludedByDefault Remove="wwwroot\css\app.css" />
-        <_ContentIncludedByDefault Remove="wwwroot\css\tailwind-styles.css" />
-        <_ContentIncludedByDefault Remove="Components\Pages\Error.razor" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\wasm_client\NovaLab.WasmClient\NovaLab.WasmClient.csproj" />
-      <ProjectReference Include="..\NovaLab.Server.API\NovaLab.Server.API.csproj" />
-      <ProjectReference Include="..\NovaLab.Server.Database\NovaLab.Server.Database.csproj" />
-      <ProjectReference Include="..\NovaLab.Server.EnvironmentSwitcher\NovaLab.Server.EnvironmentSwitcher.csproj" />
-      <ProjectReference Include="..\NovaLab.Server.Services.Jwt\NovaLab.Server.Services.Jwt.csproj" />
-      <ProjectReference Include="..\NovaLab.Server.Services.Twitch\NovaLab.Server.Services.Twitch.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Components\Account\Pages\AccessDenied.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\ConfirmEmail.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\ConfirmEmailChange.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\ExternalLogin.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\ForgotPassword.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\ForgotPasswordConfirmation.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\InvalidPasswordReset.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\InvalidUser.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Lockout.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Login.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\LoginWith2fa.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\LoginWithRecoveryCode.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Logout.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\ChangePassword.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\DeletePersonalData.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\Disable2fa.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\Email.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\EnableAuthenticator.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\ExternalLogins.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\GenerateRecoveryCodes.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\Index.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\PersonalData.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\ResetAuthenticator.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\SetPassword.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\TwoFactorAuthentication.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Manage\_Imports.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\Register.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\RegisterConfirmation.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\ResendEmailConfirmation.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\ResetPassword.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\ResetPasswordConfirmation.razor" />
-      <AdditionalFiles Include="Components\Account\Pages\_Imports.razor" />
-      <AdditionalFiles Include="Components\Account\Shared\AccountLayout.razor" />
-      <AdditionalFiles Include="Components\Account\Shared\ExternalLoginPicker.razor" />
-      <AdditionalFiles Include="Components\Account\Shared\ManageLayout.razor" />
-      <AdditionalFiles Include="Components\Account\Shared\ManageNavMenu.razor" />
-      <AdditionalFiles Include="Components\Account\Shared\ShowRecoveryCodes.razor" />
-      <AdditionalFiles Include="Components\Account\Shared\StatusMessage.razor" />
-      <AdditionalFiles Include="Components\Pages\Error.razor" />
-    </ItemGroup>
-
 </Project>

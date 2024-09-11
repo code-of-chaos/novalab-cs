@@ -701,6 +701,11 @@ video {
   padding-right: 0.5rem !important;
 }
 
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -708,6 +713,10 @@ video {
 
 .pl-0 {
   padding-left: 0px;
+}
+
+.ps-3 {
+  padding-inline-start: 0.75rem;
 }
 
 .text-xs {

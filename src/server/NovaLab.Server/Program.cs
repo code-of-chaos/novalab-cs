@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
 using NovaLab.Server.API;
-using NovaLab.Server.API.Services.Twitch;
 using NovaLab.Server.Components;
 using NovaLab.Server.Components.Account;
 using NovaLab.Server.Database;
@@ -50,13 +49,14 @@ public static class Program {
         // Services
         // -------------------------------------------------------------------------------------------------------------
         // - Pages & Components-
-        builder.Services.AddControllers() 
-            .AddApplicationPart(typeof(BaseController).Assembly); // Add NovaLab API
         builder.Services.AddRazorPages();
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
-
+        
+        builder.Services.AddControllers() 
+            .AddApplicationPart(typeof(BaseController).Assembly); // Add NovaLab API
+        
         // - Identity & Auth -
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityUserAccessor>();
@@ -126,7 +126,7 @@ public static class Program {
                     .Select(AuthScopesToString)
                     .ToList()
                     .ForEach(twitchOptions.Scope.Add);
-
+        
                 // Tokens are stored through ExternalLogin.razor
                 //      This is needed to make that work
                 twitchOptions.SaveTokens = true;
@@ -143,13 +143,13 @@ public static class Program {
             options.GetRequiredService<IDbContextFactory<NovaLabDbContext>>().CreateDbContext());
         
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+        
         builder.Services.AddIdentity<NovaLabUser, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<NovaLabDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders()
             ;
-
+        
         builder.Services.AddSingleton<IEmailSender<NovaLabUser>, IdentityNoOpEmailSender>();
         
         // - Kestrel SLL - 
@@ -172,7 +172,7 @@ public static class Program {
                 }
             });
             builder.Services.AddScoped<TwitchTokensManager>();
-            builder.Services.AddSingleton<TwitchGameTitleToIdCacheService>();
+            // builder.Services.AddSingleton<TwitchGameTitleToIdCacheService>();
         } 
         catch (Exception ex) {
             // ignored
@@ -194,7 +194,7 @@ public static class Program {
             });
             options.EnableAnnotations();
         });
-
+        
         // - MudBlazor -
         builder.Services.AddMudServices();
         
@@ -226,30 +226,32 @@ public static class Program {
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-
+        
         app.UseHttpsRedirection();
         
         // - Cors -
         app.UseCors("AllowAll");
-
+        
         app.UseAuthentication();
         app.UseAuthorization(); 
         app.UseStaticFiles();
         app.UseAntiforgery();
-        
-        // - Pages -
+
+        // Correct order of mapping Razor components and fallback
+        app.MapRazorPages();
         app.MapRazorComponents<NovaLabApp>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(WasmClient.Program).Assembly);
 
-        // - API & Swagger -
+        // Map additional endpoints for APIs and Swagger
+        app.MapAdditionalIdentityEndpoints();
         app.UseSwagger();
-        app.UseSwaggerUI(ctx => {
+        app.UseSwaggerUI(ctx =>
+        {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "NovaLab API v1");
             ctx.RoutePrefix = "swagger";
         });
-        app.MapControllers();
         
         await app.RunAsync().ConfigureAwait(false);
     }
