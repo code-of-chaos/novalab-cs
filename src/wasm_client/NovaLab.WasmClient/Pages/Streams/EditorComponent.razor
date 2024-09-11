@@ -1,0 +1,59 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using CodeOfChaos.Extensions
+@using NovaLab.ApiClient.Models
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    
+    <MudCard>
+        <MudCardContent>
+            <MudTextField Label="Stream Title" HelperText="Max. 124 Characters" @bind-Value="Model.TwitchTitle" For="@(() => Model.TwitchTitle)"/>
+            <MudTextField Label="Broadcast Language" HelperText="en" @bind-Value="Model.TwitchBroadcastLanguage" For="@(() => Model.TwitchBroadcastLanguage)"/>
+            <MudTextField Label="Tags" HelperText="Seperated by `;`" @bind-Value="Model.TwitchTags" For="@(() => Model.TwitchTags)"/>
+            <MudTextField Label="Game Title" HelperText="Fallout 4, ..." @bind-Value="Model.TwitchGameTitleName" For="@(() => Model.TwitchGameTitleName)"/>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto"> Register</MudButton>
+        </MudCardActions>
+    </MudCard>
+    
+</EditForm>
+
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    [Parameter] public required TrackedStreamSubjectDto StreamSubject { get; set; }
+    private StreamEditorForm? _modelCache;
+    private StreamEditorForm Model => _modelCache ??= new StreamEditorForm {
+        TwitchTitle = StreamSubject.TwitchTitle ?? string.Empty ,
+        TwitchBroadcastLanguage = StreamSubject.TwitchBroadcastLanguage.IsNotNullOrEmpty() ? StreamSubject.TwitchBroadcastLanguage : "en" ,
+        TwitchTags = string.Join(";", StreamSubject.TwitchTags ?? []),
+        TwitchGameTitleName = StreamSubject.TwitchGameName ?? string.Empty
+    };
+    private bool _success;
+    
+    
+    [Parameter] public EventCallback<StreamEditorForm> OnSubmit { get; set; }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    private void OnValidSubmit() {
+        _success = true;
+        StateHasChanged();
+        
+        OnSubmit.InvokeAsync(Model);
+    }
+
+}

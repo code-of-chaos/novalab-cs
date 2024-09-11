@@ -1,8 +1,8 @@
 services:
-  novalab-server:
+  novalab-blazor:
     build:
       context: .
-      dockerfile: Dockerfile-Server
+      dockerfile: Dockerfile-Blazor
     ports:
       - "9051:443" # HTTPS
     depends_on:
@@ -15,12 +15,12 @@ services:
       - TwitchClientId=${TwitchClientId}
       - TwitchClientSecret=${TwitchClientSecret}
       - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True
-      - SslCertLocation=/root/.aspnet/https/NovaLab.Server.pfx
-      - SslCertPassword=${SllCertsPassword}
+      - SslCertLocation=/root/.aspnet/https/NovaLab.Servers.Blazor.pfx
+      - SslCertPassword=${SslCertPassword}
       - ApiUrlRoot="https://localhost:9052"
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
-      - "${USERPROFILE}/.aspnet/https/NovaLab.Server.pfx:/root/.aspnet/https/NovaLab.Server.pfx:ro"
+      - "${USERPROFILE}/.aspnet/https/NovaLab.Servers.Blazor.pfx:/root/.aspnet/https/NovaLab.Servers.Blazor.pfx:ro"
     networks:
       - novalab-net
       
@@ -39,11 +39,11 @@ services:
       - TwitchClientId=${TwitchClientId}
       - TwitchClientSecret=${TwitchClientSecret}
       - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True
-      - SslCertLocation=/root/.aspnet/https/NovaLab.API.pfx
-      - SslCertPassword=${SllCertsPassword}
+      - SslCertLocation=/root/.aspnet/https/NovaLab.Servers.API.pfx
+      - SslCertPassword=${SslCertPassword}
     volumes:
       - ./keys:/root/.aspnet/DataProtection-Keys
-      - "${USERPROFILE}/.aspnet/https/NovaLab.API.pfx:/root/.aspnet/https/NovaLab.API.pfx:ro"
+      - "${USERPROFILE}/.aspnet/https/NovaLab.Servers.API.pfx:/root/.aspnet/https/NovaLab.Servers.API.pfx:ro"
       - "/var/opt/mssql/backups:/backups" # bind to same backup location as the sqlserver
     networks:
       - novalab-net

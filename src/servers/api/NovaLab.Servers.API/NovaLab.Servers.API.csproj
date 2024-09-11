@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>7138c37f-c2de-4b49-9321-243a68cb6424</UserSecretsId>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.8.5" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.6.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.1.3" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.1.1" />
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.3.1" />
+        <PackageReference Include="dotenv.net" Version="3.2.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Serilog" Version="4.0.1" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.7.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.3" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
+        <PackageReference Include="TwitchLib" Version="3.5.3" />
+        <PackageReference Include="Ulid" Version="1.3.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\shared\NovaLab.Server.EnvironmentSwitcher\NovaLab.Server.EnvironmentSwitcher.csproj" />
+      <ProjectReference Include="..\..\shared\NovaLab.Server.Services.Jwt\NovaLab.Server.Services.Jwt.csproj" />
+      <ProjectReference Include="..\..\shared\NovaLab.Server.Services.Twitch\NovaLab.Server.Services.Twitch.csproj" />
+      <ProjectReference Include="..\..\shared\NovaLab.Server.Database\NovaLab.Server.Database.csproj" />
+    </ItemGroup>
+    
+</Project>
+
+
