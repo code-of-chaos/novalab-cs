@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.AspNetCore.API;
 using CodeOfChaos.AspNetCore.Contracts;
+using CodeOfChaos.Extensions;
 using ISOLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using NovaLab.Server.Database;
 using NovaLab.Server.Database.Models.Twitch;
 using NovaLab.Server.Database.Models.Twitch.HelixApi;
 using NovaLab.Server.Services.Twitch;
+using Serilog;
 using System.Net;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.Channels.ModifyChannelInformation;

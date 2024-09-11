@@ -19,7 +19,7 @@
         "environmentVariables": {
           "RunningInDocker": "false",
           "ASPNETCORE_ENVIRONMENT": "Development",
-          "SslCertLocation": "%USERPROFILE%/.aspnet/https/NovaLab.API.pfx",
+          "SslCertLocation": "%USERPROFILE%/.aspnet/https/NovaLab.Servers.Blazor.pfx",
           "ApiUrlRoot": "https://localhost:7190"
         }
       }

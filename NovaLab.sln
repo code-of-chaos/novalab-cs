@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docker", ".docker", "{7BCCF189-18A4-4AFB-8898-83EAE3141ECB}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		Dockerfile-Blazor = Dockerfile-Blazor
+		tools.sh = tools.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{DA6483C2-D3D2-4F86-9C80-5CE42920D101}"
@@ -16,18 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{2BDC0275-6858-4CE0-95AB-4238F77E001D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Database", "src\server\NovaLab.Server.Database\NovaLab.Server.Database.csproj", "{B187DAA8-391A-41F8-9779-2E15F52409D7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{67926B6C-9021-4E67-9F5F-A8B8A2A9D2F0}"
-	ProjectSection(SolutionItems) = preProject
-		tools-api.sh = tools-api.sh
-		Dockerfile-API = Dockerfile-API
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{8F02CDA3-17B9-4390-96C2-C465BE88C9CC}"
-	ProjectSection(SolutionItems) = preProject
-		tools-blazor.sh = tools-blazor.sh
-		Dockerfile-Blazor = Dockerfile-Blazor
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.WasmClient", "src\wasm_client\NovaLab.WasmClient\NovaLab.WasmClient.csproj", "{332C90D8-793E-493A-B363-2E10CAD9F85B}"
 EndProject
@@ -118,8 +108,6 @@ Global
 		{0F4E42D3-57AC-4812-B5D8-F42AE1D67466} = {DA6483C2-D3D2-4F86-9C80-5CE42920D101}
 		{26984A61-C2FC-470E-9B81-03FE3703D6F8} = {0F4E42D3-57AC-4812-B5D8-F42AE1D67466}
 		{2BDC0275-6858-4CE0-95AB-4238F77E001D} = {DA6483C2-D3D2-4F86-9C80-5CE42920D101}
-		{67926B6C-9021-4E67-9F5F-A8B8A2A9D2F0} = {7BCCF189-18A4-4AFB-8898-83EAE3141ECB}
-		{8F02CDA3-17B9-4390-96C2-C465BE88C9CC} = {7BCCF189-18A4-4AFB-8898-83EAE3141ECB}
 		{332C90D8-793E-493A-B363-2E10CAD9F85B} = {0F4E42D3-57AC-4812-B5D8-F42AE1D67466}
 		{305E7100-17CF-4D39-9DA3-2CF7A406D19F} = {936A2537-797F-483B-AAB6-EA69C0B11FEA}
 		{4B323BF7-D13C-4EC4-A039-544D332CEAA6} = {0F4E42D3-57AC-4812-B5D8-F42AE1D67466}

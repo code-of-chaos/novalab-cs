@@ -6,7 +6,9 @@ using CodeOfChaos.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
+using NovaLab.Server.API;
 using NovaLab.Server.API.Services.Twitch;
 using NovaLab.Server.Components;
 using NovaLab.Server.Components.Account;
@@ -48,6 +50,8 @@ public static class Program {
         // Services
         // -------------------------------------------------------------------------------------------------------------
         // - Pages & Components-
+        builder.Services.AddControllers() 
+            .AddApplicationPart(typeof(BaseController).Assembly); // Add NovaLab API
         builder.Services.AddRazorPages();
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
@@ -178,6 +182,18 @@ public static class Program {
             Log.Logger.Warning(ex, "Twitch could not be added to the API");
             #endif
         }
+        
+        
+        // - Swagger -
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options => {
+            options.SwaggerDoc("v1", new OpenApiInfo {
+                Version = "v1",
+                Title = "NovaLab API v1",
+                Description = "An ASP.NET Core Web API for managing your streams",
+            });
+            options.EnableAnnotations();
+        });
 
         // - MudBlazor -
         builder.Services.AddMudServices();
@@ -228,6 +244,10 @@ public static class Program {
         app.UseStaticFiles();
         app.UseAntiforgery();
 
+        
+        // - api controllers -
+        app.MapControllers();
+        
         app.MapRazorComponents<NovaLabApp>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
@@ -241,13 +261,11 @@ public static class Program {
         });
 
         // - Custom endpoints -
-        app.MapGet("", ctx => {
+        app.MapGet("/api", ctx => {
             ctx.Response.Redirect("/swagger/index.html");
             return Task.CompletedTask;
         });
         
-        // - api controllers -
-        app.MapControllers();
         
 
         await app.RunAsync().ConfigureAwait(false);

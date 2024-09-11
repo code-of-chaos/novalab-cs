@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using NovaLab.Server.API.Models.Account;
 using NovaLab.Server.Database;
 using NovaLab.Server.Services.Jwt;
+using Serilog;
 using System.Net;
 
 namespace NovaLab.Server.API.Controllers.Account;

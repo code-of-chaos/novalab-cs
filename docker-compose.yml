@@ -6,8 +6,7 @@ services:
     ports:
       - "9051:443" # HTTPS
     depends_on:
-      - sqlserver
-      - novalab-api
+      - novalab-sqlserver
     environment:
       - ASPNETCORE_URLS=https://+:443
       - ASPNETCORE_ENVIRONMENT=Release
@@ -24,31 +23,7 @@ services:
     networks:
       - novalab-net
       
-  novalab-api:
-    build:
-      context: .
-      dockerfile: Dockerfile-API
-    ports:
-      - "9052:443"
-    depends_on:
-      - sqlserver
-    environment:
-      - ASPNETCORE_URLS=https://+:443
-      - ASPNETCORE_ENVIRONMENT=Release
-      - RunningInDocker=true
-      - TwitchClientId=${TwitchClientId}
-      - TwitchClientSecret=${TwitchClientSecret}
-      - DockerDb=Server=sqlserver;Database=NovaLabDb;User=sa;Password=${SqlServerSAPassword};TrustServerCertificate=True
-      - SslCertLocation=/root/.aspnet/https/NovaLab.Servers.API.pfx
-      - SslCertPassword=${SslCertPassword}
-    volumes:
-      - ./keys:/root/.aspnet/DataProtection-Keys
-      - "${USERPROFILE}/.aspnet/https/NovaLab.Servers.API.pfx:/root/.aspnet/https/NovaLab.Servers.API.pfx:ro"
-      - "/var/opt/mssql/backups:/backups" # bind to same backup location as the sqlserver
-    networks:
-      - novalab-net
-      
-  sqlserver:
+  novalab-sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       SA_PASSWORD: ${SqlServerSAPassword}
