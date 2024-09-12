@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-
+    
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -28,11 +28,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\lib\NovaLab.ApiClient\NovaLab.ApiClient.csproj" />
       <ProjectReference Include="..\NovaLab.WasmClient.ComponentLib\NovaLab.WasmClient.ComponentLib.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Pages\StreamSubjects\StreamSubject.razor" />
-      <_ContentIncludedByDefault Remove="Pages\StreamSubjects\StreamSubjectDetail.razor" />
     </ItemGroup>
 
 </Project>

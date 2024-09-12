@@ -7,26 +7,26 @@ ARG BUILD_CONFIGURATION=Release
 
 COPY . .
 
-WORKDIR ./src/servers/blazor/NovaLab.Servers.Blazor
+WORKDIR ./src/server/NovaLab.Server
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-WORKDIR ../NovaLab.Servers.Blazor.Tools
+WORKDIR ../NovaLab.Server.Tools
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
 # Stage 2: Publish the application
 FROM build AS publish
-RUN dotnet publish "../NovaLab.Servers.Blazor/NovaLab.Servers.Blazor.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Servers.Blazor /p:UseAppHost=false -p:PublishTrimmed=false && \
-    dotnet publish "NovaLab.Servers.Blazor.Tools.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Servers.Blazor.Tools /p:UseAppHost=false -p:PublishTrimmed=false
+RUN dotnet publish "../NovaLab.Server/NovaLab.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Server /p:UseAppHost=false -p:PublishTrimmed=false && \
+    dotnet publish "NovaLab.Server.Tools.csproj" -c $BUILD_CONFIGURATION -o /app/publish/NovaLab.Server.Tools /p:UseAppHost=false -p:PublishTrimmed=false
 
 # Stage 3: Create the runtime image
 FROM ${DOTNET_RUNTIME} AS base
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY --from=publish /app/publish/NovaLab.Servers.Blazor/wwwroot ./wwwroot
-COPY tools-blazor.sh .
+COPY --from=publish /app/publish/NovaLab.Server/wwwroot ./wwwroot
+COPY tools.sh .
 
-RUN chmod +x ./tools-blazor.sh
+RUN chmod +x ./tools.sh
 
 EXPOSE 443
 
-ENTRYPOINT ["dotnet", "/app/NovaLab.Servers.Blazor/NovaLab.Servers.Blazor.dll"]
+ENTRYPOINT ["dotnet", "/app/NovaLab.Server/NovaLab.Server.dll"]

@@ -3,41 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docker", ".docker", "{7BCCF189-18A4-4AFB-8898-83EAE3141ECB}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		Dockerfile-Blazor = Dockerfile-Blazor
+		tools.sh = tools.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{DA6483C2-D3D2-4F86-9C80-5CE42920D101}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{678CB555-C56F-4110-A459-E20D583C6D42}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Servers.API", "src\servers\api\NovaLab.Servers.API\NovaLab.Servers.API.csproj", "{DC21B65F-3DBE-46AD-858D-6749ED93FCF3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Servers.API.Tools", "src\servers\api\NovaLab.Servers.API.Tools\NovaLab.Servers.API.Tools.csproj", "{9739D3E4-E4BE-4930-AA1D-40D1C7300101}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Tools", "src\server\NovaLab.Server.Tools\NovaLab.Server.Tools.csproj", "{9739D3E4-E4BE-4930-AA1D-40D1C7300101}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WasmClient", "WasmClient", "{0F4E42D3-57AC-4812-B5D8-F42AE1D67466}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.WasmClient.ComponentLib", "src\wasm_client\NovaLab.WasmClient.ComponentLib\NovaLab.WasmClient.ComponentLib.csproj", "{26984A61-C2FC-470E-9B81-03FE3703D6F8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Servers", "Servers", "{2BDC0275-6858-4CE0-95AB-4238F77E001D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{2BDC0275-6858-4CE0-95AB-4238F77E001D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Database", "src\servers\shared\NovaLab.Server.Database\NovaLab.Server.Database.csproj", "{B187DAA8-391A-41F8-9779-2E15F52409D7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{67926B6C-9021-4E67-9F5F-A8B8A2A9D2F0}"
-	ProjectSection(SolutionItems) = preProject
-		tools-api.sh = tools-api.sh
-		Dockerfile-API = Dockerfile-API
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{8F02CDA3-17B9-4390-96C2-C465BE88C9CC}"
-	ProjectSection(SolutionItems) = preProject
-		tools-blazor.sh = tools-blazor.sh
-		Dockerfile-Blazor = Dockerfile-Blazor
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Servers.Blazor", "src\servers\blazor\NovaLab.Servers.Blazor\NovaLab.Servers.Blazor.csproj", "{EADD5C14-1AFE-4CE9-B3F2-27E1165DEA19}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Database", "src\server\NovaLab.Server.Database\NovaLab.Server.Database.csproj", "{B187DAA8-391A-41F8-9779-2E15F52409D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.WasmClient", "src\wasm_client\NovaLab.WasmClient\NovaLab.WasmClient.csproj", "{332C90D8-793E-493A-B363-2E10CAD9F85B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Servers.Blazor.Tools", "src\servers\blazor\NovaLab.Servers.Blazor.Tools\NovaLab.Servers.Blazor.Tools.csproj", "{FB212441-CC33-4242-8498-C0A81B8C5D50}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{F6E0A6C1-00DE-494F-887E-90AE8F57A2C1}"
 	ProjectSection(SolutionItems) = preProject
@@ -47,11 +29,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{F6E0A6
 		tailwind.config.js = tailwind.config.js
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Services.Twitch", "src\servers\shared\NovaLab.Server.Services.Twitch\NovaLab.Server.Services.Twitch.csproj", "{A884630C-2DBA-4504-9986-F63F85D1254C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Services.Twitch", "src\server\NovaLab.Server.Services.Twitch\NovaLab.Server.Services.Twitch.csproj", "{A884630C-2DBA-4504-9986-F63F85D1254C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{936A2537-797F-483B-AAB6-EA69C0B11FEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.EnvironmentSwitcher", "src\servers\shared\NovaLab.Server.EnvironmentSwitcher\NovaLab.Server.EnvironmentSwitcher.csproj", "{305E7100-17CF-4D39-9DA3-2CF7A406D19F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.EnvironmentSwitcher", "src\server\NovaLab.Server.EnvironmentSwitcher\NovaLab.Server.EnvironmentSwitcher.csproj", "{305E7100-17CF-4D39-9DA3-2CF7A406D19F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.WasmClient.Services", "src\wasm_client\NovaLab.WasmClient.Services\NovaLab.WasmClient.Services.csproj", "{4B323BF7-D13C-4EC4-A039-544D332CEAA6}"
 EndProject
@@ -59,11 +41,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.EFCTools", "src\lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.ApiClient", "src\lib\NovaLab.ApiClient\NovaLab.ApiClient.csproj", "{CF10C4E1-FD3B-4A36-B1E3-B0871E27BAE0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{360DBAA7-D4FF-4735-B153-95D05BECA1DE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Services.Jwt", "src\servers\shared\NovaLab.Server.Services.Jwt\NovaLab.Server.Services.Jwt.csproj", "{C99541AD-DCF9-4A28-83C7-D6C758465ED3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.Services.Jwt", "src\server\NovaLab.Server.Services.Jwt\NovaLab.Server.Services.Jwt.csproj", "{C99541AD-DCF9-4A28-83C7-D6C758465ED3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{05FA255E-6641-4334-9CA8-50FE22868496}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server", "src\server\NovaLab.Server\NovaLab.Server.csproj", "{DD5DC9A5-7FBE-4D4E-ACAC-6A4425C44279}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaLab.Server.API", "src\server\NovaLab.Server.API\NovaLab.Server.API.csproj", "{7AA2EAE6-9B40-47B6-8A7C-F83251E708D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +55,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DC21B65F-3DBE-46AD-858D-6749ED93FCF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC21B65F-3DBE-46AD-858D-6749ED93FCF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC21B65F-3DBE-46AD-858D-6749ED93FCF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC21B65F-3DBE-46AD-858D-6749ED93FCF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9739D3E4-E4BE-4930-AA1D-40D1C7300101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9739D3E4-E4BE-4930-AA1D-40D1C7300101}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9739D3E4-E4BE-4930-AA1D-40D1C7300101}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,18 +67,10 @@ Global
 		{B187DAA8-391A-41F8-9779-2E15F52409D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B187DAA8-391A-41F8-9779-2E15F52409D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B187DAA8-391A-41F8-9779-2E15F52409D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EADD5C14-1AFE-4CE9-B3F2-27E1165DEA19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EADD5C14-1AFE-4CE9-B3F2-27E1165DEA19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EADD5C14-1AFE-4CE9-B3F2-27E1165DEA19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EADD5C14-1AFE-4CE9-B3F2-27E1165DEA19}.Release|Any CPU.Build.0 = Release|Any CPU
 		{332C90D8-793E-493A-B363-2E10CAD9F85B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{332C90D8-793E-493A-B363-2E10CAD9F85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{332C90D8-793E-493A-B363-2E10CAD9F85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{332C90D8-793E-493A-B363-2E10CAD9F85B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FB212441-CC33-4242-8498-C0A81B8C5D50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB212441-CC33-4242-8498-C0A81B8C5D50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB212441-CC33-4242-8498-C0A81B8C5D50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB212441-CC33-4242-8498-C0A81B8C5D50}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A884630C-2DBA-4504-9986-F63F85D1254C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A884630C-2DBA-4504-9986-F63F85D1254C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A884630C-2DBA-4504-9986-F63F85D1254C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -123,28 +95,31 @@ Global
 		{C99541AD-DCF9-4A28-83C7-D6C758465ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C99541AD-DCF9-4A28-83C7-D6C758465ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C99541AD-DCF9-4A28-83C7-D6C758465ED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD5DC9A5-7FBE-4D4E-ACAC-6A4425C44279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD5DC9A5-7FBE-4D4E-ACAC-6A4425C44279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD5DC9A5-7FBE-4D4E-ACAC-6A4425C44279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD5DC9A5-7FBE-4D4E-ACAC-6A4425C44279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AA2EAE6-9B40-47B6-8A7C-F83251E708D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AA2EAE6-9B40-47B6-8A7C-F83251E708D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AA2EAE6-9B40-47B6-8A7C-F83251E708D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AA2EAE6-9B40-47B6-8A7C-F83251E708D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{DC21B65F-3DBE-46AD-858D-6749ED93FCF3} = {678CB555-C56F-4110-A459-E20D583C6D42}
-		{9739D3E4-E4BE-4930-AA1D-40D1C7300101} = {678CB555-C56F-4110-A459-E20D583C6D42}
 		{0F4E42D3-57AC-4812-B5D8-F42AE1D67466} = {DA6483C2-D3D2-4F86-9C80-5CE42920D101}
 		{26984A61-C2FC-470E-9B81-03FE3703D6F8} = {0F4E42D3-57AC-4812-B5D8-F42AE1D67466}
 		{2BDC0275-6858-4CE0-95AB-4238F77E001D} = {DA6483C2-D3D2-4F86-9C80-5CE42920D101}
-		{67926B6C-9021-4E67-9F5F-A8B8A2A9D2F0} = {7BCCF189-18A4-4AFB-8898-83EAE3141ECB}
-		{8F02CDA3-17B9-4390-96C2-C465BE88C9CC} = {7BCCF189-18A4-4AFB-8898-83EAE3141ECB}
 		{332C90D8-793E-493A-B363-2E10CAD9F85B} = {0F4E42D3-57AC-4812-B5D8-F42AE1D67466}
 		{305E7100-17CF-4D39-9DA3-2CF7A406D19F} = {936A2537-797F-483B-AAB6-EA69C0B11FEA}
 		{4B323BF7-D13C-4EC4-A039-544D332CEAA6} = {0F4E42D3-57AC-4812-B5D8-F42AE1D67466}
 		{B187DAA8-391A-41F8-9779-2E15F52409D7} = {936A2537-797F-483B-AAB6-EA69C0B11FEA}
 		{A884630C-2DBA-4504-9986-F63F85D1254C} = {936A2537-797F-483B-AAB6-EA69C0B11FEA}
-		{360DBAA7-D4FF-4735-B153-95D05BECA1DE} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
-		{EADD5C14-1AFE-4CE9-B3F2-27E1165DEA19} = {360DBAA7-D4FF-4735-B153-95D05BECA1DE}
-		{FB212441-CC33-4242-8498-C0A81B8C5D50} = {360DBAA7-D4FF-4735-B153-95D05BECA1DE}
-		{678CB555-C56F-4110-A459-E20D583C6D42} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
 		{936A2537-797F-483B-AAB6-EA69C0B11FEA} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
 		{C99541AD-DCF9-4A28-83C7-D6C758465ED3} = {936A2537-797F-483B-AAB6-EA69C0B11FEA}
 		{05FA255E-6641-4334-9CA8-50FE22868496} = {DA6483C2-D3D2-4F86-9C80-5CE42920D101}
 		{AF741890-174F-4621-89F8-438B6CF8E523} = {05FA255E-6641-4334-9CA8-50FE22868496}
 		{CF10C4E1-FD3B-4A36-B1E3-B0871E27BAE0} = {05FA255E-6641-4334-9CA8-50FE22868496}
+		{9739D3E4-E4BE-4930-AA1D-40D1C7300101} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
+		{DD5DC9A5-7FBE-4D4E-ACAC-6A4425C44279} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
+		{7AA2EAE6-9B40-47B6-8A7C-F83251E708D2} = {2BDC0275-6858-4CE0-95AB-4238F77E001D}
 	EndGlobalSection
 EndGlobal

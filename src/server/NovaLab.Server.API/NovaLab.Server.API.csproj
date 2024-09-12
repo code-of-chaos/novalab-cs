@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NovaLab.Server.Services.Jwt\NovaLab.Server.Services.Jwt.csproj" />
+      <ProjectReference Include="..\NovaLab.Server.Services.Twitch\NovaLab.Server.Services.Twitch.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.8.5" />
+      <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.3.1" />
+      <PackageReference Include="TwitchLib.Api" Version="3.9.0" />
+    </ItemGroup>
+
+</Project>
