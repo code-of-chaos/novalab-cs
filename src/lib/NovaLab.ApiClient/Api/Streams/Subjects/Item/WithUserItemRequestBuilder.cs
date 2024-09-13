@@ -21,7 +21,7 @@ namespace NovaLab.ApiClient.Api.Streams.Subjects.Item
         /// <summary>Gets an item from the NovaLab.ApiClient.api.streams.subjects.item.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>
         /// <returns>A <see cref="global::NovaLab.ApiClient.Api.Streams.Subjects.Item.Item.WithSubjectItemRequestBuilder"/></returns>
-        public global::NovaLab.ApiClient.Api.Streams.Subjects.Item.Item.WithSubjectItemRequestBuilder this[string position]
+        public global::NovaLab.ApiClient.Api.Streams.Subjects.Item.Item.WithSubjectItemRequestBuilder this[Guid position]
         {
             get
             {
@@ -137,15 +137,8 @@ namespace NovaLab.ApiClient.Api.Streams.Subjects.Item
         public partial class WithUserItemRequestBuilderPostQueryParameters 
         #pragma warning restore CS1591
         {
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
             [QueryParameter("subjectId")]
-            public string? SubjectId { get; set; }
-#nullable restore
-#else
-            [QueryParameter("subjectId")]
-            public string SubjectId { get; set; }
-#endif
+            public Guid? SubjectId { get; set; }
         }
     }
 }

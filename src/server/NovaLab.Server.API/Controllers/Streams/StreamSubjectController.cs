@@ -16,10 +16,11 @@ using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.Channels.ModifyChannelInformation;
 
 namespace NovaLab.Server.API.Controllers.Streams;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+
+// ReSharper disable once RouteTemplates.RouteParameterConstraintNotResolved
 [ApiController]
 [Route("api/streams/subjects/{userId:guid}")]
 public class TwitchStreamSubjectController(
@@ -34,7 +35,7 @@ public class TwitchStreamSubjectController(
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task<TwitchStreamSubject?> CreateTwitchStreamSubjectAsync(
-        NovaLabDbContext dbContext, StreamSubjectDtoPost dtoPost, Guid userId, Ulid? ulid = null
+        NovaLabDbContext dbContext, StreamSubjectDtoPost dtoPost, Guid userId
     ) {
         if (await dbContext.Users.FirstOrDefaultAsync(novaLabUser => novaLabUser.Id == userId) is not {} user) {
             return null;
@@ -47,7 +48,6 @@ public class TwitchStreamSubjectController(
             : null;
         
         return new TwitchStreamSubject {
-            Id = ulid ?? default,
             User = user,
             TwitchGameId = twitchGameId,
             TwitchBroadcastLanguage = dtoPost.TwitchBroadcastLanguage ?? Languages.EN.Alpha2,
@@ -90,12 +90,12 @@ public class TwitchStreamSubjectController(
         }
     }
     
-    [HttpGet("{subjectId}")]
+    [HttpGet("{subjectId:guid}")]
     [ProducesResponse<IApiResult<StreamSubjectDto>>(HttpStatusCode.OK)]
     [ProducesResponse<ApiResultInternalServerError>(HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetTwitchStreamSubject(
         Guid userId,
-        Ulid subjectId
+        Guid subjectId
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
@@ -126,7 +126,7 @@ public class TwitchStreamSubjectController(
     public async Task<IActionResult> UpsertTwitchStreamSubject(
         Guid userId,
         [FromBody] StreamSubjectDtoPost dto,
-        [FromQuery] Ulid? subjectId = null
+        [FromQuery] Guid? subjectId = null
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
@@ -152,12 +152,12 @@ public class TwitchStreamSubjectController(
         }
     }
     
-    [HttpPost("{subjectId}/activate")]
+    [HttpPost("{subjectId:guid}/activate")]
     [ProducesResponse<IApiResult<bool>>(HttpStatusCode.OK)]
     [ProducesResponse<ApiResultBadRequest>(HttpStatusCode.BadRequest)]
     [ProducesResponse<ApiResultInternalServerError>(HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> ActiveStreamSubject(
-        Ulid subjectId, Guid userId 
+        Guid subjectId, Guid userId 
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 
@@ -192,12 +192,12 @@ public class TwitchStreamSubjectController(
     // -----------------------------------------------------------------------------------------------------------------
     // DELETE Methods
     // -----------------------------------------------------------------------------------------------------------------
-    [HttpPost("{subjectId}/remove")]
+    [HttpPost("{subjectId:guid}/remove")]
     [ProducesResponse<IApiResult<bool>>(HttpStatusCode.OK)]
     [ProducesResponse<ApiResultBadRequest>(HttpStatusCode.BadRequest)]
     [ProducesResponse<ApiResultInternalServerError>(HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> DeleteTrackedStreamSubject(
-        Ulid subjectId, Guid userId 
+        Guid subjectId, Guid userId 
     ) {
         await using NovaLabDbContext dbContext = await DbContext;
 

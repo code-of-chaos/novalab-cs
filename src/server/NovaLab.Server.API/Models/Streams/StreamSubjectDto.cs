@@ -12,7 +12,7 @@ namespace NovaLab.Server.API.Models.Streams;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public record StreamSubjectDto(
-    Ulid Id,
+    Guid Id,
     Guid NovaLabUserId,
     string TwitchGameId,
     string TwitchGameName,

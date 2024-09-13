@@ -3,7 +3,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using NovaLab.ApiClient.Models
 @using NovaLab.WasmClient.Services
-@using Ulid=NovaLab.ApiClient.Models.Ulid
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -43,11 +42,11 @@
 
                             <MudToolBar Class="mt-auto pl-0">
                                 <MudIconButton Icon="@Icons.Material.Outlined.Edit"
-                                               OnClick="() => OnEditAsync(item.Id)"/>
+                                               OnClick="() => OnEditAsync(item.Id ?? Guid.Empty)"/>
                                 <MudIconButton Icon="@Icons.Material.Outlined.Delete" Color="Color.Error"
-                                               OnClick="() => OnDeleteAsync(item.Id)"/>
+                                               OnClick="() => OnDeleteAsync(item.Id ?? Guid.Empty)"/>
                                 <MudSpacer/>
-                                <MudButton OnClick="() => OnSubmitAsync(item.Id)">Apply</MudButton>
+                                <MudButton OnClick="() => OnSubmitAsync(item.Id ?? Guid.Empty)">Apply</MudButton>
                             </MudToolBar>
                         </div>
                     </MudPaper>
@@ -66,31 +65,31 @@
      // -----------------------------------------------------------------------------------------------------------------
      // Methods
      // -----------------------------------------------------------------------------------------------------------------
-     protected override async Task OnInitializedAsync() {
+     async protected override Task OnInitializedAsync() {
          await FetchDataAsync();
      }
 
      private async Task FetchDataAsync() {
-         Guid? userId = await NovaLabUserService.GetUserIdAsync();
-         if (userId is null) return;
+         if (!NovaLabUserService.Try(await NovaLabUserService.GetUserIdAsync(), out Guid userId)) {
+             return;
+         }
          
-         // TrackedStreamSubjectDtoIApiResult result = await NovaLabApiService.TrackedStreamSubject.GetTrackedStreamSubjectsAsync(userId:userId);
-         // Data = result.Data;
+         StreamSubjectDtoIApiResult? result = await NovaLabApiService.TrackedStreamSubject[userId].GetAsync();
+         Data = result?.Data;
          
          StateHasChanged();
      }
      
-     private async Task OnSubmitAsync(Ulid itemId) {
-         if (await NovaLabUserService.GetUserIdAsync() is not {} userId) return;
+     private async Task OnSubmitAsync(Guid itemId) {
+         if (!NovaLabUserService.Try(await NovaLabUserService.GetUserIdAsync(), out Guid userId)) {
+             return;
+         }
          
-         // await NovaLabApiService.TrackedStreamSubject.SelectTrackedStreamSubjectAsync(
-         //     userId,
-         //     itemId
-         // );
+         await NovaLabApiService.TrackedStreamSubject[userId][itemId].Activate.PostAsync();
      }
      
-     private async Task OnEditAsync(Ulid itemId) {
-         StreamSubjectDto? dto = Data?.First(d => d.Id == itemId);
+     private async Task OnEditAsync(Guid itemId) {
+         StreamSubjectDto? dto = Data?.First(d => d.Id.ToString() == itemId.ToString());
          if (dto is null) return;
          
          var parameters = new DialogParameters<EditorDialog> { { x => x.StreamSubject, dto} };
@@ -102,12 +101,14 @@
          if (result is { Canceled: false }) await FetchDataAsync();
      }
 
-     private async Task OnDeleteAsync(Ulid itemId) {
+     private async Task OnDeleteAsync(Guid itemId) {
+         if (!NovaLabUserService.Try(await NovaLabUserService.GetUserIdAsync(), out Guid userId)) {
+             return;
+         }
+         
          bool? result = await DialogService.ShowMessageBox("Delete Stream Setup", "Deletion can only be undone by an admin", yesText: "Delete", cancelText: "Cancel");
          if (result is true) {
-            //  await NovaLabApiService.TrackedStreamSubject.DeleteTrackedStreamSubjectAsync(
-            //     itemId
-            // );
+             await NovaLabApiService.TrackedStreamSubject[userId][itemId].Remove.PostAsync();
              await FetchDataAsync();
          }
      }

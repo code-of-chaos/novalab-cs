@@ -13,13 +13,7 @@ namespace NovaLab.ApiClient.Models
     #pragma warning restore CS1591
     {
         /// <summary>The id property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::NovaLab.ApiClient.Models.Ulid? Id { get; set; }
-#nullable restore
-#else
-        public global::NovaLab.ApiClient.Models.Ulid Id { get; set; }
-#endif
+        public Guid? Id { get; set; }
         /// <summary>The novaLabUserId property</summary>
         public Guid? NovaLabUserId { get; set; }
         /// <summary>The twitchBroadcastLanguage property</summary>
@@ -88,7 +82,7 @@ namespace NovaLab.ApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "id", n => { Id = n.GetObjectValue<global::NovaLab.ApiClient.Models.Ulid>(global::NovaLab.ApiClient.Models.Ulid.CreateFromDiscriminatorValue); } },
+                { "id", n => { Id = n.GetGuidValue(); } },
                 { "novaLabUserId", n => { NovaLabUserId = n.GetGuidValue(); } },
                 { "twitchBroadcastLanguage", n => { TwitchBroadcastLanguage = n.GetStringValue(); } },
                 { "twitchGameId", n => { TwitchGameId = n.GetStringValue(); } },
@@ -105,7 +99,7 @@ namespace NovaLab.ApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
-            writer.WriteObjectValue<global::NovaLab.ApiClient.Models.Ulid>("id", Id);
+            writer.WriteGuidValue("id", Id);
             writer.WriteGuidValue("novaLabUserId", NovaLabUserId);
             writer.WriteStringValue("twitchBroadcastLanguage", TwitchBroadcastLanguage);
             writer.WriteStringValue("twitchGameId", TwitchGameId);

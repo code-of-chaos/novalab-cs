@@ -16,7 +16,6 @@
         <ProjectReference Include="..\NovaLab.Server.Services.Jwt\NovaLab.Server.Services.Jwt.csproj" />
         <ProjectReference Include="..\NovaLab.Server.Services.Twitch\NovaLab.Server.Services.Twitch.csproj" />
         <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.4.0" />
-        <PackageReference Include="Ulid" Version="1.3.4" />
         <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="8.1.0" />
         <PackageReference Include="CodeOfChaos.AspNetCore" Version="0.9.0" />
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.7.0" />

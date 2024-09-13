@@ -40,7 +40,6 @@ function Test-OpenApiFile {
   }
 }
 
-
 function main {
   #  Before we run anything, check if the OpenApiFile actually exists
   echo "Checking if $OpenApiFile is accessible..."

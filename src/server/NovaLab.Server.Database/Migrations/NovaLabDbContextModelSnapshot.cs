@@ -255,8 +255,9 @@ namespace NovaLab.Server.Database.Migrations
 
             modelBuilder.Entity("NovaLab.Server.Database.Models.Twitch.TwitchManagedReward", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(26)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsSoftDeleted")
                         .HasColumnType("bit");
@@ -291,8 +292,9 @@ namespace NovaLab.Server.Database.Migrations
 
             modelBuilder.Entity("NovaLab.Server.Database.Models.Twitch.TwitchManagedRewardRedemption", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(26)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsSoftDeleted")
                         .HasColumnType("bit");
@@ -304,9 +306,8 @@ namespace NovaLab.Server.Database.Migrations
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("TwitchManagedRewardId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
+                    b.Property<Guid>("TwitchManagedRewardId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -322,8 +323,9 @@ namespace NovaLab.Server.Database.Migrations
 
             modelBuilder.Entity("NovaLab.Server.Database.Models.Twitch.TwitchStreamSubject", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(26)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsSoftDeleted")
                         .HasColumnType("bit");

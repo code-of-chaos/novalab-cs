@@ -38,20 +38,19 @@
     // Code
     // ---------------------------------------------------------------------------------------------------------------------
     private async Task OnSubmit(StreamEditorForm form) {
-        Guid? userId = await NovaLabUserService.GetUserIdAsync();
-        if (userId is null) return;
+        if (!NovaLabUserService.Try(await NovaLabUserService.GetUserIdAsync(), out Guid userId)) {
+            return;
+        }
 
         // NovaLabApiService.NovaLabApiClient.Api.Twitch.TrackedStreamSubject.All.
-        // await NovaLabApiService.(
-        //     subjectId:StreamSubject.Id,
-        //     new TrackedStreamSubjectDtoPost {
-        //         NovaLabUserId=(Guid)userId,
-        //         TwitchTitle=form.TwitchTitle,
-        //         TwitchBroadcastLanguage=form.TwitchBroadcastLanguage ?? "en",
-        //         TwitchTags=form.TwitchTags?.Split(";").ToList() ?? [],
-        //         TwitchGameTitleName =form.TwitchGameTitleName
-        //     }
-        // );
+        await NovaLabApiService.NovaLabApiClient.Api.Streams.Subjects[userId].PostAsync(
+            new StreamSubjectDtoPost {
+                TwitchTitle=form.TwitchTitle,
+                TwitchBroadcastLanguage=form.TwitchBroadcastLanguage ?? "en",
+                TwitchTags=form.TwitchTags?.Split(";").ToList() ?? [],
+                TwitchGameTitleName =form.TwitchGameTitleName
+            }
+        );
         
         MudDialog?.Close(DialogResult.Ok(true));
     }

@@ -211,11 +211,17 @@ public static class Program {
         builder.Services.AddScoped<NovaLabUserService>();
         builder.Services.AddScoped<NovaLabApiService>();
         builder.Services.AddSingleton<TwitchGameTitleToIdCacheService>();
+        
+        // - Route Options - 
+        // builder.Services.Configure<RouteOptions>(options => {
+        //     options.ConstraintMap.Add("ulid", typeof(UlidRouteConstraint));
+        // });
 
         // -------------------------------------------------------------------------------------------------------------
         // NovaLabApp
         // -------------------------------------------------------------------------------------------------------------
         WebApplication app = builder.Build();
+        await app.Services.CreateScope().ServiceProvider.GetRequiredService<NovaLabDbContext>().Database.MigrateAsync();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment()) {
