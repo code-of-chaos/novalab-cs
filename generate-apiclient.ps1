@@ -29,8 +29,8 @@ function Restore-Csproj {
 function Test-OpenApiFile {
   if ($OpenApiFile -match '^(http|https)://') {
     try {
-      $response = Invoke-WebRequest -Uri $OpenApiFile
-      return $response.StatusCode -eq 200
+      $response = Invoke-WebRequest -Uri $OpenApiFile -UseBasicParsing
+      return $response.StatusCode -eq "200" -or 200
     } catch {
       echo "Error accessing $OpenApiFile"
       return $false
@@ -44,7 +44,7 @@ function Test-OpenApiFile {
 function main {
   #  Before we run anything, check if the OpenApiFile actually exists
   echo "Checking if $OpenApiFile is accessible..."
-  if (-not (Test-OpenApiFile) ) {
+  if (-not (Test-OpenApiFile)) {
     echo "Failed to access $OpenApiFile. Aborting."
     exit 
   }
