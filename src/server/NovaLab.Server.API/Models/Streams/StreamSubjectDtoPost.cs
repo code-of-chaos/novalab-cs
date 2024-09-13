@@ -1,13 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace NovaLab.Server.API.Models.Twitch;
+namespace NovaLab.Server.API.Models.Streams;
 
 // -----------------------------------------------------------------------------------------------------------------
 // Methods
 // -----------------------------------------------------------------------------------------------------------------
-public record TrackedStreamSubjectDtoPost(
-    Guid NovaLabUserId,
+public record StreamSubjectDtoPost(
     string TwitchTitle,
     string? TwitchBroadcastLanguage = null,
     string[]? TwitchTags = null,

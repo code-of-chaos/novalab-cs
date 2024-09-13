@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Serilog;
 using TwitchLib.EventSub.Websockets.Core.EventArgs.Channel;
 
 namespace NovaLab.Server.Services.Twitch.HostedService.Events;

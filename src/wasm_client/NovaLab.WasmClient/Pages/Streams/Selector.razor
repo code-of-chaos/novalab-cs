@@ -19,7 +19,7 @@
 <div class="h-full w-full p-6">
     <MudGrid>
         @if (Data is not null) {
-            @foreach (TrackedStreamSubjectDto item in Data) {
+            @foreach (StreamSubjectDto item in Data) {
                 <MudItem sm="12" md="6" xl="4">
                     <MudPaper Class="flex flex-row gap-2 rounded-xl p-3 lg:gap-4">
                         @* Image Section *@
@@ -61,7 +61,7 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-     private List<TrackedStreamSubjectDto>? Data { get; set; }
+     private List<StreamSubjectDto>? Data { get; set; }
     
      // -----------------------------------------------------------------------------------------------------------------
      // Methods
@@ -90,7 +90,7 @@
      }
      
      private async Task OnEditAsync(Ulid itemId) {
-         TrackedStreamSubjectDto? dto = Data?.First(d => d.Id == itemId);
+         StreamSubjectDto? dto = Data?.First(d => d.Id == itemId);
          if (dto is null) return;
          
          var parameters = new DialogParameters<EditorDialog> { { x => x.StreamSubject, dto} };

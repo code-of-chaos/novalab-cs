@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
 using NovaLab.Server.API;
-using NovaLab.Server.API.Services.Twitch;
 using NovaLab.Server.Components;
 using NovaLab.Server.Components.Account;
 using NovaLab.Server.Database;

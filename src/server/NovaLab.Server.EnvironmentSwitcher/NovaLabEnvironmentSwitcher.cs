@@ -46,7 +46,7 @@ public class NovaLabEnvironmentSwitcher : CodeOfChaos.AspNetCore.Environment.Env
         if (Configuration.GetConnectionString("DefaultConnection") is {} defaultConnectionString) return defaultConnectionString;
 
         // All possible routes exhausted
-        Log.Logger.ThrowFatal<ApplicationException>("No Connection string could be determined");
+        throw Log.Logger.ThrowFatal<ApplicationException>("No Connection string could be determined");
         return string.Empty;// TODO check why ThrowFatal doesn't NOT RETURN for the IDE
         }
     }

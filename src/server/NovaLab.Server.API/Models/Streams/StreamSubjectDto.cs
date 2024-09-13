@@ -5,13 +5,13 @@ using JetBrains.Annotations;
 using NovaLab.Server.Database.Models.Twitch;
 using NovaLab.Server.Database.Models.Twitch.HelixApi;
 
-namespace NovaLab.Server.API.Models.Twitch;
+namespace NovaLab.Server.API.Models.Streams;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record TrackedStreamSubjectDto(
+public record StreamSubjectDto(
     Ulid Id,
     Guid NovaLabUserId,
     string TwitchGameId,
@@ -24,8 +24,8 @@ public record TrackedStreamSubjectDto(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static TrackedStreamSubjectDto FromDatabase(TwitchStreamSubject model, TwitchGameTitleToIdCache? gameCache) {
-        return new TrackedStreamSubjectDto(
+    public static StreamSubjectDto FromDatabase(TwitchStreamSubject model, TwitchGameTitleToIdCache? gameCache) {
+        return new StreamSubjectDto(
             Id: model.Id,
             NovaLabUserId: model.User.Id,
             TwitchGameId: gameCache?.TwitchTitleId ?? "",

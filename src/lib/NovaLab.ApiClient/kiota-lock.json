@@ -1,8 +1,8 @@
 {
-  "descriptionHash": "2CDA9F8A9936AC466DDF02F9EC768E014FE084FEE820BF42C802FC955FDEFFDFEA765CF74C782555DEFFED7BA51A9BC6A164F77D9BDF946C3FD71A0F31F771A6",
-  "descriptionLocation": "../../servers/api/NovaLab.Servers.API/swagger.json",
+  "descriptionHash": "922ACD4EB10A5F2125803FA825B6691ED47D510F2A4CF4C4565F6E85C435C0423E1598EBA617A4ADEF4BD92FFC90A45A3DD7ECBE6E430AC7A7A2C33444D74F8C",
+  "descriptionLocation": "https://localhost:7145/swagger/v1/swagger.json",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "1.17.0",
+  "kiotaVersion": "1.18.0",
   "clientClassName": "NovaLabApiClient",
   "clientNamespaceName": "NovaLab.ApiClient",
   "language": "CSharp",

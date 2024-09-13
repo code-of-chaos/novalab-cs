@@ -33,7 +33,7 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    [Parameter] public required TrackedStreamSubjectDto StreamSubject { get; set; }
+    [Parameter] public required StreamSubjectDto StreamSubject { get; set; }
     private StreamEditorForm? _modelCache;
     private StreamEditorForm Model => _modelCache ??= new StreamEditorForm {
         TwitchTitle = StreamSubject.TwitchTitle ?? string.Empty ,

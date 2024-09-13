@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using NovaLab.ApiClient;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
-using NovaLab.ApiClient.Api.Twitch.TrackedStreamSubject;
+using NovaLab.ApiClient.Api.Streams.Subjects;
 
 namespace NovaLab.WasmClient.Services;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,7 +17,6 @@ public class NovaLabApiService(IConfiguration configuration) {
         httpClient: new HttpClient { BaseAddress = new Uri(configuration["ApiEndpoint"]!) }
     ));
     
-    
-    private  TrackedStreamSubjectRequestBuilder ? _trackedStreamSubjectApi;
-    public  TrackedStreamSubjectRequestBuilder  TrackedStreamSubject => _trackedStreamSubjectApi ??= NovaLabApiClient.Api.Twitch.TrackedStreamSubject;
+    private  SubjectsRequestBuilder ? _trackedStreamSubjectApi;
+    public  SubjectsRequestBuilder  TrackedStreamSubject => _trackedStreamSubjectApi ??= NovaLabApiClient.Api.Streams.Subjects;
 }

@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.Games;
 
-namespace NovaLab.Server.API.Services.Twitch;
+namespace NovaLab.Server.Services.Twitch;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -28,7 +28,7 @@ public class TwitchGameTitleToIdCacheService(
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
     private bool TryGetFromFastCache(string gameTitle, [NotNullWhen(true)] out TwitchGameTitleToIdCache? fastCached) => FastCache.TryGetValue(gameTitle, out fastCached);
-    private void AddToFastCache(string name, TwitchGameTitleToIdCache twitchGame) => FastCache.AddOrUpdate(name, twitchGame);
+    private void AddToFastCache(string name, TwitchGameTitleToIdCache twitchGame) => FastCache.AddOrUpdate(name, twitchGame, (_, _) => twitchGame );
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

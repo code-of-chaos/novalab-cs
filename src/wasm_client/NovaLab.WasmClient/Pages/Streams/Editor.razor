@@ -8,7 +8,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/streams/editor"
 @layout MainLayout
-@inject ILogger Logger
 @inject NovaLabUserService NovaLabUserService
 @inject NovaLabApiService NovaLabApiService
 
@@ -22,7 +21,7 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    public TrackedStreamSubjectDto StreamSubject { get; set; } = new() {
+    private StreamSubjectDto StreamSubject { get; set; } = new() {
         TwitchTitle = string.Empty,
         TwitchBroadcastLanguage = "en",
         TwitchTags = [],
@@ -33,9 +32,8 @@
         Guid? userId = await NovaLabUserService.GetUserIdAsync();
         if (userId is null) return;
 
-        await NovaLabApiService.NovaLabApiClient.Api.Twitch.TrackedStreamSubject.PostAsync(
-            new TrackedStreamSubjectDtoPost {
-                NovaLabUserId=(Guid)userId,
+        await NovaLabApiService.NovaLabApiClient.Api.Streams.Subjects[(Guid)userId].PostAsync(
+            new StreamSubjectDtoPost {
                 TwitchTitle=form.TwitchTitle,
                 TwitchBroadcastLanguage=form.TwitchBroadcastLanguage ?? "en",
                 TwitchTags=form.TwitchTags?.Split(";").ToList() ?? [],
@@ -43,7 +41,7 @@
             }
         );
 
-        StreamSubject = new TrackedStreamSubjectDto();
+        StreamSubject = new StreamSubjectDto();
         StateHasChanged();
     }
 }
