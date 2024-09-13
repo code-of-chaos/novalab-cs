@@ -2,12 +2,12 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using NovaLab.Server.Database.Contracts;
-using NovaLab.Server.Database.Models.Twitch;
+using NovaLab.Server.Database.Models.Streams;
 
 namespace NovaLab.Server.Database.Models;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ManagedStream : UserContent {
-    public virtual TwitchStreamSubject? TwitchStreamSubject { get; set; }
+    public virtual StreamSubject? StreamSubject { get; set; }
 }

@@ -4,8 +4,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NovaLab.Server.Database.Models.Twitch;
-using NovaLab.Server.Database.Models.Twitch.HelixApi;
+using NovaLab.Server.Database.Models.Streams;
+using NovaLab.Server.Database.Models.Streams.HelixApi;
 
 namespace NovaLab.Server.Database;
 
@@ -13,20 +13,20 @@ namespace NovaLab.Server.Database;
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 public class NovaLabDbContext : IdentityDbContext<NovaLabUser, IdentityRole<Guid>, Guid> {
-    #region TwitchStreamSubject
-    public DbSet<TwitchStreamSubject> TwitchStreamSubject { get; init; }
-    public IQueryable<TwitchStreamSubject> ActiveTwitchStreamSubject => TwitchStreamSubject.Where(subject => !subject.IsSoftDeleted);
+    #region StreamSubjects
+    public DbSet<StreamSubject> StreamSubjects { get; init; }
+    public IQueryable<StreamSubject> ActiveStreamSubjects => StreamSubjects.Where(subject => !subject.IsSoftDeleted);
     #endregion
-    #region TwitchManagedRewards
-    public DbSet<TwitchManagedReward> TwitchManagedRewards { get; init; }
-    public IQueryable<TwitchManagedReward> ActiveTwitchManagedRewards => TwitchManagedRewards.Where(goal => !goal.IsSoftDeleted);
+    #region TrackedRewards
+    public DbSet<TrackedReward> TrackedRewards { get; init; }
+    public IQueryable<TrackedReward> ActiveTrackedRewards => TrackedRewards.Where(goal => !goal.IsSoftDeleted);
     #endregion
-    #region TwitchManagedRewardRedemptions
-    public DbSet<TwitchManagedRewardRedemption> TwitchManagedRewardRedemptions { get; init; }
-    public IQueryable<TwitchManagedRewardRedemption> ActiveTwitchManagedRewardRedemptions => TwitchManagedRewardRedemptions.Where(goal => !goal.IsSoftDeleted);
+    #region TrackedRewardRedemptions
+    public DbSet<TrackedRewardRedemption> TrackedRewardRedemptions { get; init; }
+    public IQueryable<TrackedRewardRedemption> ActiveTrackedRewardRedemptions => TrackedRewardRedemptions.Where(goal => !goal.IsSoftDeleted);
     #endregion
-    #region TwitchGameTitleToIdCache
-    public DbSet<TwitchGameTitleToIdCache> TwitchGameTitleToIdCache { get; init; }
+    #region GameTitleToTwitchIds
+    public DbSet<GameTitleToTwitchId> GameTitleToTwitchIds { get; init; }
     #endregion
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors

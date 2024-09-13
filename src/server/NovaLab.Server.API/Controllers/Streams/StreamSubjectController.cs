@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NovaLab.Server.API.Models.Streams;
 using NovaLab.Server.Database;
-using NovaLab.Server.Database.Models.Twitch;
-using NovaLab.Server.Database.Models.Twitch.HelixApi;
+using NovaLab.Server.Database.Models.Streams;
+using NovaLab.Server.Database.Models.Streams.HelixApi;
 using NovaLab.Server.Services.Twitch;
 using System.Net;
 using TwitchLib.Api;
@@ -28,13 +28,13 @@ public class TwitchStreamSubjectController(
     ILogger logger,
     TwitchAPI twitchApi,
     TwitchTokensManager twitchTokens,
-    TwitchGameTitleToIdCacheService twitchCategoryCache
+    GameTitleToTwitchIdService twitchCategoryCache
     ) : BaseController(contextFactory) {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Helper Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private async Task<TwitchStreamSubject?> CreateTwitchStreamSubjectAsync(
+    private async Task<StreamSubject?> CreateTwitchStreamSubjectAsync(
         NovaLabDbContext dbContext, StreamSubjectDtoPost dtoPost, Guid userId
     ) {
         if (await dbContext.Users.FirstOrDefaultAsync(novaLabUser => novaLabUser.Id == userId) is not {} user) {
@@ -47,7 +47,7 @@ public class TwitchStreamSubjectController(
             ? (await twitchCategoryCache.GetCategoryByNameAsync(dtoPost.TwitchGameTitleName))?.TwitchTitleId
             : null;
         
-        return new TwitchStreamSubject {
+        return new StreamSubject {
             User = user,
             TwitchGameId = twitchGameId,
             TwitchBroadcastLanguage = dtoPost.TwitchBroadcastLanguage ?? Languages.EN.Alpha2,
@@ -68,15 +68,15 @@ public class TwitchStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            IQueryable<TwitchStreamSubject> subjects = dbContext.ActiveTwitchStreamSubject
+            IQueryable<StreamSubject> subjects = dbContext.ActiveStreamSubjects
                 .Include(subject => subject.User)
                 .Where(subject => subject.User.Id == userId);
 
-            TwitchStreamSubject[] result = await subjects.ToArrayAsync();
-            TwitchGameTitleToIdCache?[] images = await Task.WhenAll(result
+            StreamSubject[] result = await subjects.ToArrayAsync();
+            GameTitleToTwitchId?[] images = await Task.WhenAll(result
                 .Select(item => item.TwitchGameId is not null 
                     ? twitchCategoryCache.GetCategoryByIdAsync(item.TwitchGameId)
-                    : Task.FromResult<TwitchGameTitleToIdCache?>(null) )
+                    : Task.FromResult<GameTitleToTwitchId?>(null) )
                 );
             
             return Success(result.Select((item, i) => StreamSubjectDto.FromDatabase(
@@ -100,7 +100,7 @@ public class TwitchStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TwitchStreamSubject? result = await dbContext.ActiveTwitchStreamSubject
+            StreamSubject? result = await dbContext.ActiveStreamSubjects
                 .Include(subject => subject.User)
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId && subject.User.Id == userId);
             if (result is null) return FailureClient(msg:"No Tracked Subject found");
@@ -131,13 +131,13 @@ public class TwitchStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TwitchStreamSubject? result = await CreateTwitchStreamSubjectAsync(dbContext, dto, userId);
+            StreamSubject? result = await CreateTwitchStreamSubjectAsync(dbContext, dto, userId);
             if (result is null) return FailureClient();
 
             if (subjectId is not null) {
-                dbContext.TwitchStreamSubject.Update(result);
+                dbContext.StreamSubjects.Update(result);
             } else {
-                dbContext.TwitchStreamSubject.Add(result);
+                dbContext.StreamSubjects.Add(result);
             }
             await dbContext.SaveChangesAsync();
             
@@ -162,7 +162,7 @@ public class TwitchStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TwitchStreamSubject? result = await dbContext.ActiveTwitchStreamSubject
+            StreamSubject? result = await dbContext.ActiveStreamSubjects
                 .Include(subject => subject.User)
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId && subject.User.Id == userId);
             if (result is null) return FailureClient(msg:"No Tracked Subject found");
@@ -202,7 +202,7 @@ public class TwitchStreamSubjectController(
         await using NovaLabDbContext dbContext = await DbContext;
 
         try {
-            TwitchStreamSubject? result = await dbContext.TwitchStreamSubject
+            StreamSubject? result = await dbContext.ActiveStreamSubjects
                 .FirstOrDefaultAsync(subject => subject.Id == subjectId && subject.User.Id == userId);
 
             if (result is null) return FailureClient(msg:"No Tracked Subject found");

@@ -210,7 +210,7 @@ public static class Program {
         
         builder.Services.AddScoped<NovaLabUserService>();
         builder.Services.AddScoped<NovaLabApiService>();
-        builder.Services.AddSingleton<TwitchGameTitleToIdCacheService>();
+        builder.Services.AddSingleton<GameTitleToTwitchIdService>();
         
         // - Route Options - 
         // builder.Services.Configure<RouteOptions>(options => {
@@ -221,6 +221,7 @@ public static class Program {
         // NovaLabApp
         // -------------------------------------------------------------------------------------------------------------
         WebApplication app = builder.Build();
+        // When starting up, always migrate the DB
         await app.Services.CreateScope().ServiceProvider.GetRequiredService<NovaLabDbContext>().Database.MigrateAsync();
 
         // Configure the HTTP request pipeline.

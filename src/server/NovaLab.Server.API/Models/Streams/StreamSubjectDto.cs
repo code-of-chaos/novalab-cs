@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using JetBrains.Annotations;
-using NovaLab.Server.Database.Models.Twitch;
-using NovaLab.Server.Database.Models.Twitch.HelixApi;
+using NovaLab.Server.Database.Models.Streams;
+using NovaLab.Server.Database.Models.Streams.HelixApi;
 
 namespace NovaLab.Server.API.Models.Streams;
 
@@ -24,7 +24,7 @@ public record StreamSubjectDto(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static StreamSubjectDto FromDatabase(TwitchStreamSubject model, TwitchGameTitleToIdCache? gameCache) {
+    public static StreamSubjectDto FromDatabase(StreamSubject model, GameTitleToTwitchId? gameCache) {
         return new StreamSubjectDto(
             Id: model.Id,
             NovaLabUserId: model.User.Id,

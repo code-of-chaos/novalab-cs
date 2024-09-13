@@ -1,18 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using ISOLib;
 using NovaLab.Server.Database.Contracts;
 
-namespace NovaLab.Server.Database.Models.Twitch;
+namespace NovaLab.Server.Database.Models.Streams;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-public class TwitchStreamSubject : UserContent {
-    [MaxLength(140)] public string? TwitchGameId { get; set; }
-    [MaxLength(2)] public string TwitchBroadcastLanguage { get; set; } = Languages.EN.Alpha2;
-    [MaxLength(140)] public string TwitchTitle { get; set; } = "NOVALAB : Undefined Stream Title";
-    public string[]? TwitchTags { get; set; } = [];
+public class TrackedRewardRedemption : Content {
+    public virtual required TrackedReward TrackedReward { get; set; }
+    
+    public DateTime TimeStamp { get; set; }
+    [MaxLength(128)] public required string Username { get; set; }
+    [MaxLength(255)] public string? Message { get; set; }
 }

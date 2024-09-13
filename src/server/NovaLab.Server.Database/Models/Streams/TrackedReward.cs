@@ -3,13 +3,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using NovaLab.Server.Database.Contracts;
 
-namespace NovaLab.Server.Database.Models.Twitch;
+namespace NovaLab.Server.Database.Models.Streams;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-public class TwitchManagedReward : UserContent{
+public class TrackedReward : UserContent{
     [MaxLength(128)] public required string TwitchRewardId { get; init; }
     
     [MaxLength(255)] public string TemplatePerRedemption { get; set; } = "- {username} : \"{msg}\"";
@@ -21,5 +21,5 @@ public class TwitchManagedReward : UserContent{
     // Navigation Properties
     // -----------------------------------------------------------------------------------------------------------------
     // Navigation Property
-    public virtual ICollection<TwitchManagedRewardRedemption> TwitchManagedRewardRedemptions { get; set; } = [];
+    public virtual ICollection<TrackedRewardRedemption> TrackedRewardRedemptions { get; set; } = [];
 }
