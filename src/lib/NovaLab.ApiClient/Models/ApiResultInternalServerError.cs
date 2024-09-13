@@ -10,7 +10,7 @@ namespace NovaLab.ApiClient.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.18.0")]
     #pragma warning disable CS1591
-    public partial class ApiResult : ApiException, IParsable
+    public partial class ApiResultInternalServerError : ApiException, IParsable
     #pragma warning restore CS1591
     {
         /// <summary>The data property</summary>
@@ -36,12 +36,12 @@ namespace NovaLab.ApiClient.Models
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::NovaLab.ApiClient.Models.ApiResult"/></returns>
+        /// <returns>A <see cref="global::NovaLab.ApiClient.Models.ApiResultInternalServerError"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::NovaLab.ApiClient.Models.ApiResult CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::NovaLab.ApiClient.Models.ApiResultInternalServerError CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::NovaLab.ApiClient.Models.ApiResult();
+            return new global::NovaLab.ApiClient.Models.ApiResultInternalServerError();
         }
         /// <summary>
         /// The deserialization information for the current model

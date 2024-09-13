@@ -61,7 +61,7 @@ public class TwitchStreamSubjectController(
     // -----------------------------------------------------------------------------------------------------------------
     [HttpGet]
     [ProducesResponse<IApiResult<StreamSubjectDto>>(HttpStatusCode.OK)]
-    [ProducesResponse<IApiResult>(HttpStatusCode.InternalServerError)]
+    [ProducesResponse<ApiResultInternalServerError>(HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetTwitchStreamSubjects(
         Guid userId
     ) {
@@ -92,7 +92,7 @@ public class TwitchStreamSubjectController(
     
     [HttpGet("{subjectId}")]
     [ProducesResponse<IApiResult<StreamSubjectDto>>(HttpStatusCode.OK)]
-    [ProducesResponse<IApiResult>(HttpStatusCode.InternalServerError)]
+    [ProducesResponse<ApiResultInternalServerError>(HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetTwitchStreamSubject(
         Guid userId,
         Ulid subjectId
@@ -122,7 +122,7 @@ public class TwitchStreamSubjectController(
     // -----------------------------------------------------------------------------------------------------------------
     [HttpPost]
     [ProducesResponse<IApiResult<StreamSubjectDto>>(HttpStatusCode.OK)]
-    [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
+    [ProducesResponse<ApiResultBadRequest>(HttpStatusCode.BadRequest)]
     public async Task<IActionResult> UpsertTwitchStreamSubject(
         Guid userId,
         [FromBody] StreamSubjectDtoPost dto,
@@ -154,8 +154,8 @@ public class TwitchStreamSubjectController(
     
     [HttpPost("{subjectId}/activate")]
     [ProducesResponse<IApiResult<bool>>(HttpStatusCode.OK)]
-    [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
-    [ProducesResponse<ApiResult>(HttpStatusCode.InternalServerError)]
+    [ProducesResponse<ApiResultBadRequest>(HttpStatusCode.BadRequest)]
+    [ProducesResponse<ApiResultInternalServerError>(HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> ActiveStreamSubject(
         Ulid subjectId, Guid userId 
     ) {
@@ -194,8 +194,8 @@ public class TwitchStreamSubjectController(
     // -----------------------------------------------------------------------------------------------------------------
     [HttpPost("{subjectId}/remove")]
     [ProducesResponse<IApiResult<bool>>(HttpStatusCode.OK)]
-    [ProducesResponse<ApiResult>(HttpStatusCode.BadRequest)]
-    [ProducesResponse<ApiResult>(HttpStatusCode.InternalServerError)]
+    [ProducesResponse<ApiResultBadRequest>(HttpStatusCode.BadRequest)]
+    [ProducesResponse<ApiResultInternalServerError>(HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> DeleteTrackedStreamSubject(
         Ulid subjectId, Guid userId 
     ) {

@@ -36,8 +36,8 @@ namespace NovaLab.ApiClient.Api.Streams.Subjects.Item.Item.Remove
         /// <returns>A <see cref="global::NovaLab.ApiClient.Models.BooleanIApiResult"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
-        /// <exception cref="global::NovaLab.ApiClient.Models.ApiResult">When receiving a 400 status code</exception>
-        /// <exception cref="global::NovaLab.ApiClient.Models.ApiResult">When receiving a 500 status code</exception>
+        /// <exception cref="global::NovaLab.ApiClient.Models.ApiResultBadRequest">When receiving a 400 status code</exception>
+        /// <exception cref="global::NovaLab.ApiClient.Models.ApiResultInternalServerError">When receiving a 500 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public async Task<global::NovaLab.ApiClient.Models.BooleanIApiResult?> PostAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
@@ -50,8 +50,8 @@ namespace NovaLab.ApiClient.Api.Streams.Subjects.Item.Item.Remove
             var requestInfo = ToPostRequestInformation(requestConfiguration);
             var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
             {
-                { "400", global::NovaLab.ApiClient.Models.ApiResult.CreateFromDiscriminatorValue },
-                { "500", global::NovaLab.ApiClient.Models.ApiResult.CreateFromDiscriminatorValue },
+                { "400", global::NovaLab.ApiClient.Models.ApiResultBadRequest.CreateFromDiscriminatorValue },
+                { "500", global::NovaLab.ApiClient.Models.ApiResultInternalServerError.CreateFromDiscriminatorValue },
             };
             return await RequestAdapter.SendAsync<global::NovaLab.ApiClient.Models.BooleanIApiResult>(requestInfo, global::NovaLab.ApiClient.Models.BooleanIApiResult.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }

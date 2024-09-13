@@ -49,7 +49,7 @@ namespace NovaLab.ApiClient.Api.Streams.Subjects.Item
         /// <returns>A <see cref="global::NovaLab.ApiClient.Models.StreamSubjectDtoIApiResult"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
-        /// <exception cref="global::NovaLab.ApiClient.Models.IApiResult">When receiving a 500 status code</exception>
+        /// <exception cref="global::NovaLab.ApiClient.Models.ApiResultInternalServerError">When receiving a 500 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public async Task<global::NovaLab.ApiClient.Models.StreamSubjectDtoIApiResult?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
@@ -62,7 +62,7 @@ namespace NovaLab.ApiClient.Api.Streams.Subjects.Item
             var requestInfo = ToGetRequestInformation(requestConfiguration);
             var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
             {
-                { "500", global::NovaLab.ApiClient.Models.IApiResult.CreateFromDiscriminatorValue },
+                { "500", global::NovaLab.ApiClient.Models.ApiResultInternalServerError.CreateFromDiscriminatorValue },
             };
             return await RequestAdapter.SendAsync<global::NovaLab.ApiClient.Models.StreamSubjectDtoIApiResult>(requestInfo, global::NovaLab.ApiClient.Models.StreamSubjectDtoIApiResult.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
@@ -70,7 +70,7 @@ namespace NovaLab.ApiClient.Api.Streams.Subjects.Item
         /// <param name="body">The request body</param>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
-        /// <exception cref="global::NovaLab.ApiClient.Models.ApiResult">When receiving a 400 status code</exception>
+        /// <exception cref="global::NovaLab.ApiClient.Models.ApiResultBadRequest">When receiving a 400 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public async Task<global::NovaLab.ApiClient.Models.StreamSubjectDtoIApiResult?> PostAsync(global::NovaLab.ApiClient.Models.StreamSubjectDtoPost body, Action<RequestConfiguration<global::NovaLab.ApiClient.Api.Streams.Subjects.Item.WithUserItemRequestBuilder.WithUserItemRequestBuilderPostQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
@@ -84,7 +84,7 @@ namespace NovaLab.ApiClient.Api.Streams.Subjects.Item
             var requestInfo = ToPostRequestInformation(body, requestConfiguration);
             var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
             {
-                { "400", global::NovaLab.ApiClient.Models.ApiResult.CreateFromDiscriminatorValue },
+                { "400", global::NovaLab.ApiClient.Models.ApiResultBadRequest.CreateFromDiscriminatorValue },
             };
             return await RequestAdapter.SendAsync<global::NovaLab.ApiClient.Models.StreamSubjectDtoIApiResult>(requestInfo, global::NovaLab.ApiClient.Models.StreamSubjectDtoIApiResult.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
